@@ -1,6 +1,9 @@
+// 読み込む GTFS ZIP ファイルのローカルパス（GitHub Pages に同梱済み）
 const GTFS_ZIP_URL = "current_data.zip";
 
+// CSV 文字列を JSON 配列に変換するユーティリティ関数
 function parseCsv(text) {
+  // 改行で行を分割し、空行を除く
   const rows = text
     .trim()
     .split(/\r?\n/)
@@ -21,12 +24,14 @@ function parseCsv(text) {
 }
 
 function createTable(items) {
+  // CSV を解析して得た配列から HTML table を生成
   if (items.length === 0) {
     return "<p>stops.txt に行がありません。</p>";
   }
 
   const headers = Object.keys(items[0]);
   const thead = "<tr>" + headers.map((h) => `<th>${h}</th>`).join("") + "</tr>";
+  // 大量データの場合、上位200件のみ表示
   const tbody = items
     .slice(0, 200)
     .map((item) => {
@@ -55,21 +60,27 @@ function escapeHtml(raw) {
     .replace(/'/g, "&#039;");
 }
 
+// ボタンクリックで呼び出され、GTFS ZIP をロードして stops.txt を表示するメイン処理
 async function loadGtfsStops() {
   const status = document.getElementById("status");
   const result = document.getElementById("result");
 
+  // UI に進行状況を表示
   status.textContent = "ダウンロード中...";
   result.innerHTML = "";
 
   try {
+    // GTFS ZIP をフェッチ（ここで CORS に注意。ローカルに同梱しているため問題なし）
     const response = await fetch(GTFS_ZIP_URL);
     if (!response.ok) {
+      // 404/403 はここで捕まる
       throw new Error(`HTTP error: ${response.status}`);
     }
 
     const arrayBuffer = await response.arrayBuffer();
     status.textContent = "zip 解凍中...";
+
+    // バイナリを JSZip で解凍
 
     const zip = await JSZip.loadAsync(arrayBuffer);
     const file = zip.file("stops.txt");
@@ -83,6 +94,7 @@ async function loadGtfsStops() {
     status.textContent = `読み込み完了: ${items.length} 件`;
     result.innerHTML = createTable(items);
   } catch (error) {
+    // ネットワーク/zip/CSV エラーをすべてここで表示
     status.textContent = "エラー発生";
     result.innerHTML = `<pre style="color:red;">${escapeHtml(error.message || String(error))}</pre>`;
     console.error(error);
