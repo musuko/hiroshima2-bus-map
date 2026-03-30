@@ -2,13 +2,35 @@
  * load_gtfs.js
  * GTFSのZIPファイルを取得し、stops.txtをテーブルに表示する
  *
- * CORSの回避策: allorigins.win プロキシを経由してZIPを取得
+ * CORSの回避策: 複数のCORSプロキシを順番に試す
  * JSZip ライブラリを使ってZIPを解凍する（CDN読み込み）
  */
 
 const GTFS_ZIP_URL =
   "https://ajt-mobusta-gtfs.mcapps.jp/static/13/current_data.zip";
-const PROXY_URL = "https://api.allorigins.win/raw?url=";
+
+// 複数プロキシをフォールバック方式で試す
+const PROXIES = [
+  (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  (url) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+  (url) => `https://thingproxy.freeboard.io/fetch/${url}`,
+];
+
+async function fetchWithProxy(url) {
+  for (let i = 0; i < PROXIES.length; i++) {
+    const proxyUrl = PROXIES[i](url);
+    try {
+      const res = await fetch(proxyUrl);
+      if (res.ok) return res;
+      console.warn(`プロキシ${i + 1}失敗 (HTTP ${res.status}): ${proxyUrl}`);
+    } catch (e) {
+      console.warn(`プロキシ${i + 1}失敗 (${e.message}): ${proxyUrl}`);
+    }
+  }
+  throw new Error(
+    "すべてのCORSプロキシが失敗しました。時間をおいて再試行してください。",
+  );
+}
 
 // JSZip を動的に読み込む
 function loadJSZip() {
@@ -133,9 +155,7 @@ async function loadGTFS() {
 
   let arrayBuffer;
   try {
-    // allorigins.win で CORS回避
-    const res = await fetch(PROXY_URL + encodeURIComponent(GTFS_ZIP_URL));
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const res = await fetchWithProxy(GTFS_ZIP_URL);
     arrayBuffer = await res.arrayBuffer();
   } catch (e) {
     status.textContent = "取得失敗: " + e.message;
