@@ -1,27 +1,15 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hiroshima Bus Map - stops.txt Viewer</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/1.1.0/modern-normalize.min.css"
-        integrity="sha512-wpPYUAdjBVSE4KJnH1VR1HeZfpl1ub8YT/NKx4PuQ5NmX2tKuGu6U/JRp5y+Y8XG2tV+wKQpNHVUX03MfMFn9Q=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>GTFS Bus Information</title>
 </head>
 
 <body>
-    <main style="max-width:900px;margin:2rem auto;font-family:system-ui,sans-serif;">
-        <h1>GTFS stops.txt Viewer</h1>
-        <p>URL: <code>https://ajt-mobusta-gtfs.mcapps.jp/static/13/current_data.zip</code></p>
-        <button id="loadBtn">stops.txt を読み込む</button>
-        <p id="status">未ロード</p>
-        <div id="result"></div>
-    </main>
+    <h1>GTFS Bus Information</h1>
+    <div id="gtfs-content"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"
-        integrity="sha512-XMVd28F1oH/O71fzwBnV7HucLxVwtxf26XV8P4wPk26EDxuGZ91N8bsOttmnomcCD3CS5ZMRL50H0GgOHvegtg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="js/load_gtfs.js"></script>
 </body>
 
