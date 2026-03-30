@@ -1,4 +1,4 @@
-const GTFS_ZIP_URL = 'current_data.zip';
+const GTFS_ZIP_URL = "current_data.zip";
 
 function parseCsv(text) {
   const rows = text
