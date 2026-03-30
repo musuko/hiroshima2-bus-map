@@ -1,4 +1,4 @@
-const GTFS_ZIP_URL = 'https://ajt-mobusta-gtfs.mcapps.jp/static/13/current_data.zip';
+const GTFS_ZIP_URL = 'https://cors-anywhere.herokuapp.com/https://ajt-mobusta-gtfs.mcapps.jp/static/13/current_data.zip';
 
 function parseCsv(text) {
   const rows = text.trim().split(/\r?\n/).filter(line => line.trim().length > 0);
