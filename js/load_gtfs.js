@@ -1,231 +1,228 @@
-/**
- * load_gtfs.js
- * GTFSのZIPファイルを取得し、stops.txtをテーブルに表示する
- *
- * CORSの回避策: 複数のCORSプロキシを順番に試す
- * JSZip ライブラリを使ってZIPを解凍する（CDN読み込み）
- */
+// ============================================================
+//  広島県バス協会 GTFSリアルタイム バス位置情報ローダー
+//  GTFS-Realtime VehiclePosition (Protocol Buffers)
+// ============================================================
 
-const GTFS_ZIP_URL =
-  "https://ajt-mobusta-gtfs.mcapps.jp/static/13/current_data.zip";
+const VEHICLE_POSITION_URL =
+  "https://ajt-mobusta-gtfs.mcapps.jp/realtime/13/vehicle_position.bin";
 
-// 複数プロキシをフォールバック方式で試す
-const PROXIES = [
-  (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-  (url) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
-  (url) => `https://thingproxy.freeboard.io/fetch/${url}`,
-];
+// CORS プロキシ（バイナリ取得用）
+// ※ 直接アクセスできない場合は cors-anywhere 等を経由する
+const CORS_PROXY = "https://corsproxy.io/?";
 
-async function fetchWithProxy(url) {
-  for (let i = 0; i < PROXIES.length; i++) {
-    const proxyUrl = PROXIES[i](url);
-    try {
-      const res = await fetch(proxyUrl);
-      if (res.ok) return res;
-      console.warn(`プロキシ${i + 1}失敗 (HTTP ${res.status}): ${proxyUrl}`);
-    } catch (e) {
-      console.warn(`プロキシ${i + 1}失敗 (${e.message}): ${proxyUrl}`);
-    }
+// 自動更新間隔 (ms)
+const REFRESH_INTERVAL_MS = 30_000;
+
+// ----- GTFS-Realtime proto 定義（最小限） -----
+// protobufjs でインライン定義することで外部 .proto ファイル不要
+const GTFS_RT_PROTO = `
+syntax = "proto2";
+package transit_realtime;
+
+message FeedMessage {
+  required FeedHeader header = 1;
+  repeated FeedEntity entity = 2;
+}
+message FeedHeader {
+  required string gtfs_realtime_version = 1;
+  optional uint64 timestamp = 3;
+}
+message FeedEntity {
+  required string id = 1;
+  optional bool is_deleted = 3;
+  optional VehiclePosition vehicle = 4;
+}
+message VehiclePosition {
+  optional TripDescriptor trip = 1;
+  optional VehicleDescriptor vehicle = 8;
+  optional Position position = 2;
+  optional uint64 timestamp = 5;
+  optional string stop_id = 7;
+  optional OccupancyStatus occupancy_status = 9;
+  enum OccupancyStatus {
+    EMPTY = 0;
+    MANY_SEATS_AVAILABLE = 1;
+    FEW_SEATS_AVAILABLE = 2;
+    STANDING_ROOM_ONLY = 3;
+    CRUSHED_STANDING_ROOM_ONLY = 4;
+    FULL = 5;
+    NOT_ACCEPTING_PASSENGERS = 6;
   }
-  throw new Error(
-    "すべてのCORSプロキシが失敗しました。時間をおいて再試行してください。",
-  );
+}
+message TripDescriptor {
+  optional string trip_id = 1;
+  optional string route_id = 5;
+}
+message VehicleDescriptor {
+  optional string id = 1;
+  optional string label = 2;
+  optional string license_plate = 3;
+}
+message Position {
+  required float latitude  = 1;
+  required float longitude = 2;
+  optional float bearing   = 3;
+  optional double odometer = 4;
+  optional float speed     = 5;
+}
+`;
+
+// ----- Leaflet マップ初期化 -----
+const map = L.map("map").setView([34.3853, 132.4553], 12); // 広島市中心
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  attribution:
+    '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  maxZoom: 19,
+}).addTo(map);
+
+// バスマーカーを管理する Map<vehicleId, L.Marker>
+const busMarkers = new Map();
+
+// ---- カスタムバスアイコン ----
+function createBusIcon(bearing) {
+  const rot = bearing != null ? bearing : 0;
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <g transform="rotate(${rot},16,16)">
+        <circle cx="16" cy="16" r="14" fill="#1a6b3c" stroke="white" stroke-width="2"/>
+        <text x="16" y="21" text-anchor="middle" font-size="16" fill="white">🚌</text>
+      </g>
+    </svg>`;
+  return L.divIcon({
+    html: svg,
+    className: "",
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+    popupAnchor: [0, -18],
+  });
 }
 
-// JSZip を動的に読み込む
-function loadJSZip() {
-  return new Promise((resolve, reject) => {
-    if (window.JSZip) {
-      resolve(window.JSZip);
+// ---- UI ヘルパー ----
+function setStatus(state, text) {
+  const dot = document.getElementById("status-dot");
+  const label = document.getElementById("status-text");
+  dot.className = state; // 'loading' | 'ok' | 'error'
+  label.textContent = text;
+}
+
+function updateInfoPanel(count) {
+  document.getElementById("bus-count").textContent = count;
+  const now = new Date().toLocaleTimeString("ja-JP");
+  document.getElementById("last-updated").textContent = `最終更新: ${now}`;
+}
+
+// ---- protobufjs でデコード ----
+async function decodeFeedMessage(buffer) {
+  const root = await protobuf.parse(GTFS_RT_PROTO, { keepCase: true }).root;
+  const FeedMessage = root.lookupType("transit_realtime.FeedMessage");
+  return FeedMessage.decode(new Uint8Array(buffer));
+}
+
+// ---- バイナリ取得 ----
+async function fetchVehiclePositions() {
+  setStatus("loading", "取得中…");
+
+  let buffer;
+  try {
+    // まず直接アクセスを試みる
+    const res = await fetch(VEHICLE_POSITION_URL, { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    buffer = await res.arrayBuffer();
+  } catch (directErr) {
+    console.warn("直接アクセス失敗、CORSプロキシ経由で再試行:", directErr);
+    try {
+      const res = await fetch(CORS_PROXY + encodeURIComponent(VEHICLE_POSITION_URL), {
+        cache: "no-store",
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      buffer = await res.arrayBuffer();
+    } catch (proxyErr) {
+      setStatus("error", "取得エラー");
+      console.error("プロキシ経由も失敗:", proxyErr);
       return;
     }
-    const script = document.createElement("script");
-    script.src =
-      "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js";
-    script.onload = () => resolve(window.JSZip);
-    script.onerror = () => reject(new Error("JSZipの読み込みに失敗しました"));
-    document.head.appendChild(script);
-  });
+  }
+
+  let feed;
+  try {
+    feed = await decodeFeedMessage(buffer);
+  } catch (decodeErr) {
+    setStatus("error", "デコードエラー");
+    console.error("プロトバッファデコード失敗:", decodeErr);
+    return;
+  }
+
+  renderVehicles(feed.entity || []);
+  setStatus("ok", "更新済み");
 }
 
-// CSV文字列 → 行配列（ヘッダー付き）
-function parseCSV(text) {
-  // BOM除去
-  const clean = text.replace(/^\uFEFF/, "").replace(/\r/g, "");
-  const lines = clean.split("\n").filter((l) => l.trim() !== "");
-  if (lines.length === 0) return { headers: [], rows: [] };
+// ---- マーカー描画 ----
+function renderVehicles(entities) {
+  const activeIds = new Set();
 
-  const headers = lines[0]
-    .split(",")
-    .map((h) => h.trim().replace(/^"|"$/g, ""));
-  const rows = lines.slice(1).map((line) => {
-    // 簡易CSVパーサー（ダブルクォート対応）
-    const cells = [];
-    let cur = "",
-      inQ = false;
-    for (let i = 0; i < line.length; i++) {
-      const ch = line[i];
-      if (ch === '"') {
-        inQ = !inQ;
-      } else if (ch === "," && !inQ) {
-        cells.push(cur.trim());
-        cur = "";
-      } else {
-        cur += ch;
-      }
+  for (const entity of entities) {
+    const vp = entity.vehicle;
+    if (!vp || !vp.position) continue;
+
+    const { latitude, longitude, bearing, speed } = vp.position;
+    if (!latitude || !longitude) continue;
+
+    const vehicleId =
+      vp.vehicle?.id || vp.vehicle?.label || entity.id || "unknown";
+    const label = vp.vehicle?.label || vehicleId;
+    const routeId = vp.trip?.route_id ?? "—";
+    const tripId = vp.trip?.trip_id ?? "—";
+    const ts = vp.timestamp
+      ? new Date(Number(vp.timestamp) * 1000).toLocaleTimeString("ja-JP")
+      : "—";
+    const speedKmh =
+      speed != null ? (speed * 3.6).toFixed(1) + " km/h" : "—";
+
+    const popupHtml = `
+      <div style="min-width:160px;font-size:13px;line-height:1.7">
+        <b>🚌 車両ID:</b> ${label}<br>
+        <b>路線ID:</b> ${routeId}<br>
+        <b>便ID:</b> ${tripId}<br>
+        <b>速度:</b> ${speedKmh}<br>
+        <b>時刻:</b> ${ts}
+      </div>`;
+
+    activeIds.add(vehicleId);
+
+    if (busMarkers.has(vehicleId)) {
+      // 既存マーカーを更新
+      const marker = busMarkers.get(vehicleId);
+      marker.setLatLng([latitude, longitude]);
+      marker.setIcon(createBusIcon(bearing));
+      marker.getPopup().setContent(popupHtml);
+    } else {
+      // 新規マーカーを追加
+      const marker = L.marker([latitude, longitude], {
+        icon: createBusIcon(bearing),
+      })
+        .bindPopup(popupHtml)
+        .addTo(map);
+      busMarkers.set(vehicleId, marker);
     }
-    cells.push(cur.trim());
-    return cells;
-  });
-  return { headers, rows };
-}
+  }
 
-// テーブルを描画する
-function renderTable(headers, rows) {
-  const head = document.getElementById("tableHead");
-  const body = document.getElementById("tableBody");
-  const countEl = document.getElementById("rowCount");
-
-  head.innerHTML = "";
-  body.innerHTML = "";
-
-  const tr = document.createElement("tr");
-  headers.forEach((h) => {
-    const th = document.createElement("th");
-    th.textContent = h;
-    tr.appendChild(th);
-  });
-  head.appendChild(tr);
-
-  rows.forEach((cells) => {
-    const row = document.createElement("tr");
-    headers.forEach((_, i) => {
-      const td = document.createElement("td");
-      td.textContent = cells[i] ?? "";
-      row.appendChild(td);
-    });
-    body.appendChild(row);
-  });
-
-  countEl.textContent = `${rows.length.toLocaleString()} 件表示`;
-}
-
-// 検索フィルター
-function filterTable(headers, rows, query) {
-  if (!query) return rows;
-  const q = query.toLowerCase();
-  // stop_name 列を優先的に検索（なければ全列）
-  const nameIdx = headers.findIndex((h) => h === "stop_name");
-  return rows.filter((cells) => {
-    if (nameIdx >= 0) {
-      return (cells[nameIdx] ?? "").toLowerCase().includes(q);
+  // 取得データに含まれなくなった車両のマーカーを削除
+  for (const [id, marker] of busMarkers) {
+    if (!activeIds.has(id)) {
+      map.removeLayer(marker);
+      busMarkers.delete(id);
     }
-    return cells.some((c) => (c ?? "").toLowerCase().includes(q));
-  });
+  }
+
+  updateInfoPanel(activeIds.size);
+  console.log(`[GTFS-RT] ${activeIds.size} 台を描画`);
 }
 
-// メイン処理
-async function loadGTFS() {
-  const btn = document.getElementById("loadBtn");
-  const status = document.getElementById("status");
-  const searchBox = document.getElementById("searchBox");
-  const progressWrap = document.getElementById("progressWrap");
-  const progressBar = document.getElementById("progressBar");
+// ---- 初期化 & 定期更新 ----
+fetchVehiclePositions();
+setInterval(fetchVehiclePositions, REFRESH_INTERVAL_MS);
 
-  btn.disabled = true;
-  searchBox.disabled = true;
-  progressWrap.style.display = "block";
-  progressBar.style.width = "10%";
-  status.className = "";
-  status.textContent = "JSZip を読み込み中...";
-
-  let JSZip;
-  try {
-    JSZip = await loadJSZip();
-  } catch (e) {
-    status.textContent = e.message;
-    status.className = "error";
-    btn.disabled = false;
-    progressWrap.style.display = "none";
-    return;
-  }
-
-  progressBar.style.width = "25%";
-  status.textContent = "ZIPを取得中（CORSプロキシ経由）...";
-
-  let arrayBuffer;
-  try {
-    const res = await fetchWithProxy(GTFS_ZIP_URL);
-    arrayBuffer = await res.arrayBuffer();
-  } catch (e) {
-    status.textContent = "取得失敗: " + e.message;
-    status.className = "error";
-    btn.disabled = false;
-    progressWrap.style.display = "none";
-    return;
-  }
-
-  progressBar.style.width = "60%";
-  status.textContent = "ZIPを解凍中...";
-
-  let zip;
-  try {
-    zip = await JSZip.loadAsync(arrayBuffer);
-  } catch (e) {
-    status.textContent = "ZIP解凍失敗: " + e.message;
-    status.className = "error";
-    btn.disabled = false;
-    progressWrap.style.display = "none";
-    return;
-  }
-
-  // stops.txt を探す（パス問わず）
-  const stopsFile = Object.values(zip.files).find(
-    (f) => f.name.endsWith("stops.txt") && !f.dir,
-  );
-
-  if (!stopsFile) {
-    status.textContent = "stops.txt が見つかりませんでした";
-    status.className = "error";
-    btn.disabled = false;
-    progressWrap.style.display = "none";
-    return;
-  }
-
-  progressBar.style.width = "80%";
-  status.textContent = "stops.txt を解析中...";
-
-  let text;
-  try {
-    text = await stopsFile.async("string");
-  } catch (e) {
-    status.textContent = "ファイル読み込み失敗: " + e.message;
-    status.className = "error";
-    btn.disabled = false;
-    progressWrap.style.display = "none";
-    return;
-  }
-
-  const { headers, rows } = parseCSV(text);
-
-  progressBar.style.width = "100%";
-  status.textContent = `読み込み完了 — ${rows.length.toLocaleString()} 件`;
-  status.className = "success";
-
-  renderTable(headers, rows);
-
-  // 検索機能を有効化
-  searchBox.disabled = false;
-  searchBox.addEventListener("input", () => {
-    const filtered = filterTable(headers, rows, searchBox.value);
-    renderTable(headers, filtered);
-  });
-
-  setTimeout(() => {
-    progressWrap.style.display = "none";
-  }, 800);
-  btn.disabled = false;
-  btn.textContent = "再読み込み";
-}
-
-document.getElementById("loadBtn").addEventListener("click", loadGTFS);
+document
+  .getElementById("refresh-btn")
+  .addEventListener("click", fetchVehiclePositions);
