@@ -199,14 +199,3 @@ setInterval(fetchVehiclePositions, REFRESH_INTERVAL_MS);
 
 document.getElementById("refresh-btn")
   .addEventListener("click", fetchVehiclePositions);
-```
-
----
-
-## 仕組みのまとめ
-```
-[GitHub Actions（2分ごと）]
-    ↓ curl でサーバーサイドから直接取得（CORSなし）
-[data/vehicle_position.bin をリポジトリにpush]
-    ↓ GitHub Pages で配信
-[ブラウザ] → ./data/vehicle_position.bin を同一オリジン取得 → 地図表示
