@@ -122,10 +122,19 @@ async function fetchVehiclePositions() {
   setStatus("loading", "取得中…");
   try {
     // キャッシュバスターでブラウザキャッシュを回避
-    const res = await fetch(
-      `${VEHICLE_POSITION_URL}?t=${Date.now()}`,
-      { cache: "no-store" }
-    );
+    // -------------------------------------------------------
+    // キャッシュを完全に無効化してファイルを取得する
+    // GitHub Pages は強いキャッシュを返すことがあるため、
+    // cache: 'no-store' に加えて Pragma ヘッダーも付与する。
+    // -------------------------------------------------------
+    var url = VEHICLE_POSITION_URL + "?t=" + Date.now();
+    var res = await fetch(url, {
+      cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache'
+      }
+    });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const buffer = await res.arrayBuffer();
     const feed = await decodeFeedMessage(buffer);
