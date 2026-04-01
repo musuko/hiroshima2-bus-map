@@ -1,0 +1,98 @@
+# =============================================================================
+# fetch_realtime.yml
+# リアルタイムデータのみを5分ごとに取得するワークフロー
+# =============================================================================
+
+name: Fetch Realtime Data
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'   # 5分ごとに自動実行
+  workflow_dispatch:         # 手動実行も可能
+
+jobs:
+  fetch-realtime:
+    name: リアルタイムデータ取得
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4.2.2
+
+      - name: 全事業者のリアルタイムバイナリを取得
+        run: |
+          BASE_URL="https://ajt-mobusta-gtfs.mcapps.jp/realtime"
+
+          OPERATORS=(
+            "hiroden            8"
+            "hiroshimabus       9"
+            "hirokotsu         10"
+            "geiyo             11"
+            "bihoku            12"
+            "hdnishihiroshima  13"
+            "fouble            14"
+            "jrbus             15"
+            "sasaki            17"
+            "kurebus           18"
+            "hatsukaichi       19"
+            "onomichi          53"
+            "asahi             54"
+          )
+
+          REALTIME_FILES=(
+            "vehicle_position"
+            "trip_updates"
+            "alerts"
+          )
+
+          TOTAL=0
+          SUCCESS=0
+          FAIL=0
+
+          for ENTRY in "${OPERATORS[@]}"; do
+            FOLDER=$(echo "$ENTRY" | awk '{print $1}')
+            OP_ID=$(echo  "$ENTRY" | awk '{print $2}')
+            mkdir -p "data/${FOLDER}/realtime"
+
+            for FILE_TYPE in "${REALTIME_FILES[@]}"; do
+              TOTAL=$((TOTAL + 1))
+              URL="${BASE_URL}/${OP_ID}/${FILE_TYPE}.bin"
+              DEST="data/${FOLDER}/realtime/${FILE_TYPE}.bin"
+
+              HTTP_STATUS=$(curl -s -w "%{http_code}" \
+                --max-time 30 \
+                -A "Mozilla/5.0 GitHubActions-GTFSFetcher/1.0" \
+                -o "${DEST}" \
+                "${URL}")
+
+              if [ "$HTTP_STATUS" = "200" ]; then
+                SIZE=$(wc -c < "${DEST}")
+                echo "[成功] ${FOLDER}/${FILE_TYPE}.bin (${SIZE} バイト)"
+                SUCCESS=$((SUCCESS + 1))
+              else
+                echo "[失敗] ${FOLDER}/${FILE_TYPE}.bin (HTTP ${HTTP_STATUS})"
+                rm -f "${DEST}"
+                FAIL=$((FAIL + 1))
+              fi
+            done
+          done
+
+          echo "--------------------------------------------"
+          echo "取得結果: ${SUCCESS}/${TOTAL} 成功, ${FAIL} 失敗"
+          echo "--------------------------------------------"
+
+      - name: リアルタイムデータをコミット・プッシュ
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/*/realtime/*.bin
+          if git diff --cached --quiet; then
+            echo "変更なし。スキップします。"
+          else
+            TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M UTC')
+            git commit -m "chore: update realtime data ${TIMESTAMP} [skip ci]"
+            git push
+            echo "プッシュしました。"
+          fi
