@@ -2,33 +2,35 @@ name: Fetch GTFS Realtime Data
 
 on:
   schedule:
-    - cron: '*/2 * * * *'   # 2分ごとに実行（GitHub Actionsの最小間隔）
-  workflow_dispatch:          # 手動実行も可能
-
-permissions:
-  contents: write             # リポジトリへのpushを許可
+    - cron: '*/2 * * * *'
+  workflow_dispatch:
 
 jobs:
   fetch:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Fetch vehicle_position.bin
         run: |
           mkdir -p data
-          curl -s -o data/vehicle_position.bin \
-            "https://ajt-mobusta-gtfs.mcapps.jp/realtime/13/vehicle_position.bin"
-          echo "取得完了: $(wc -c < data/vehicle_position.bin) bytes"
+          HTTP_STATUS=$(curl -s -w "%{http_code}" -o data/vehicle_position.bin \
+            "https://ajt-mobusta-gtfs.mcapps.jp/realtime/13/vehicle_position.bin")
+          echo "HTTP Status: $HTTP_STATUS"
+          echo "File size: $(wc -c < data/vehicle_position.bin) bytes"
+          if [ "$HTTP_STATUS" != "200" ]; then
+            echo "ERROR: HTTP $HTTP_STATUS"
+            exit 1
+          fi
 
       - name: Commit and push
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/vehicle_position.bin
-          # 変更がある場合のみコミット
+          git status
           git diff --cached --quiet || git commit -m "chore: update vehicle_position.bin [skip ci]"
           git push
