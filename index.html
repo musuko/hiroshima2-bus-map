@@ -1,224 +1,127 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GTFS Stops Viewer</title>
-    <style>
-        :root {
-            --bg: #f4f6f9;
-            --surface: #ffffff;
-            --primary: #1a56db;
-            --primary-light: #e8f0fe;
-            --text: #1e2a3a;
-            --text-muted: #6b7a90;
-            --border: #dde3ed;
-            --radius: 10px;
-            --shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>広島県バス協会 バス位置情報</title>
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-        body {
-            font-family: 'Hiragino Sans', 'Noto Sans JP', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            padding: 24px 16px;
-        }
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        header {
-            max-width: 1100px;
-            margin: 0 auto 24px;
-        }
+    body {
+      font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+      background: #f0f2f5;
+      color: #333;
+    }
 
-        header h1 {
-            font-size: 1.6rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            color: var(--text);
-        }
+    header {
+      background: #1a6b3c;
+      color: white;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 1000;
+      position: relative;
+    }
 
-        header p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-top: 4px;
-        }
+    header h1 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
 
-        .card {
-            background: var(--surface);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            max-width: 1100px;
-            margin: 0 auto 20px;
-            padding: 20px 24px;
-        }
+    #status-bar {
+      font-size: 0.8rem;
+      background: rgba(255,255,255,0.15);
+      padding: 4px 12px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-        .controls {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
+    #status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #aaa;
+      transition: background 0.3s;
+    }
+    #status-dot.loading { background: #f0c040; animation: pulse 1s infinite; }
+    #status-dot.ok      { background: #4ceb7a; }
+    #status-dot.error   { background: #f05050; }
 
-        button#loadBtn {
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            padding: 10px 22px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
 
-        button#loadBtn:hover {
-            background: #1446b5;
-        }
+    #map {
+      width: 100%;
+      height: calc(100vh - 90px);
+    }
 
-        button#loadBtn:disabled {
-            background: #a0aec0;
-            cursor: not-allowed;
-        }
+    #info-panel {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      border-radius: 10px;
+      padding: 10px 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      font-size: 0.85rem;
+      z-index: 999;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
 
-        input#searchBox {
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 9px 14px;
-            font-size: 0.9rem;
-            width: 240px;
-            outline: none;
-            transition: border 0.15s;
-        }
+    #info-panel span { color: #555; }
+    #info-panel strong { color: #1a6b3c; font-size: 1.1rem; }
 
-        input#searchBox:focus {
-            border-color: var(--primary);
-        }
-
-        #status {
-            font-size: 0.88rem;
-            color: var(--text-muted);
-            margin-left: auto;
-        }
-
-        #status.error {
-            color: #e53e3e;
-        }
-
-        #status.success {
-            color: #2f855a;
-        }
-
-        .progress-wrap {
-            display: none;
-            height: 4px;
-            background: var(--border);
-            border-radius: 2px;
-            margin-top: 14px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background: var(--primary);
-            border-radius: 2px;
-            transition: width 0.3s;
-        }
-
-        .table-wrap {
-            overflow-x: auto;
-            margin-top: 4px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.875rem;
-        }
-
-        thead tr {
-            background: var(--primary-light);
-        }
-
-        th {
-            text-align: left;
-            padding: 10px 14px;
-            font-weight: 600;
-            color: var(--primary);
-            white-space: nowrap;
-            border-bottom: 2px solid var(--border);
-        }
-
-        td {
-            padding: 9px 14px;
-            border-bottom: 1px solid var(--border);
-            white-space: nowrap;
-        }
-
-        tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        tbody tr:hover {
-            background: #f8faff;
-        }
-
-        #rowCount {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-top: 12px;
-            text-align: right;
-        }
-
-        .empty {
-            text-align: center;
-            color: var(--text-muted);
-            padding: 48px 0;
-            font-size: 0.95rem;
-        }
-    </style>
+    #refresh-btn {
+      background: #1a6b3c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 14px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: background 0.2s;
+    }
+    #refresh-btn:hover { background: #155530; }
+  </style>
 </head>
-
 <body>
-    <header>
-        <h1>🚏 GTFS Stops Viewer</h1>
-        <p>GTFSデータから停留所一覧（stops.txt）を表示します</p>
-    </header>
 
-    <div class="card">
-        <div class="controls">
-            <button id="loadBtn">データを読み込む</button>
-            <input id="searchBox" type="text" placeholder="停留所名で検索..." disabled />
-            <span id="status">未読み込み</span>
-        </div>
-        <div class="progress-wrap" id="progressWrap">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
-    </div>
+<header>
+  <h1>🚌 広島県バス協会 リアルタイムバス位置情報</h1>
+  <div id="status-bar">
+    <div id="status-dot"></div>
+    <span id="status-text">待機中</span>
+  </div>
+</header>
 
-    <div class="card">
-        <div class="table-wrap">
-            <table id="stopsTable">
-                <thead id="tableHead"></thead>
-                <tbody id="tableBody">
-                    <tr>
-                        <td class="empty" colspan="100">「データを読み込む」ボタンを押してください</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div id="rowCount"></div>
-    </div>
+<div id="map"></div>
 
-    <script src="js/load_gtfs.js"></script>
+<div id="info-panel">
+  <span>表示中のバス台数: <strong id="bus-count">0</strong> 台</span>
+  <span id="last-updated">最終更新: —</span>
+  <button id="refresh-btn">🔄 手動更新</button>
+</div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- protobufjs (CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/protobufjs@7/dist/protobuf.min.js"></script>
+
+<script src="js/load_gtfs.js"></script>
+
 </body>
-
 </html>
