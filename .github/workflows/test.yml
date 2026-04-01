@@ -1,0 +1,21 @@
+name: Scheduled Task
+
+on:
+  schedule:
+    # 5分ごとに実行する設定
+    - cron: '*/5 * * * *'
+  # 手動実行も可能にする設定（デバッグに便利です）
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: 現在日時を表示
+        env:
+          TZ: 'Asia/Tokyo' # タイムゾーンを日本に設定
+        run: |
+          echo "現在の実行時刻を表示します："
+          date
