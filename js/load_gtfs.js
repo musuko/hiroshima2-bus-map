@@ -1,20 +1,15 @@
 // ============================================================
 //  広島県バス協会 GTFSリアルタイム バス位置情報ローダー
-//  GTFS-Realtime VehiclePosition (Protocol Buffers)
+//  データは GitHub Actions が定期取得して /data/ に配置
 // ============================================================
 
-const VEHICLE_POSITION_URL =
-  "https://ajt-mobusta-gtfs.mcapps.jp/realtime/13/vehicle_position.bin";
+// 同一オリジンから取得（CORSなし）
+const VEHICLE_POSITION_URL = "./data/vehicle_position.bin";
 
-// CORS プロキシ（バイナリ取得用）
-// ※ 直接アクセスできない場合は cors-anywhere 等を経由する
-const CORS_PROXY = "https://corsproxy.io/?";
-
-// 自動更新間隔 (ms)
-const REFRESH_INTERVAL_MS = 30_000;
+// 自動更新間隔 (ms) - Actionsが2分ごとなので2分に合わせる
+const REFRESH_INTERVAL_MS = 120_000;
 
 // ----- GTFS-Realtime proto 定義（最小限） -----
-// protobufjs でインライン定義することで外部 .proto ファイル不要
 const GTFS_RT_PROTO = `
 syntax = "proto2";
 package transit_realtime;
@@ -68,7 +63,7 @@ message Position {
 `;
 
 // ----- Leaflet マップ初期化 -----
-const map = L.map("map").setView([34.3853, 132.4553], 12); // 広島市中心
+const map = L.map("map").setView([34.3853, 132.4553], 12);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution:
@@ -76,7 +71,6 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 19,
 }).addTo(map);
 
-// バスマーカーを管理する Map<vehicleId, L.Marker>
 const busMarkers = new Map();
 
 // ---- カスタムバスアイコン ----
@@ -102,14 +96,18 @@ function createBusIcon(bearing) {
 function setStatus(state, text) {
   const dot = document.getElementById("status-dot");
   const label = document.getElementById("status-text");
-  dot.className = state; // 'loading' | 'ok' | 'error'
+  dot.className = state;
   label.textContent = text;
 }
 
-function updateInfoPanel(count) {
+function updateInfoPanel(count, feedTimestamp) {
   document.getElementById("bus-count").textContent = count;
-  const now = new Date().toLocaleTimeString("ja-JP");
-  document.getElementById("last-updated").textContent = `最終更新: ${now}`;
+  const fetchedAt = new Date().toLocaleTimeString("ja-JP");
+  const dataTime = feedTimestamp
+    ? new Date(Number(feedTimestamp) * 1000).toLocaleTimeString("ja-JP")
+    : "—";
+  document.getElementById("last-updated").textContent =
+    `取得: ${fetchedAt}　データ時刻: ${dataTime}`;
 }
 
 // ---- protobufjs でデコード ----
@@ -122,43 +120,25 @@ async function decodeFeedMessage(buffer) {
 // ---- バイナリ取得 ----
 async function fetchVehiclePositions() {
   setStatus("loading", "取得中…");
-
-  let buffer;
   try {
-    // まず直接アクセスを試みる
-    const res = await fetch(VEHICLE_POSITION_URL, { cache: "no-store" });
+    // キャッシュバスターでブラウザキャッシュを回避
+    const res = await fetch(
+      `${VEHICLE_POSITION_URL}?t=${Date.now()}`,
+      { cache: "no-store" }
+    );
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    buffer = await res.arrayBuffer();
-  } catch (directErr) {
-    console.warn("直接アクセス失敗、CORSプロキシ経由で再試行:", directErr);
-    try {
-      const res = await fetch(CORS_PROXY + encodeURIComponent(VEHICLE_POSITION_URL), {
-        cache: "no-store",
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      buffer = await res.arrayBuffer();
-    } catch (proxyErr) {
-      setStatus("error", "取得エラー");
-      console.error("プロキシ経由も失敗:", proxyErr);
-      return;
-    }
+    const buffer = await res.arrayBuffer();
+    const feed = await decodeFeedMessage(buffer);
+    renderVehicles(feed.entity || [], feed.header?.timestamp);
+    setStatus("ok", "更新済み");
+  } catch (err) {
+    setStatus("error", `エラー: ${err.message}`);
+    console.error("[GTFS-RT] 取得失敗:", err);
   }
-
-  let feed;
-  try {
-    feed = await decodeFeedMessage(buffer);
-  } catch (decodeErr) {
-    setStatus("error", "デコードエラー");
-    console.error("プロトバッファデコード失敗:", decodeErr);
-    return;
-  }
-
-  renderVehicles(feed.entity || []);
-  setStatus("ok", "更新済み");
 }
 
 // ---- マーカー描画 ----
-function renderVehicles(entities) {
+function renderVehicles(entities, feedTimestamp) {
   const activeIds = new Set();
 
   for (const entity of entities) {
@@ -168,46 +148,40 @@ function renderVehicles(entities) {
     const { latitude, longitude, bearing, speed } = vp.position;
     if (!latitude || !longitude) continue;
 
-    const vehicleId =
-      vp.vehicle?.id || vp.vehicle?.label || entity.id || "unknown";
-    const label = vp.vehicle?.label || vehicleId;
-    const routeId = vp.trip?.route_id ?? "—";
-    const tripId = vp.trip?.trip_id ?? "—";
-    const ts = vp.timestamp
+    const vehicleId = vp.vehicle?.id || vp.vehicle?.label || entity.id || "unknown";
+    const label     = vp.vehicle?.label || vehicleId;
+    const routeId   = vp.trip?.route_id ?? "—";
+    const tripId    = vp.trip?.trip_id  ?? "—";
+    const ts        = vp.timestamp
       ? new Date(Number(vp.timestamp) * 1000).toLocaleTimeString("ja-JP")
       : "—";
-    const speedKmh =
-      speed != null ? (speed * 3.6).toFixed(1) + " km/h" : "—";
+    const speedKmh  = speed != null ? (speed * 3.6).toFixed(1) + " km/h" : "—";
 
     const popupHtml = `
       <div style="min-width:160px;font-size:13px;line-height:1.7">
         <b>🚌 車両ID:</b> ${label}<br>
         <b>路線ID:</b> ${routeId}<br>
-        <b>便ID:</b> ${tripId}<br>
-        <b>速度:</b> ${speedKmh}<br>
-        <b>時刻:</b> ${ts}
+        <b>便ID:</b>   ${tripId}<br>
+        <b>速度:</b>   ${speedKmh}<br>
+        <b>時刻:</b>   ${ts}
       </div>`;
 
     activeIds.add(vehicleId);
 
     if (busMarkers.has(vehicleId)) {
-      // 既存マーカーを更新
       const marker = busMarkers.get(vehicleId);
       marker.setLatLng([latitude, longitude]);
       marker.setIcon(createBusIcon(bearing));
       marker.getPopup().setContent(popupHtml);
     } else {
-      // 新規マーカーを追加
-      const marker = L.marker([latitude, longitude], {
-        icon: createBusIcon(bearing),
-      })
+      const marker = L.marker([latitude, longitude], { icon: createBusIcon(bearing) })
         .bindPopup(popupHtml)
         .addTo(map);
       busMarkers.set(vehicleId, marker);
     }
   }
 
-  // 取得データに含まれなくなった車両のマーカーを削除
+  // 消えた車両を削除
   for (const [id, marker] of busMarkers) {
     if (!activeIds.has(id)) {
       map.removeLayer(marker);
@@ -215,7 +189,7 @@ function renderVehicles(entities) {
     }
   }
 
-  updateInfoPanel(activeIds.size);
+  updateInfoPanel(activeIds.size, feedTimestamp);
   console.log(`[GTFS-RT] ${activeIds.size} 台を描画`);
 }
 
@@ -223,6 +197,16 @@ function renderVehicles(entities) {
 fetchVehiclePositions();
 setInterval(fetchVehiclePositions, REFRESH_INTERVAL_MS);
 
-document
-  .getElementById("refresh-btn")
+document.getElementById("refresh-btn")
   .addEventListener("click", fetchVehiclePositions);
+```
+
+---
+
+## 仕組みのまとめ
+```
+[GitHub Actions（2分ごと）]
+    ↓ curl でサーバーサイドから直接取得（CORSなし）
+[data/vehicle_position.bin をリポジトリにpush]
+    ↓ GitHub Pages で配信
+[ブラウザ] → ./data/vehicle_position.bin を同一オリジン取得 → 地図表示
