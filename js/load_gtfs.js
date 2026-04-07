@@ -441,12 +441,22 @@ function showStopPanel(stopId, stopName) {
     if (!trip) return;
     if (!activateServiceIds.has(trip.service_id)) return;
     var route = routeMap[trip.route_id] || {};
+    // -------------------------------------------------------
+    // pickup_type=1 は降車専用（終点）のため除外する
+    // 乗車可能なバス停のみ時刻表に表示する
+    // -------------------------------------------------------
+    if (st.pickup_type === "1") return;
+
+    var route = routeMap[trip.route_id] || {};
     rows.push({
-      time: st.arrival_time,
-      headsign: trip.trip_headsign || st.stop_headsign || "--",
-      routeName: route.route_short_name || route.route_long_name || "--",
-      tripId: st.trip_id,
-      stopId: stopId,
+      time:      st.arrival_time,
+      // 路線番号は routes.txt の route_short_name を使用する
+      routeNo:   route.route_short_name || "--",
+      // 行先は stop_times.txt の stop_headsign を優先して使用する
+      // stop_headsign がない場合は trip_headsign を使用する
+      headsign:  st.stop_headsign || trip.trip_headsign || "--",
+      tripId:    st.trip_id,
+      stopId:    stopId
     });
   });
 
@@ -465,7 +475,7 @@ function showStopPanel(stopId, stopName) {
     stopId +
     "</p>" +
     '<table class="timetable">' +
-    "<tr><th>時刻</th><th>行先</th><th>路線</th></tr>";
+    "<tr><th>時刻</th><th>路線</th><th>行先</th></tr>";
 
   rows.forEach(function (row) {
     var timeDisp = row.time.substring(0, 5);
@@ -479,10 +489,10 @@ function showStopPanel(stopId, stopName) {
       timeDisp +
       "</td>" +
       "<td>" +
-      row.headsign +
+      row.routeNo +
       "</td>" +
       "<td>" +
-      row.routeName +
+      row.headsign +
       "</td>" +
       "</tr>";
   });
