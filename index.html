@@ -326,18 +326,40 @@
       text-align: center;
       padding: 20px;
     }
+    /* 事業者セレクター */
+    #operator-selector {
+      display: flex;
+      align-items: center;
+      color: white;
+    }
+    #operator-select {
+      font-size: 0.85rem;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: none;
+      background: rgba(255,255,255,0.9);
+      color: #333;
+      cursor: pointer;
+      max-width: 180px;
+    }
   </style>
 </head>
 
 <body>
 
-  <header>
-    <h1>🚌 広島県バス協会 リアルタイムバス位置情報</h1>
-    <div id="status-bar">
-      <div id="status-dot"></div>
-      <span id="status-text">待機中</span>
-    </div>
-  </header>
+<header>
+  <h1>🚌 広島県バス協会 バス位置情報</h1>
+  <div id="operator-selector">
+    <label for="operator-select" style="font-size:0.8rem;margin-right:6px;">事業者:</label>
+    <select id="operator-select">
+      <!-- JavaScriptで動的に生成する -->
+    </select>
+  </div>
+  <div id="status-bar">
+    <div id="status-dot"></div>
+    <span id="status-text">待機中</span>
+  </div>
+</header>
 
   <div id="map"></div>
 

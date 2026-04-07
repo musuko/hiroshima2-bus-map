@@ -22,12 +22,38 @@
 // ============================================================
 
 // -------------------------------------------------------
-// 対象事業者の設定
-// 現在はエイチ・ディー西広島（hdnishihiroshima）のみ対象
-// 複数事業者に対応する場合はここにフォルダ名を追加する
+// 事業者リスト
+// フォルダ名・表示名・リアルタイムデータIDを定義する
+// stops.txtが存在しない事業者は自動的に除外される
 // -------------------------------------------------------
-var OPERATOR = "hdnishihiroshima";
-var STATIC_BASE = "./data/" + OPERATOR + "/static/";
+var OPERATORS = [
+  { folder: "hiroden",           name: "広島電鉄",         realtimeId: "8"  },
+  { folder: "hiroshimabus",      name: "広島バス",          realtimeId: "9"  },
+  { folder: "hirokotsu",         name: "広島交通",          realtimeId: "10" },
+  { folder: "geiyo",             name: "芸陽バス",          realtimeId: "11" },
+  { folder: "bihoku",            name: "備北交通",          realtimeId: "12" },
+  { folder: "hdnishihiroshima",  name: "HD西広島",          realtimeId: "13" },
+  { folder: "fouble",            name: "フォーブル",        realtimeId: "14" },
+  { folder: "jrbus",             name: "JRバス中国",        realtimeId: "15" },
+  { folder: "sasaki",            name: "ささき観光(ハートバス)", realtimeId: "17" },
+  { folder: "kurebus",           name: "呉市生活バス",      realtimeId: "18" },
+  { folder: "hatsukaichi",       name: "廿日市市自主運行",  realtimeId: "19" },
+  { folder: "onomichi",          name: "おのみちバス",      realtimeId: "53" },
+  { folder: "asahi",             name: "朝日交通(阿戸線)",  realtimeId: "54" },
+];
+
+// 現在選択中の事業者（初期値はHD西広島）
+var currentOperator = OPERATORS.find(function(o) {
+  return o.folder === "hdnishihiroshima";
+});
+
+// 現在の事業者のパスを返すヘルパー関数
+function getStaticBase() {
+  return "./data/" + currentOperator.folder + "/static/";
+}
+function getRealtimePath() {
+  return "./data/" + currentOperator.folder + "/realtime/vehicle_position.bin";
+}
 
 // -------------------------------------------------------
 // GTFSデータを格納するグローバル変数
@@ -46,6 +72,9 @@ var gtfsCalendarDates = []; // calendar_dates.txt の全レコード
 // 運行しているservice_idの集合を格納する
 // -------------------------------------------------------
 var activateServiceIds = new Set();
+
+// バス停マーカーの配列（事業者切替時に全削除するために保持する）
+var stopMarkers = [];
 
 // -------------------------------------------------------
 // 地図上に描画した路線ライン（Leaflet Polyline）
@@ -403,6 +432,7 @@ function renderStops() {
     });
 
     marker.addTo(map);
+    stopMarkers.push(marker); 
   });
 
   console.log("[GTFS] バス停描画完了:", gtfsStops.length, "件");
@@ -671,8 +701,31 @@ document
 // ページ読み込み時に静的GTFSデータを読み込んで地図に表示する
 // ============================================================
 async function initGtfs() {
-  console.log("[GTFS] 静的データ読み込み開始");
-  setStatus("loading", "データ読み込み中...");
+  console.log("[GTFS] 静的データ読み込み開始:", currentOperator.name);
+  setStatus("loading", currentOperator.name + " 読み込み中...");
+
+  // 既存のバス停マーカーを全て削除する
+  stopMarkers.forEach(function (m) {
+    map.removeLayer(m);
+  });
+  stopMarkers = [];
+
+  // パネルを閉じる
+  document.getElementById("stop-panel").classList.remove("visible");
+  document.getElementById("trip-panel").classList.remove("visible");
+  if (currentTripLine) {
+    map.removeLayer(currentTripLine);
+    currentTripLine = null;
+  }
+
+  // GTFSデータをリセットする
+  gtfsStops = [];
+  gtfsStopTimes = [];
+  gtfsTrips = [];
+  gtfsRoutes = [];
+  gtfsCalendar = [];
+  gtfsCalendarDates = [];
+  activateServiceIds = new Set();
 
   try {
     // -------------------------------------------------------
@@ -680,13 +733,14 @@ async function initGtfs() {
     // Promise.all で全て完了するまで待つ
     // stop_times.txt はデータ量が多いため時間がかかる場合がある
     // -------------------------------------------------------
+    var base = getStaticBase();
     var results = await Promise.all([
-      loadCsv(STATIC_BASE + "stops.txt"),
-      loadCsv(STATIC_BASE + "stop_times.txt"),
-      loadCsv(STATIC_BASE + "trips.txt"),
-      loadCsv(STATIC_BASE + "routes.txt"),
-      loadCsv(STATIC_BASE + "calendar.txt"),
-      loadCsv(STATIC_BASE + "calendar_dates.txt"),
+      loadCsv(base + "stops.txt"),
+      loadCsv(base + "stop_times.txt"),
+      loadCsv(base + "trips.txt"),
+      loadCsv(base + "routes.txt"),
+      loadCsv(base + "calendar.txt"),
+      loadCsv(base + "calendar_dates.txt"),
     ]);
 
     // 読み込んだデータをグローバル変数に格納する
@@ -713,7 +767,7 @@ async function initGtfs() {
     setStatus("ok", "データ読み込み完了");
     console.log("[GTFS] 初期化完了");
   } catch (err) {
-    setStatus("error", "データ読み込みエラー");
+    setStatus("error", "読み込みエラー: " + currentOperator.name);
     console.error("[GTFS] 初期化失敗:", err);
   }
 }
@@ -734,3 +788,73 @@ document
 // ページ読み込み時に静的GTFSデータの初期化を実行する
 // -------------------------------------------------------
 initGtfs();
+
+// -------------------------------------------------------
+// 事業者セレクターを初期化する
+// stops.txt の存在確認は省略し、全事業者を表示する
+// -------------------------------------------------------
+function initOperatorSelector() {
+  var select = document.getElementById("operator-select");
+  select.innerHTML = "";
+
+  OPERATORS.forEach(function(op) {
+    var option = document.createElement("option");
+    option.value = op.folder;
+    option.textContent = op.name;
+    // 初期選択をHD西広島にする
+    if (op.folder === currentOperator.folder) {
+      option.selected = true;
+    }
+    select.appendChild(option);
+  });
+
+  // セレクター変更時に事業者を切り替える
+  select.addEventListener("change", function() {
+    var folder = select.value;
+    currentOperator = OPERATORS.find(function(o) {
+      return o.folder === folder;
+    });
+    console.log("[GTFS] 事業者切替:", currentOperator.name);
+
+    // リアルタイムデータも切り替える
+    fetchVehiclePositions();
+
+    // 静的データを再読み込みする
+    initGtfs();
+  });
+}
+
+// -------------------------------------------------------
+// fetchVehiclePositions も事業者に応じたパスを使うよう変更
+// -------------------------------------------------------
+async function fetchVehiclePositions() {
+  setStatus("loading", "loading...");
+  try {
+    var url = getRealtimePath() + "?t=" + Date.now();
+    var res = await fetch(url, {
+      cache: "no-store",
+      headers: {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache"
+      }
+    });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    var buffer = await res.arrayBuffer();
+    var feed = await decodeFeedMessage(buffer);
+    renderVehicles(feed.entity || [], feed.header && feed.header.timestamp);
+    setStatus("ok", "updated");
+  } catch (err) {
+    setStatus("error", "error: " + err.message);
+    console.error("[GTFS-RT] 取得失敗:", err);
+  }
+}
+
+// -------------------------------------------------------
+// 起動処理
+// -------------------------------------------------------
+initOperatorSelector();  // セレクターを初期化
+fetchVehiclePositions(); // リアルタイムデータ取得
+initGtfs();              // 静的データ読み込み
+
+document.getElementById("refresh-btn")
+  .addEventListener("click", fetchVehiclePositions);
