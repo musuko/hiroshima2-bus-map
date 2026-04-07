@@ -2,7 +2,7 @@ name: Fetch Realtime Data
 
 on:
   schedule:
-     - cron: '*/30 * * * *'   # 30分ごとに自動実行 
+     - cron: '*/600 * * * *'   # 600分ごとに自動実行 
   workflow_dispatch:
 
 jobs:
