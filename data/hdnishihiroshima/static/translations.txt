@@ -1,0 +1,457 @@
+﻿trans_id,lang,translation
+ボンバス,ja,ボンバス
+ボンバス,ja-Hrkt,ボンバス
+ボンバス,en,Bon-Bus
+西広島駅,ja,西広島駅
+西広島駅,ja-Hrkt,にしひろしまえき
+西広島駅,en,Nishi-hiroshima Sta.
+西広島駅,ko,니시히로시마 역
+西広島駅,zh-cn,西广岛站
+西広島駅,zh-tw,西廣島站
+己斐橋,ja,己斐橋
+己斐橋,ja-Hrkt,こいばし
+己斐橋,en,Koibashi
+己斐橋,ko,고이바시
+己斐橋,zh-cn,己斐桥
+己斐橋,zh-tw,己斐橋
+己斐中２丁目,ja,己斐中２丁目
+己斐中２丁目,ja-Hrkt,こいなかにちょうめ
+己斐中２丁目,en,Koi-naka-nichome (Koi-naka 2)
+己斐中２丁目,ko,고이 나카 2초메
+己斐中２丁目,zh-cn,己斐中二丁目
+己斐中２丁目,zh-tw,己斐中二丁目
+己斐中二丁目,ja,己斐中二丁目
+己斐中二丁目,ja-Hrkt,こいなかにちょうめ
+己斐中二丁目,en,Koi-naka-nichome (Koi-naka 2)
+己斐中二丁目,ko,고이 나카 2초메
+己斐中二丁目,zh-cn,己斐中二丁目
+己斐中二丁目,zh-tw,己斐中二丁目
+みどり幼稚園,ja,みどり幼稚園
+みどり幼稚園,ja-Hrkt,みどりようちえん
+みどり幼稚園,en,Midori Yochien (Midori Kindergarten)
+みどり幼稚園,ko,미도리 유치원
+みどり幼稚園,zh-cn,绿幼稚园
+みどり幼稚園,zh-tw,綠幼稚園
+己斐小学校,ja,己斐小学校
+己斐小学校,ja-Hrkt,こいしょうがっこう
+己斐小学校,en,Koi Shogakko (Koi Elementary School)
+己斐小学校,ko,고이 초등학교
+己斐小学校,zh-cn,己斐小学
+己斐小学校,zh-tw,己斐小學
+紅葉園,ja,紅葉園
+紅葉園,ja-Hrkt,こうようえん
+紅葉園,en,Koyoen
+紅葉園,ko,고요엔
+紅葉園,zh-cn,红叶园
+紅葉園,zh-tw,紅葉園
+己斐中学校入口,ja,己斐中学校入口
+己斐中学校入口,ja-Hrkt,こいちゅうがっこういりぐち
+己斐中学校入口,en,Koi Chugakko-iriguchi (Koi Junior High School)
+己斐中学校入口,ko,고이 중학교
+己斐中学校入口,zh-cn,己斐中学入口
+己斐中学校入口,zh-tw,己斐中學入口
+己斐峠入口,ja,己斐峠入口
+己斐峠入口,ja-Hrkt,こいとうげいりぐち
+己斐峠入口,en,Koi-toge-iriguchi
+己斐峠入口,ko,고이 토게 이리구치
+己斐峠入口,zh-cn,己斐峠入口
+己斐峠入口,zh-tw,己斐峠入口
+己斐上４丁目,ja,己斐上４丁目
+己斐上４丁目,ja-Hrkt,こいうえよんちょうめ
+己斐上４丁目,en,Koi-ue-yonchome (Koi-ue 4)
+己斐上４丁目,ko,고이 우에 4초메
+己斐上４丁目,zh-cn,己斐上四丁目
+己斐上４丁目,zh-tw,己斐上四丁目
+己斐上四丁目,ja,己斐上四丁目
+己斐上四丁目,ja-Hrkt,こいうえよんちょうめ
+己斐上四丁目,en,Koi-ue-yonchome (Koi-ue 4)
+己斐上四丁目,ko,고이 우에 4초메
+己斐上四丁目,zh-cn,己斐上四丁目
+己斐上四丁目,zh-tw,己斐上四丁目
+己斐上４丁目上,ja,己斐上４丁目上
+己斐上４丁目上,ja-Hrkt,こいうえよんちょうめかみ
+己斐上４丁目上,en,Koi-ue-yonchome-kami (Koi-ue 4-kami)
+己斐上４丁目上,ko,고이 우에 4초메 카미
+己斐上４丁目上,zh-cn,己斐上四丁目上
+己斐上４丁目上,zh-tw,己斐上四丁目上
+己斐上四丁目上,ja,己斐上四丁目上
+己斐上四丁目上,ja-Hrkt,こいうえよんちょうめかみ
+己斐上四丁目上,en,Koi-ue-yonchome-kami (Koi-ue 4-kami)
+己斐上四丁目上,ko,고이 우에 4초메 카미
+己斐上四丁目上,zh-cn,己斐上四丁目上
+己斐上四丁目上,zh-tw,己斐上四丁目上
+無線台下,ja,無線台下
+無線台下,ja-Hrkt,むせんだいした
+無線台下,en,Musendai-shita
+無線台下,ko,무센다이 시타
+無線台下,zh-cn,无线台下
+無線台下,zh-tw,無線臺下
+緑ヶ丘入口,ja,緑ヶ丘入口
+緑ヶ丘入口,ja-Hrkt,みどりがおかいりぐち
+緑ヶ丘入口,en,Midorigaoka-iriguchi
+緑ヶ丘入口,ko,미도리가오카 이리구치
+緑ヶ丘入口,zh-cn,绿丘入口
+緑ヶ丘入口,zh-tw,綠丘入口
+緑ケ丘入口,ja,緑ケ丘入口
+緑ケ丘入口,ja-Hrkt,みどりがおかいりぐち
+緑ケ丘入口,en,Midorigaoka-iriguchi
+緑ケ丘入口,ko,미도리가오카 이리구치
+緑ケ丘入口,zh-cn,绿丘入口
+緑ケ丘入口,zh-tw,綠丘入口
+やまなみ,ja,やまなみ
+やまなみ,ja-Hrkt,やまなみ
+やまなみ,en,Yamanami
+やまなみ,ko,야마나미
+やまなみ,zh-cn,Yamanami
+やまなみ,zh-tw,Yamanami
+広電己斐団地,ja,広電己斐団地
+広電己斐団地,ja-Hrkt,ひろでんこいだんち
+広電己斐団地,en,Hiroden Koi Danchi
+広電己斐団地,ko,히로덴 코이 단치
+広電己斐団地,zh-cn,广电己斐团地
+広電己斐団地,zh-tw,廣電己斐團地
+国迫団地,ja,国迫団地
+国迫団地,ja-Hrkt,くにさこだんち
+国迫団地,en,Kunisako Danchi
+国迫団地,ko,구니사코 단치
+国迫団地,zh-cn,国迫团地
+国迫団地,zh-tw,國迫團地
+大迫団地下,ja,大迫団地下
+大迫団地下,ja-Hrkt,おおさこだんちしも
+大迫団地下,en,Osako Danchi-shimo
+大迫団地下,ko,오사코 단치 시모
+大迫団地下,zh-cn,大迫团地下
+大迫団地下,zh-tw,大迫團地下
+大迫団地,ja,大迫団地
+大迫団地,ja-Hrkt,おおさこだんち
+大迫団地,en,Osakodanchi
+明山台下,ja,明山台下
+明山台下,ja-Hrkt,あけやまだいしも
+明山台下,en,Akeyamadai-shimo
+明山台下,ko,아케야마다이 시모
+明山台下,zh-cn,明山台下
+明山台下,zh-tw,明山臺下
+明山台中,ja,明山台中
+明山台中,ja-Hrkt,あけやまだいなか
+明山台中,en,Akeyamadai-naka
+明山台中,ko,아케야마다이 나카
+明山台中,zh-cn,明山台中
+明山台中,zh-tw,明山臺中
+閑静園,ja,閑静園
+閑静園,ja-Hrkt,かんせいえん
+閑静園,en,Kanseien
+閑静園,ko,간세이엔
+閑静園,zh-cn,闲静园
+閑静園,zh-tw,閑靜園
+もみじが丘入口,ja,もみじが丘入口
+もみじが丘入口,ja-Hrkt,もみじがおかいりぐち
+もみじが丘入口,en,Momijigaoka-iriguchi
+もみじが丘入口,ko,모미지가오카 이리구치
+もみじが丘入口,zh-cn,红叶丘入口
+もみじが丘入口,zh-tw,紅葉丘入口
+もみじが丘中央,ja,もみじが丘中央
+もみじが丘中央,ja-Hrkt,もみじがおかちゅうおう
+もみじが丘中央,en,Momijigaoka-chuo
+もみじが丘中央,ko,모미지가오카 추오
+もみじが丘中央,zh-cn,红叶丘中央
+もみじが丘中央,zh-tw,紅葉丘中央
+もみじが丘南,ja,もみじが丘南
+もみじが丘南,ja-Hrkt,もみじがおかみなみ
+もみじが丘南,en,Momijigaoka-minami
+もみじが丘南,ko,모미지가오카 미나미
+もみじが丘南,zh-cn,红叶丘南
+もみじが丘南,zh-tw,紅葉丘南
+もみじが丘第二公園,ja,もみじが丘第二公園
+もみじが丘第二公園,ja-Hrkt,もみじがおかだいにこうえん
+もみじが丘第二公園,en,Momijigaoka Daini Koen (Momijigaoka Daini Park)
+もみじが丘第二公園,ko,모미지가오카 다이니 공원
+もみじが丘第二公園,zh-cn,红叶丘第二公园
+もみじが丘第二公園,zh-tw,紅葉丘第二公園
+共立ハイツ上,ja,共立ハイツ上
+共立ハイツ上,ja-Hrkt,きょうりつはいつかみ
+共立ハイツ上,en,Kyoritsu Heights-kami
+共立ハイツ上,ko,교리쓰 하이츠 카미
+共立ハイツ上,zh-cn,共立公寓上
+共立ハイツ上,zh-tw,共立公寓上
+共立ハイツ,ja,共立ハイツ
+共立ハイツ,ja-Hrkt,きょうりつはいつ
+共立ハイツ,en,Kyoritsu Heights
+共立ハイツ,ko,교리쓰 하이츠
+共立ハイツ,zh-cn,共立公寓
+共立ハイツ,zh-tw,共立公寓
+五月が丘３丁目,ja,五月が丘３丁目
+五月が丘３丁目,ja-Hrkt,さつきがおかさんちょうめ
+五月が丘３丁目,en,Satsukigaoka-sanchome (Satsukigaoka 3)
+五月が丘３丁目,ko,사쓰키가오카 3초메
+五月が丘３丁目,zh-cn,五月丘三丁目
+五月が丘３丁目,zh-tw,五月丘三丁目
+五月が丘三丁目,ja,五月が丘三丁目
+五月が丘三丁目,ja-Hrkt,さつきがおかさんちょうめ
+五月が丘三丁目,en,Satsukigaoka-sanchome (Satsukigaoka 3)
+五月が丘三丁目,ko,사쓰키가오카 3초메
+五月が丘三丁目,zh-cn,五月丘三丁目
+五月が丘三丁目,zh-tw,五月丘三丁目
+五月が丘２丁目,ja,五月が丘２丁目
+五月が丘２丁目,ja-Hrkt,さつきがおかにちょうめ
+五月が丘２丁目,en,Satsukigaoka-nichome (Satsukigaoka 2)
+五月が丘２丁目,ko,사쓰키가오카 2초메
+五月が丘２丁目,zh-cn,五月丘二丁目
+五月が丘２丁目,zh-tw,五月丘二丁目
+五月が丘二丁目,ja,五月が丘二丁目
+五月が丘二丁目,ja-Hrkt,さつきがおかにちょうめ
+五月が丘二丁目,en,Satsukigaoka-nichome (Satsukigaoka 2)
+五月が丘二丁目,ko,사쓰키가오카 2초메
+五月が丘二丁目,zh-cn,五月丘二丁目
+五月が丘二丁目,zh-tw,五月丘二丁目
+五月が丘１丁目,ja,五月が丘１丁目
+五月が丘１丁目,ja-Hrkt,さつきがおかいっちょうめ
+五月が丘１丁目,en,Satsukigaoka-itchome (Satsukigaoka 1)
+五月が丘１丁目,ko,사쓰키가오카 1초메
+五月が丘１丁目,zh-cn,五月丘一丁目
+五月が丘１丁目,zh-tw,五月丘一丁目
+五月が丘一丁目,ja,五月が丘一丁目
+五月が丘一丁目,ja-Hrkt,さつきがおかいっちょうめ
+五月が丘一丁目,en,Satsukigaoka-itchome (Satsukigaoka 1)
+五月が丘一丁目,ko,사쓰키가오카 1초메
+五月が丘一丁目,zh-cn,五月丘一丁目
+五月が丘一丁目,zh-tw,五月丘一丁目
+五月が丘４丁目,ja,五月が丘４丁目
+五月が丘４丁目,ja-Hrkt,さつきがおかよんちょうめ
+五月が丘４丁目,en,Satsukigaoka-yonchome (Satsukigaoka 4)
+五月が丘４丁目,ko,사쓰키가오카 4초메
+五月が丘４丁目,zh-cn,五月丘四丁目
+五月が丘４丁目,zh-tw,五月丘四丁目
+五月が丘四丁目,ja,五月が丘四丁目
+五月が丘四丁目,ja-Hrkt,さつきがおかよんちょうめ
+五月が丘四丁目,en,Satsukigaoka-yonchome (Satsukigaoka 4)
+五月が丘四丁目,ko,사쓰키가오카 4초메
+五月が丘四丁目,zh-cn,五月丘四丁目
+五月が丘四丁目,zh-tw,五月丘四丁目
+五月が丘４丁目上,ja,五月が丘４丁目上
+五月が丘４丁目上,ja-Hrkt,さつきがおかよんちょうめかみ
+五月が丘４丁目上,en,Satsukigaoka-yonchome-kami (Satsukigaoka 4-kami)
+五月が丘４丁目上,ko,사쓰키가오카 4초메 카미
+五月が丘４丁目上,zh-cn,五月丘四丁目上
+五月が丘４丁目上,zh-tw,五月丘四丁目上
+五月が丘四丁目上,ja,五月が丘四丁目上
+五月が丘四丁目上,ja-Hrkt,さつきがおかよんちょうめかみ
+五月が丘四丁目上,en,Satsukigaoka-yonchome-kami (Satsukigaoka 4-kami)
+五月が丘四丁目上,ko,사쓰키가오카 4초메 카미
+五月が丘四丁目上,zh-cn,五月丘四丁目上
+五月が丘四丁目上,zh-tw,五月丘四丁目上
+五月が丘団地,ja,五月が丘団地
+五月が丘団地,ja-Hrkt,さつきがおかだんち
+五月が丘団地,en,Satsukigaoka Danchi (Satsukigaoka Housing Complex)
+五月が丘団地,ko,사쓰키가오카 단지
+五月が丘団地,zh-cn,五月丘团地
+五月が丘団地,zh-tw,五月丘團地
+広電己斐団地入口,ja,広電己斐団地入口
+広電己斐団地入口,ja-Hrkt,ひろでんこいだんちいりぐち
+広電己斐団地入口,en,Hiroden Koi Danchi-iriguchi
+広電己斐団地入口,ko,히로덴 코이 단치 이리구치
+広電己斐団地入口,zh-cn,广电己斐团地入口
+広電己斐団地入口,zh-tw,廣電己斐團地入口
+己斐峠,ja,己斐峠
+己斐峠,ja-Hrkt,こいとうげ
+己斐峠,en,Koi-toge
+己斐峠,ko,고이 토게
+己斐峠,zh-cn,己斐峠
+己斐峠,zh-tw,己斐峠
+己斐上３丁目,ja,己斐上３丁目
+己斐上３丁目,ja-Hrkt,こいうえさんちょうめ
+己斐上３丁目,en,Koi-ue-sanchome (Koi-ue 3)
+己斐上３丁目,ko,고이 우에 3초메
+己斐上３丁目,zh-cn,己斐上三丁目
+己斐上３丁目,zh-tw,己斐上三丁目
+己斐上三丁目,ja,己斐上三丁目
+己斐上三丁目,ja-Hrkt,こいうえさんちょうめ
+己斐上三丁目,en,Koi-ue-sanchome (Koi-ue 3)
+己斐上三丁目,ko,고이 우에 3초메
+己斐上三丁目,zh-cn,己斐上三丁目
+己斐上三丁目,zh-tw,己斐上三丁目
+高須台五丁目,ja,高須台五丁目
+高須台五丁目,ja-Hrkt,たかすだいごちょうめ
+高須台五丁目,en,Takasudai-gochome (Takasudai 5)
+高須台五丁目,ko,다카스다이 5초메
+高須台五丁目,zh-cn,高须台五丁目
+高須台五丁目,zh-tw,高須臺五丁目
+高須台四丁目,ja,高須台四丁目
+高須台四丁目,ja-Hrkt,たかすだいよんちょうめ
+高須台四丁目,en,Takasudai-yonchome (Takasudai 4)
+高須台四丁目,ko,다카스다이 4초메
+高須台四丁目,zh-cn,高须台四丁目
+高須台四丁目,zh-tw,高須臺四丁目
+高須台中央,ja,高須台中央
+高須台中央,ja-Hrkt,たかすだいちゅうおう
+高須台中央,en,Takasudai-chuo
+高須台中央,ko,다카스다이 추오
+高須台中央,zh-cn,高须台中央
+高須台中央,zh-tw,高須臺中央
+高須小学校,ja,高須小学校
+高須小学校,ja-Hrkt,たかすしょうがっこう
+高須小学校,en,Takasu Shogakko (Takasu Elementary School)
+高須小学校,ko,다카스 초등학교
+高須小学校,zh-cn,高须小学
+高須小学校,zh-tw,高須小學
+学院東門前,ja,学院東門前
+学院東門前,ja-Hrkt,がくいんひがしもんまえ
+学院東門前,en,Gakuin-higashimon-mae
+学院東門前,ko,가쿠인 히가시몬 마에
+学院東門前,zh-cn,学院东门前
+学院東門前,zh-tw,學院東門前
+古江,ja,古江
+古江,ja-Hrkt,ふるえ
+古江,en,Furue
+古江,ko,후루에
+古江,zh-cn,古江
+古江,zh-tw,古江
+己斐本町二丁目,ja,己斐本町二丁目
+己斐本町二丁目,ja-Hrkt,こいほんまちにちょうめ
+己斐本町二丁目,en,Koi-honmachi-nichome (Koi-honmachi 2)
+己斐本町二丁目,ko,고이혼마치 2초메
+己斐本町二丁目,zh-cn,己斐本町2丁目
+己斐本町二丁目,zh-tw,己斐本町2丁目
+己斐,ja,己斐
+己斐,ja-Hrkt,こい
+己斐,en,Koi
+己斐,ko,코이
+己斐,zh-cn,己斐
+己斐,zh-tw,己斐
+上天満町,ja,上天満町
+上天満町,ja-Hrkt,かみてんまちょう
+上天満町,en,Kami-tenmacho
+上天満町,ko,가미텐마초
+上天満町,zh-cn,上天满町
+上天満町,zh-tw,上天滿町
+十日市,ja,十日市
+十日市,ja-Hrkt,とうかいち
+十日市,en,Tokaichi
+十日市,ko,도카이치
+十日市,zh-cn,十日市
+十日市,zh-tw,十日市
+己斐城山墓園前,ja,己斐城山墓園前
+己斐城山墓園前,ja-Hrkt,こいしろやまぼえんまえ
+己斐城山墓園前,en,Koi Shiroyama Boen-mae
+己斐城山墓園前,ko,고이 시로야마 보엔 마에
+己斐城山墓園前,zh-cn,己斐城山墓苑前
+己斐城山墓園前,zh-tw,己斐城山墓苑前
+己斐城山墓苑前,ja,己斐城山墓苑前
+己斐城山墓苑前,ja-Hrkt,こいしろやまぼえんまえ
+己斐城山墓苑前,en,Koi Shiroyama Boen-mae
+己斐城山墓苑前,ko,고이 시로야마 보엔 마에
+己斐城山墓苑前,zh-cn,己斐城山墓苑前
+己斐城山墓苑前,zh-tw,己斐城山墓苑前
+日生東団地,ja,日生東団地
+日生東団地,ja-Hrkt,にっせいひがしだんち
+日生東団地,en,Nissei-higashi Danchi
+日生東団地,ko,닛세이 히가시 단치
+日生東団地,zh-cn,日生东团地
+日生東団地,zh-tw,日生東團地
+紙屋町,ja,紙屋町
+紙屋町,ja-Hrkt,かみやちょう
+紙屋町,en,Kamiyacho
+紙屋町,ko,가미야초
+紙屋町,zh-cn,纸屋町
+紙屋町,zh-tw,紙屋町
+都町,ja,都町
+都町,ja-Hrkt,みやこまち
+都町,en,Miyakomachi
+都町,ko,미야코마치
+都町,zh-cn,都町
+都町,zh-tw,都町
+福島町,ja,福島町
+福島町,ja-Hrkt,ふくしまちょう
+福島町,en,Fukushimacho
+福島町,ko,후쿠시마초
+福島町,zh-cn,福岛町
+福島町,zh-tw,福島町
+八丁堀,ja,八丁堀
+八丁堀,ja-Hrkt,はっちょうぼり
+八丁堀,en,Hatchobori
+八丁堀,ko,핫초보리
+八丁堀,zh-cn,八丁堀
+八丁堀,zh-tw,八丁堀
+イトーピア入口,ja,イトーピア入口
+イトーピア入口,ja-Hrkt,いとーぴあいりぐち
+イトーピア入口,en,Itopia-iriguchi
+イトーピア入口,ko,이토피아 이리구치
+イトーピア入口,zh-cn,ITOHPIA入口
+イトーピア入口,zh-tw,ITOHPIA入口
+集会所前,ja,集会所前
+集会所前,ja-Hrkt,しゅうかいしょまえ
+集会所前,en,Shukaisho-mae
+集会所前,ko,슈카이쇼 마에
+集会所前,zh-cn,集会所前
+集会所前,zh-tw,集會所前
+観音堂入口,ja,観音堂入口
+観音堂入口,ja-Hrkt,かんおんどういりぐち
+観音堂入口,en,Kanondo-iriguchi
+観音堂入口,ko,간온도 이리구치
+観音堂入口,zh-cn,观音堂入口
+観音堂入口,zh-tw,觀音堂入口
+フジハイツ消防署前,ja,フジハイツ消防署前
+フジハイツ消防署前,ja-Hrkt,ふじはいつしょうぼうしょまえ
+フジハイツ消防署前,en,Fuji Heights Shobosho-mae (Fuji Heights Fire Station)
+フジハイツ消防署前,ko,후지 하이츠 소방서
+フジハイツ消防署前,zh-cn,Fuji Heights消防署前
+フジハイツ消防署前,zh-tw,Fuji Heights消防署前
+フジハイツ第二公園,ja,フジハイツ第二公園
+フジハイツ第二公園,ja-Hrkt,ふじはいつだいにこうえん
+フジハイツ第二公園,en,Fuji Heights Daini Koen (Fuji Heights Daini Park)
+フジハイツ第二公園,ko,후지 하이츠 공원
+フジハイツ第二公園,zh-cn,Fuji Heights第二公园
+フジハイツ第二公園,zh-tw,Fuji Heights第二公園
+己斐東小学校前,ja,己斐東小学校前
+己斐東小学校前,ja-Hrkt,こいひがししょうがっこうまえ
+己斐東小学校前,en,Koi-higashi Shogakko-mae (Koi-higashi Elementary School)
+己斐東小学校前,ko,고이 히가시 초등학교
+己斐東小学校前,zh-cn,己斐东小学前
+己斐東小学校前,zh-tw,己斐東小學前
+イトーピアマンション前,ja,イトーピアマンション前
+イトーピアマンション前,ja-Hrkt,いとーぴあまんしょんまえ
+イトーピアマンション前,en,Itopia Mansion-mae
+イトーピアマンション前,ko,이토피아 맨션 마에
+イトーピアマンション前,zh-cn,ITOHPIA公寓前
+イトーピアマンション前,zh-tw,ITOHPIA公寓前
+西区役所前,ja,西区役所前
+西区役所前,ja-Hrkt,にしくやくしょまえ
+西区役所前,en,Nishi Kuyakusho-mae (Nishi Ward Office)
+西区役所前,ko,니시 구청
+西区役所前,zh-cn,西区政府前
+西区役所前,zh-tw,西區政府前
+もみじが丘第一公園,ja,もみじが丘第一公園
+もみじが丘第一公園,ja-Hrkt,もみじがおかだいいちこうえん
+もみじが丘第一公園,en,Momijigaoka Daiichi Koen (Momijigaoka Daiichi Park)
+もみじが丘第一公園,ko,모미지가오카 다이1 공원
+もみじが丘第一公園,zh-cn,红叶丘第一公园
+もみじが丘第一公園,zh-tw,紅葉丘第一公園
+そらの北,ja,そらの北
+そらの北,ja-Hrkt,そらのきた
+そらの北,en,Sorano-kita
+そらの北,ko,소라노키타
+そらの北,zh-cn,SORANO北
+そらの北,zh-tw,SORANO北
+ジ アウトレット 広島,ja,ジ アウトレット 広島
+ジ アウトレット 広島,ja-Hrkt,じあうとれっとひろしま
+ジ アウトレット 広島,en,THE OUTLETS HIROSHIMA
+ジ アウトレット 広島,ko,아울렛 히로시마
+ジ アウトレット 広島,zh-cn,THE OUTLETS 广岛
+ジ アウトレット 広島,zh-tw,THE OUTLETS 廣島
+ジアウトレット広島,ja,ジアウトレット広島
+ジアウトレット広島,ja-Hrkt,じあうとれっとひろしま
+ジアウトレット広島,en,THE OUTLETS HIROSHIMA
+ジアウトレット広島,ko,아울렛 히로시마
+ジアウトレット広島,zh-cn,THE OUTLETS 广岛
+ジアウトレット広島,zh-tw,THE OUTLETS 廣島
+石内南四丁目,ja,石内南四丁目
+石内南四丁目,ja-Hrkt,いしうちみなみよんちょうめ
+石内南四丁目,en,Ishiuchi-minami-yonchome (Ishiuchi-minami 4)
+石内南四丁目,ko,이시우치 미나미 4초메
+石内南四丁目,zh-cn,石内南四丁目
+石内南四丁目,zh-tw,石內南四丁目
+免許センター,ja,免許センター
+免許センター,ja-Hrkt,めんきょせんたー
+免許センター,en,Menkyo Center (Hiroshima Pref. License Center)
+免許センター,ko,멘쿄 센터
+免許センター,zh-cn,执照中心
+免許センター,zh-tw,執照中心

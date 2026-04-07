@@ -1,0 +1,2 @@
+﻿feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version
+呉市,https://www.city.kure.lg.jp/soshiki/28/koutu.html,ja,20260329,20260929,20260329

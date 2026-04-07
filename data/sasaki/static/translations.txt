@@ -1,0 +1,424 @@
+﻿trans_id,lang,translation
+ささき観光,ja,ささき観光
+ささき観光,ja-Hrkt,ササキカンコウ
+ささき観光,en,Sasaki Kanko
+宮島口,ja,宮島口
+宮島口,ja-Hrkt,みやじまぐち
+宮島口,en,Miyajima-guchi
+宮島口,ko,미야지마 구치
+宮島口,zh-cn,宫岛口
+宮島口,zh-tw,宮島口
+更地分れ,ja,更地分れ
+更地分れ,ja-Hrkt,さらじわかれ
+更地分れ,en,Saraji-wakare
+更地分れ,ko,사라지 와카레
+更地分れ,zh-cn,更地分
+更地分れ,zh-tw,更地分
+宮島口西,ja,宮島口西
+宮島口西,ja-Hrkt,みやじまぐちにし
+宮島口西,en,Miyajima-guchi-nishi
+宮島口西,ko,미야지마 구치 니시
+宮島口西,zh-cn,宫岛口西
+宮島口西,zh-tw,宮島口西
+大野支所前,ja,大野支所前
+大野支所前,ja-Hrkt,おおのししょまえ
+大野支所前,en,Ono Shisho-Mae (Ono Branch)
+大野支所前,ko,오노 지소
+大野支所前,zh-cn,大野支所前
+大野支所前,zh-tw,大野支所前
+県営住宅前,ja,県営住宅前
+県営住宅前,ja-Hrkt,けんえいじゅうたくまえ
+県営住宅前,en,Kenei Jutaku-mae
+県営住宅前,ko,겐에이 주타구 마에
+県営住宅前,zh-cn,县营住宅前
+県営住宅前,zh-tw,縣營住宅前
+青葉台,ja,青葉台
+青葉台,ja-Hrkt,あおばだい
+青葉台,en,Aobadai
+青葉台,ko,아오바다이
+青葉台,zh-cn,青叶台
+青葉台,zh-tw,青葉臺
+福面,ja,福面
+福面,ja-Hrkt,ふくめん
+福面,en,Fukumen
+福面,ko,후쿠멘
+福面,zh-cn,福面
+福面,zh-tw,福面
+グリーンハイツ,ja,グリーンハイツ
+グリーンハイツ,ja-Hrkt,ぐりーんはいつ
+グリーンハイツ,en,Green Heights
+グリーンハイツ,ko,그린 하이츠
+グリーンハイツ,zh-cn,Green Heights
+グリーンハイツ,zh-tw,Green Heights
+深江,ja,深江
+深江,ja-Hrkt,ふかえ
+深江,en,Fukae
+深江,ko,후카에
+深江,zh-cn,深江
+深江,zh-tw,深江
+深江保育園,ja,深江保育園
+深江保育園,ja-Hrkt,ふかえほいくえん
+深江保育園,en,Fukae Hoikuen (Fukae Nursery)
+深江保育園,ko,후카에 보육원
+深江保育園,zh-cn,深江保育园
+深江保育園,zh-tw,深江保育園
+更地,ja,更地
+更地,ja-Hrkt,さらじ
+更地,en,Saraji
+更地,ko,사라지
+更地,zh-cn,更地
+更地,zh-tw,更地
+下更地,ja,下更地
+下更地,ja-Hrkt,しもさらじ
+下更地,en,Shimo-saraji
+下更地,ko,시모사라지
+下更地,zh-cn,下更地
+下更地,zh-tw,下更地
+前空台入口,ja,前空台入口
+前空台入口,ja-Hrkt,まえぞらだいいりぐち
+前空台入口,en,Maezoradai-iriguchi
+前空台入口,ko,마에조라다이 이리구치
+前空台入口,zh-cn,前空台入口
+前空台入口,zh-tw,前空臺入口
+別府,ja,別府
+別府,ja-Hrkt,べふ
+別府,en,Befu
+別府,ko,베후
+別府,zh-cn,别府
+別府,zh-tw,別府
+土井,ja,土井
+土井,ja-Hrkt,どい
+土井,en,Doi
+土井,ko,도이
+土井,zh-cn,土井
+土井,zh-tw,土井
+棚田,ja,棚田
+棚田,ja-Hrkt,たなだ
+棚田,en,Tanada
+棚田,ko,다나다
+棚田,zh-cn,棚田
+棚田,zh-tw,棚田
+宮島工業高校,ja,宮島工業高校
+宮島工業高校,ja-Hrkt,みやじまこうぎょうこうこう
+宮島工業高校,en,Miyajima Kogyo Koko (Miyajima Technial High School)
+宮島工業高校,ko,미야지마 공업고등학교
+宮島工業高校,zh-cn,宫岛工业高中
+宮島工業高校,zh-tw,宮島工業高中
+池田保育園,ja,池田保育園
+池田保育園,ja-Hrkt,いけだほいくえん
+池田保育園,en,Ikeda Hoikuen (Ikeda Nursery)
+池田保育園,ko,이케다 보육원
+池田保育園,zh-cn,池田保育园
+池田保育園,zh-tw,池田保育園
+まるくる大野,ja,まるくる大野
+まるくる大野,ja-Hrkt,まるくるおおの
+高畑,ja,高畑
+高畑,ja-Hrkt,たかばたけ
+高畑,en,Takabatake
+高畑,ko,다카바타케
+高畑,zh-cn,高畑
+高畑,zh-tw,高畑
+筏津,ja,筏津
+筏津,ja-Hrkt,いかなづ
+筏津,en,Ikanazu
+筏津,ko,이카나즈
+筏津,zh-cn,筏津
+筏津,zh-tw,筏津
+西教寺,ja,西教寺
+西教寺,ja-Hrkt,さいきょうじ
+西教寺,en,Saikyoji (Saikyoji Temple)
+西教寺,ko,사이쿄지 절
+西教寺,zh-cn,西教寺
+西教寺,zh-tw,西教寺
+妹背の滝,ja,妹背の滝
+妹背の滝,ja-Hrkt,いもせのたき
+妹背の滝,en,Imose-no-Taki (Imose Waterfall)
+妹背の滝,ko,이모세노타키
+妹背の滝,zh-cn,妹背之泷
+妹背の滝,zh-tw,妹背之瀧
+前空六丁目,ja,前空六丁目
+前空六丁目,ja-Hrkt,まえぞらろくちょうめ
+前空六丁目,en,Maezora-rokuchome (Maezora 6)
+前空六丁目,ko,마에조라 6초메
+前空六丁目,zh-cn,前空六丁目
+前空六丁目,zh-tw,前空六丁目
+前空駅,ja,前空駅
+前空駅,ja-Hrkt,まえぞらえき
+前空駅,en,Maezora Sta.
+前空駅,ko,마에조라 역
+前空駅,zh-cn,前空站
+前空駅,zh-tw,前空站
+前空一丁目,ja,前空一丁目
+前空一丁目,ja-Hrkt,まえぞらいっちょうめ
+前空一丁目,en,Maezora-itchome (Maezora 1)
+前空一丁目,ko,마에조라 1초메
+前空一丁目,zh-cn,前空一丁目
+前空一丁目,zh-tw,前空一丁目
+物見東,ja,物見東
+物見東,ja-Hrkt,ものみひがし
+物見東,en,Monomi-higashi
+物見東,ko,모노미 히가시
+物見東,zh-cn,物见东
+物見東,zh-tw,物見東
+物見西,ja,物見西
+物見西,ja-Hrkt,ものみにし
+物見西,en,Monomi-nishi
+物見西,ko,모노미 니시
+物見西,zh-cn,物见西
+物見西,zh-tw,物見西
+橋本,ja,橋本
+橋本,ja-Hrkt,はしもと
+橋本,en,Hashimoto
+橋本,ko,하시모토
+橋本,zh-cn,桥本
+橋本,zh-tw,橋本
+滝の下,ja,滝の下
+滝の下,ja-Hrkt,たきのした
+滝の下,en,Takinoshita
+滝の下,ko,다키노시타
+滝の下,zh-cn,泷之下
+滝の下,zh-tw,瀧之下
+大野中学校,ja,大野中学校
+大野中学校,ja-Hrkt,おおのちゅうがっこう
+大野中学校,en,Ono Chugakko (Ono Junior High School)
+大野中学校,ko,오노 중학교
+大野中学校,zh-cn,大野中学
+大野中学校,zh-tw,大野中學
+大野西小学校,ja,大野西小学校
+大野西小学校,ja-Hrkt,おおのにししょうがっこう
+大野西小学校,en,Ono-nishi Shogakko (Ono-nishi Elementary School)
+大野西小学校,ko,오노 니시 초등학교
+大野西小学校,zh-cn,大野西小学
+大野西小学校,zh-tw,大野西小學
+大野浦駅北口,ja,大野浦駅北口
+大野浦駅北口,ja-Hrkt,おおのうらえききたぐち
+船倉,ja,船倉
+船倉,ja-Hrkt,ふなくら
+船倉,en,Funakura
+船倉,ko,후나쿠라
+船倉,zh-cn,船仓
+船倉,zh-tw,船倉
+林が原,ja,林が原
+林が原,ja-Hrkt,はやしがはら
+林が原,en,Hayashigahara
+林が原,ko,하야시가하라
+林が原,zh-cn,林原
+林が原,zh-tw,林原
+丸石上,ja,丸石上
+丸石上,ja-Hrkt,まるいしかみ
+丸石上,en,Maruishi-ue
+丸石上,ko,마루이시 우에
+丸石上,zh-cn,丸石上
+丸石上,zh-tw,丸石上
+向原,ja,向原
+向原,ja-Hrkt,むかいはら
+向原,en,Mukaihara
+向原,ko,무카이하라
+向原,zh-cn,向原
+向原,zh-tw,向原
+宮浜温泉,ja,宮浜温泉
+宮浜温泉,ja-Hrkt,みやはまおんせん
+べにまんさくの湯,ja,べにまんさくの湯
+べにまんさくの湯,ja-Hrkt,べにまんさくのゆ
+べにまんさくの湯,en,Benimansaku-no-Yu
+べにまんさくの湯,ko,베니만사쿠노 유
+べにまんさくの湯,zh-cn,红满作温泉
+べにまんさくの湯,zh-tw,紅滿作溫泉
+サンランド入口,ja,サンランド入口
+サンランド入口,ja-Hrkt,さんらんどいりぐち
+サンランド入口,en,Juraku Sanso
+サンランド入口,ko,주라쿠 산소
+サンランド入口,zh-cn,聚乐山庄
+サンランド入口,zh-tw,聚樂山莊
+サンランド東,ja,サンランド東
+サンランド東,ja-Hrkt,さんらんどひがし
+サンランド東,en,Sun Land-higashi
+サンランド東,ko,선 랜드 히가시
+サンランド東,zh-cn,Sun Land东
+サンランド東,zh-tw,Sun Land東
+サンランド,ja,サンランド
+サンランド,ja-Hrkt,さんらんど
+サンランド,en,Sun Land
+サンランド,ko,선 랜드
+サンランド,zh-cn,Sun Land
+サンランド,zh-tw,Sun Land
+サンランド西,ja,サンランド西
+サンランド西,ja-Hrkt,さんらんどにし
+サンランド西,en,Sun Land Shako (Sun Land Depot)
+サンランド西,ko,선 랜드 차고
+サンランド西,zh-cn,Sun Land车库
+サンランド西,zh-tw,Sun Land車庫
+鳴川,ja,鳴川
+鳴川,ja-Hrkt,なるかわ
+鳴川,en,Narukawa
+鳴川,ko,나루카와
+鳴川,zh-cn,鸣川
+鳴川,zh-tw,鳴川
+玖波駅,ja,玖波駅
+玖波駅,ja-Hrkt,くばえき
+玖波駅,en,Kuba Sta.
+玖波駅,ko,구바 역
+玖波駅,zh-cn,玖波站
+玖波駅,zh-tw,玖波站
+ふじタウン西,ja,ふじタウン西
+ふじタウン西,ja-Hrkt,ふじたうんにし
+ふじタウン西,en,Fuji Town-nishi
+ふじタウン西,ko,후지 타운 니시
+ふじタウン西,zh-cn,Fuji Town西
+ふじタウン西,zh-tw,Fuji Town西
+宮島口東二丁目,ja,宮島口東二丁目
+宮島口東二丁目,ja-Hrkt,みやじまぐちひがしにちょうめ
+宮島口東二丁目,en,Miyajima-guchi-higashi-nichome (Miyajima-guchi-higashi 2)
+宮島口東二丁目,ko,미야지마 구치 히가시 2초메
+宮島口東二丁目,zh-cn,宫岛口东二丁目
+宮島口東二丁目,zh-tw,宮島口東二丁目
+宮島口東三丁目,ja,宮島口東三丁目
+宮島口東三丁目,ja-Hrkt,みやじまぐちひがしさんちょうめ
+宮島口東三丁目,en,Miyajima-guchi-higashi-sanchome (Miyajima-guchi-higashi 3)
+宮島口東三丁目,ko,미야지마 구치 히가시 3초메
+宮島口東三丁目,zh-cn,宫岛口东三丁目
+宮島口東三丁目,zh-tw,宮島口東三丁目
+宮島口東一丁目,ja,宮島口東一丁目
+宮島口東一丁目,ja-Hrkt,みやじまぐちひがしいっちょうめ
+宮島口東一丁目,en,Miyajima-guchi-higashi-itchome (Miyajima-guchi-higashi 1)
+宮島口東一丁目,ko,미야지마 구치 히가시 1초메
+宮島口東一丁目,zh-cn,宫岛口东一丁目
+宮島口東一丁目,zh-tw,宮島口東一丁目
+宮島口上,ja,宮島口上
+宮島口上,ja-Hrkt,みやじまぐちかみ
+宮島口上,en,Miyajima-guchi-ue
+宮島口上,ko,미야지마 구치 우에
+宮島口上,zh-cn,宫岛口上
+宮島口上,zh-tw,宮島口上
+土井上,ja,土井上
+土井上,ja-Hrkt,どいかみ
+土井上,en,Doi-kami
+土井上,ko,도이카미
+土井上,zh-cn,土井上
+土井上,zh-tw,土井上
+大野東小学校,ja,大野東小学校
+大野東小学校,ja-Hrkt,おおのひがししょうがっこう
+大野東小学校,en,Ono-higashi Shogakko (Ono-higashi Elementary School)
+大野東小学校,ko,오노 히가시 초등학교
+大野東小学校,zh-cn,大野东小学
+大野東小学校,zh-tw,大野東小學
+鯛の原,ja,鯛の原
+鯛の原,ja-Hrkt,たいのはら
+鯛の原,en,Tainohara
+鯛の原,ko,다이노하라
+鯛の原,zh-cn,鲷之原
+鯛の原,zh-tw,鯛之原
+青葉台集会所前,ja,青葉台集会所前
+青葉台集会所前,ja-Hrkt,あおばだいしゅうかいしょまえ
+青葉台集会所前,en,Aobadai Shukaisho-mae
+青葉台集会所前,ko,아오바다이 슈카이쇼 마에
+青葉台集会所前,zh-cn,青叶台集会所前
+青葉台集会所前,zh-tw,青葉臺集會所前
+上の浜,ja,上の浜
+上の浜,ja-Hrkt,かみのはま
+上の浜,en,Kaminohama
+上の浜,ko,가미노하마
+上の浜,zh-cn,上之滨
+上の浜,zh-tw,上之濱
+梅原一丁目,ja,梅原一丁目
+梅原一丁目,ja-Hrkt,うめはらいっちょうめ
+梅原一丁目,en,Umehara-itchome (Umehara 1)
+梅原一丁目,ko,우메하라 1초메
+梅原一丁目,zh-cn,梅原一丁目
+梅原一丁目,zh-tw,梅原一丁目
+沖塩屋,ja,沖塩屋
+沖塩屋,ja-Hrkt,おきしおや
+沖塩屋,en,Okishioya
+沖塩屋,ko,오키시오야
+沖塩屋,zh-cn,冲盐屋
+沖塩屋,zh-tw,衝鹽屋
+青海苔,ja,青海苔
+青海苔,ja-Hrkt,あおのり
+青海苔,en,Aonori
+青海苔,ko,아오노리
+青海苔,zh-cn,青海苔
+青海苔,zh-tw,青海苔
+丸石,ja,丸石
+丸石,ja-Hrkt,まるいし
+丸石,en,Maruishi
+丸石,ko,마루이시
+丸石,zh-cn,丸石
+丸石,zh-tw,丸石
+広電阿品駅,ja,広電阿品駅
+広電阿品駅,ja-Hrkt,ひろでんあじなえき
+広電阿品駅,en,Hiroden-ajina Sta.
+広電阿品駅,ko,히로덴 아지나 역
+広電阿品駅,zh-cn,广电阿品站
+広電阿品駅,zh-tw,廣電阿品站
+ナタリーマリナタウン,ja,ナタリーマリナタウン
+ナタリーマリナタウン,ja-Hrkt,なたりーまりなたうん
+ナタリーマリナタウン,en,Natalie Marina Town
+ナタリーマリナタウン,ko,나탈리 마리나 타운
+ナタリーマリナタウン,zh-cn,NATALIE MARINA TOWN
+ナタリーマリナタウン,zh-tw,NATALIE MARINA TOWN
+マリナタウン,ja,マリナタウン
+マリナタウン,ja-Hrkt,なたりーまりなたうん
+マリナタウン,en,Natalie Marina Town
+マリナタウン,ko,나탈리 마리나 타운
+マリナタウン,zh-cn,NATALIE MARINA TOWN
+マリナタウン,zh-tw,NATALIE MARINA TOWN
+ふじタウン南,ja,ふじタウン南
+ふじタウン南,ja-Hrkt,ふじたうんみなみ
+ふじタウン南,en,Fuji Town-minami
+ふじタウン南,ko,후지타운 미나미
+ふじタウン南,zh-cn,Fuji Town南
+ふじタウン南,zh-tw,Fuji Town南
+ふじタウン中,ja,ふじタウン中
+ふじタウン北,ja,ふじタウン北
+中山,ja,中山
+中山,ja-Hrkt,なかやま
+中山,en,Nakayama
+中山,ko,나카야마（나카야마 산)
+中山,zh-cn,中山
+中山,zh-tw,中山
+西市民センター,ja,西市民センター
+西市民センター,ja-Hrkt,にししみんせんたー
+大野浦駅南口,ja,大野浦駅南口
+大野浦駅南口,ja-Hrkt,おおのうらえきみなみぐち
+大野浦駅南口,en,Onoura Sta. South Entrance
+大野浦駅南口,ko,오노우라 역
+大野浦駅南口,zh-cn,大野浦站南口
+大野浦駅南口,zh-tw,大野浦站南口
+ＪＲ阿品駅,ja,ＪＲ阿品駅
+ＪＲ阿品駅,ja-Hrkt,じぇいあーるあじなえき
+ＪＲ阿品駅,en,JR Ajina Sta.
+ＪＲ阿品駅,ko,JR 아지나 역
+ＪＲ阿品駅,zh-cn,JR阿品站
+ＪＲ阿品駅,zh-tw,JR阿品站
+下の浜,ja,下の浜
+下の浜,ja-Hrkt,しものはま
+下の浜,en,Shimonohama
+下の浜,ko,시모노하마
+下の浜,zh-cn,下之滨
+下の浜,zh-tw,下之濱
+大手,ja,大手
+大手,ja-Hrkt,おおて
+大手,en,Ote
+大手,ko,오테
+大手,zh-cn,大手
+大手,zh-tw,大手
+阿品台山の手,ja,阿品台山の手
+阿品台山の手,ja-Hrkt,あじなだいやまのて
+阿品台山の手,en,Ajinadai Yamanote
+阿品台山の手,ko,아지나다이 야마노테
+阿品台山の手,zh-cn,阿品台山之手
+阿品台山の手,zh-tw,阿品臺山之手
+池田橋,ja,池田橋
+池田橋,ja-Hrkt,いけだばし
+池田橋,en,Ikedabashi
+池田橋,ko,이케다바시
+池田橋,zh-cn,池田桥
+池田橋,zh-tw,池田橋
+大野中央,ja,大野中央
+大野中央,ja-Hrkt,おおのちゅうおう
+大野中央,en,Ono-chuo
+大野中央,ko,오노 추오
+大野中央,zh-cn,大野中央
+大野中央,zh-tw,大野中央
+永慶寺橋,ja,永慶寺橋
+永慶寺橋,ja-Hrkt,えいけいじばし

@@ -1,0 +1,2 @@
+﻿agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url,agency_email
+1000020342131,廿日市市,https://www.city.hatsukaichi.hiroshima.jp/soshiki/118/12398.html,Asia/Tokyo,ja,,,

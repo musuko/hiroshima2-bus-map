@@ -1,0 +1,2 @@
+﻿agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url,agency_email
+3240001025473,朝日交通,https://asahi-kotsu.co.jp/,Asia/Tokyo,ja,082-854-1800,,

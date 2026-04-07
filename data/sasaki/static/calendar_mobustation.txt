@@ -1,0 +1,4 @@
+﻿service_name
+土曜
+平日
+日祝

@@ -1,0 +1,2 @@
+﻿route_id,agency_id,route_short_name,route_long_name,route_desc,route_type,route_url,route_color,route_text_color
+3564786346,3240001025473,,阿戸線,,3,,,

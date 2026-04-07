@@ -1,0 +1,2 @@
+﻿agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url,agency_email
+9240001016533,ささき観光,https://www.sasakikanko.co.jp/ono-heart-bus.html,Asia/Tokyo,ja,,,
