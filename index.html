@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,7 +10,11 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     body {
       font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
@@ -17,6 +22,7 @@
       color: #333;
     }
 
+    /* ヘッダー */
     header {
       background: #1a6b3c;
       color: white;
@@ -24,7 +30,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
       z-index: 1000;
       position: relative;
     }
@@ -32,12 +38,12 @@
     header h1 {
       font-size: 1.1rem;
       font-weight: 600;
-      letter-spacing: 0.02em;
     }
 
+    /* ステータスバー（ヘッダー右側） */
     #status-bar {
       font-size: 0.8rem;
-      background: rgba(255,255,255,0.15);
+      background: rgba(255, 255, 255, 0.15);
       padding: 4px 12px;
       border-radius: 20px;
       display: flex;
@@ -52,20 +58,39 @@
       background: #aaa;
       transition: background 0.3s;
     }
-    #status-dot.loading { background: #f0c040; animation: pulse 1s infinite; }
-    #status-dot.ok      { background: #4ceb7a; }
-    #status-dot.error   { background: #f05050; }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.3; }
+    #status-dot.loading {
+      background: #f0c040;
+      animation: pulse 1s infinite;
     }
 
+    #status-dot.ok {
+      background: #4ceb7a;
+    }
+
+    #status-dot.error {
+      background: #f05050;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.3;
+      }
+    }
+
+    /* 地図 */
     #map {
       width: 100%;
       height: calc(100vh - 90px);
     }
 
+    /* フッター情報パネル */
     #info-panel {
       position: absolute;
       bottom: 20px;
@@ -74,7 +99,7 @@
       background: white;
       border-radius: 10px;
       padding: 10px 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       font-size: 0.85rem;
       z-index: 999;
       display: flex;
@@ -82,9 +107,16 @@
       align-items: center;
     }
 
-    #info-panel span { color: #555; }
-    #info-panel strong { color: #1a6b3c; font-size: 1.1rem; }
+    #info-panel span {
+      color: #555;
+    }
 
+    #info-panel strong {
+      color: #1a6b3c;
+      font-size: 1.1rem;
+    }
+
+    /* 手動更新ボタン */
     #refresh-btn {
       background: #1a6b3c;
       color: white;
@@ -95,33 +127,258 @@
       font-size: 0.8rem;
       transition: background 0.2s;
     }
-    #refresh-btn:hover { background: #155530; }
+
+    #refresh-btn:hover {
+      background: #155530;
+    }
+
+    /* -------------------------------------------------------
+       バス停情報パネル
+       バス停マーカーをクリックすると右側に表示される。
+       バス停名・stop_id・当日の時刻表を表示する。
+       ------------------------------------------------------- */
+    #stop-panel {
+      position: absolute;
+      top: 70px;
+      right: 10px;
+      width: 320px;
+      max-height: calc(100vh - 160px);
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      display: none;
+      /* 初期状態は非表示 */
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #stop-panel.visible {
+      display: flex;
+    }
+
+    /* パネルのヘッダー部分 */
+    #stop-panel-header {
+      background: #1a6b3c;
+      color: white;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    #stop-panel-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    /* ×閉じるボタン */
+    #stop-panel-close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    /* パネルの本文（スクロール可能） */
+    #stop-panel-body {
+      overflow-y: auto;
+      padding: 12px;
+      flex: 1;
+    }
+
+    /* バス停のサブ情報（stop_id等） */
+    .stop-meta {
+      font-size: 0.75rem;
+      color: #888;
+      margin-bottom: 10px;
+    }
+
+    /* 時刻表テーブル */
+    .timetable {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    .timetable th {
+      background: #f0f2f5;
+      padding: 6px 8px;
+      text-align: left;
+      border-bottom: 2px solid #ddd;
+      position: sticky;
+      top: 0;
+    }
+
+    .timetable td {
+      padding: 6px 8px;
+      border-bottom: 1px solid #eee;
+      vertical-align: top;
+    }
+
+    /* 時刻セルはクリック可能なリンク風に表示 */
+    .timetable td.time-cell {
+      color: #1a6b3c;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .timetable td.time-cell:hover {
+      text-decoration: underline;
+    }
+
+    .timetable tr:hover {
+      background: #f9f9f9;
+    }
+
+    /* -------------------------------------------------------
+       便情報パネル
+       時刻をクリックすると表示される。
+       その便の全停留所と時刻を表示し、地図上にルートを描画する。
+       ------------------------------------------------------- */
+    #trip-panel {
+      position: absolute;
+      top: 70px;
+      right: 340px;
+      /* バス停パネルの左側に表示 */
+      width: 300px;
+      max-height: calc(100vh - 160px);
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #trip-panel.visible {
+      display: flex;
+    }
+
+    #trip-panel-header {
+      background: #2c5f8a;
+      /* バス停パネルと色を変えて区別する */
+      color: white;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    #trip-panel-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    #trip-panel-close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    #trip-panel-body {
+      overflow-y: auto;
+      padding: 12px;
+      flex: 1;
+    }
+
+    /* 便の停留所リスト */
+    .stop-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .stop-list li {
+      display: flex;
+      gap: 10px;
+      padding: 5px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 0.82rem;
+    }
+
+    /* 現在のバス停をハイライト表示 */
+    .stop-list li.current-stop {
+      background: #fff8e1;
+      font-weight: 600;
+    }
+
+    .stop-list .stop-time {
+      color: #1a6b3c;
+      font-weight: 600;
+      min-width: 50px;
+      white-space: nowrap;
+    }
+
+    /* 読み込み中メッセージ */
+    .loading-msg {
+      color: #888;
+      font-size: 0.85rem;
+      text-align: center;
+      padding: 20px;
+    }
   </style>
 </head>
+
 <body>
 
-<header>
-  <h1>🚌 広島県バス協会 リアルタイムバス位置情報</h1>
-  <div id="status-bar">
-    <div id="status-dot"></div>
-    <span id="status-text">待機中</span>
+  <header>
+    <h1>🚌 広島県バス協会 リアルタイムバス位置情報</h1>
+    <div id="status-bar">
+      <div id="status-dot"></div>
+      <span id="status-text">待機中</span>
+    </div>
+  </header>
+
+  <div id="map"></div>
+
+  <!-- フッター情報パネル -->
+  <div id="info-panel">
+    <span>表示中のバス台数: <strong id="bus-count">0</strong> 台</span>
+    <span id="last-updated">最終更新: —</span>
+    <button id="refresh-btn">🔄 手動更新</button>
   </div>
-</header>
 
-<div id="map"></div>
+  <!-- バス停情報パネル（右側） -->
+  <div id="stop-panel">
+    <div id="stop-panel-header">
+      <span id="stop-panel-title">バス停情報</span>
+      <button id="stop-panel-close">×</button>
+    </div>
+    <div id="stop-panel-body">
+      <p class="loading-msg">バス停をクリックしてください</p>
+    </div>
+  </div>
 
-<div id="info-panel">
-  <span>表示中のバス台数: <strong id="bus-count">0</strong> 台</span>
-  <span id="last-updated">最終更新: —</span>
-  <button id="refresh-btn">🔄 手動更新</button>
-</div>
+  <!-- 便情報パネル（バス停パネルの左側） -->
+  <div id="trip-panel">
+    <div id="trip-panel-header">
+      <span id="trip-panel-title">便情報</span>
+      <button id="trip-panel-close">×</button>
+    </div>
+    <div id="trip-panel-body">
+      <p class="loading-msg">時刻をクリックしてください</p>
+    </div>
+  </div>
 
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<!-- protobufjs (CDN) -->
-<script src="https://cdn.jsdelivr.net/npm/protobufjs@7/dist/protobuf.min.js"></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- protobufjs (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/protobufjs@7/dist/protobuf.min.js"></script>
+  <!-- Papa Parse: CSVファイル（stops.txt等）を読み込むために使用 -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
 
-<script src="js/load_gtfs.js"></script>
+  <script src="js/load_gtfs.js"></script>
 
 </body>
+
 </html>
