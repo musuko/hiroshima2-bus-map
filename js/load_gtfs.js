@@ -722,3 +722,77 @@ initGtfs(); // 静的データを読み込む
 document
   .getElementById("refresh-btn")
   .addEventListener("click", fetchVehiclePositions);
+
+  // -------------------------------------------------------
+// パネルをドラッグで移動できるようにする
+// ヘッダー部分をつかんでドラッグすると
+// パネル全体が画面上を自由に移動できる
+// -------------------------------------------------------
+function makeDraggable(panelId, headerId) {
+  var panel  = document.getElementById(panelId);
+  var header = document.getElementById(headerId);
+
+  var isDragging = false;
+  var startX, startY, startLeft, startTop;
+
+  header.addEventListener("mousedown", function(e) {
+    // ×ボタンのクリックはドラッグ対象外にする
+    if (e.target.tagName === "BUTTON") return;
+    isDragging = true;
+
+    // パネルを position:fixed に切り替えて自由移動を可能にする
+    var rect = panel.getBoundingClientRect();
+    panel.style.position = "fixed";
+    panel.style.right    = "auto";
+    panel.style.top      = rect.top  + "px";
+    panel.style.left     = rect.left + "px";
+
+    startX    = e.clientX;
+    startY    = e.clientY;
+    startLeft = rect.left;
+    startTop  = rect.top;
+    e.preventDefault();
+  });
+
+  // タッチ操作（スマホ）にも対応する
+  header.addEventListener("touchstart", function(e) {
+    if (e.target.tagName === "BUTTON") return;
+    var touch = e.touches[0];
+    isDragging = true;
+    var rect = panel.getBoundingClientRect();
+    panel.style.position = "fixed";
+    panel.style.right    = "auto";
+    panel.style.top      = rect.top  + "px";
+    panel.style.left     = rect.left + "px";
+    startX    = touch.clientX;
+    startY    = touch.clientY;
+    startLeft = rect.left;
+    startTop  = rect.top;
+    e.preventDefault();
+  }, { passive: false });
+
+  document.addEventListener("mousemove", function(e) {
+    if (!isDragging) return;
+    var dx = e.clientX - startX;
+    var dy = e.clientY - startY;
+    panel.style.left = (startLeft + dx) + "px";
+    panel.style.top  = (startTop  + dy) + "px";
+  });
+
+  document.addEventListener("touchmove", function(e) {
+    if (!isDragging) return;
+    var touch = e.touches[0];
+    var dx = touch.clientX - startX;
+    var dy = touch.clientY - startY;
+    panel.style.left = (startLeft + dx) + "px";
+    panel.style.top  = (startTop  + dy) + "px";
+    e.preventDefault();
+  }, { passive: false });
+
+  document.addEventListener("mouseup",  function() { isDragging = false; });
+  document.addEventListener("touchend", function() { isDragging = false; });
+}
+
+// バス停パネルと便情報パネルをドラッグ可能にする
+makeDraggable("stop-panel",  "stop-panel-header");
+makeDraggable("trip-panel",  "trip-panel-header");
