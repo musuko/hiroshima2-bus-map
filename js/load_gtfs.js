@@ -82,7 +82,13 @@ var OPERATORS = [
     realtimeId: null,
     color: "#8e44ad",
   },
-  { folder: "etajima", name: "江田島バス", realtimeId: null, color: "#2980b9" },
+  {
+    folder: "etajima",
+    name: "江田島バス",
+    realtimeId: null,
+    color: "#2980b9",
+    hasRealtime: false,
+  },
 ];
 
 // -------------------------------------------------------
@@ -256,6 +262,11 @@ async function decodeFeedMessage(buffer) {
 // 現在選択中の事業者のキャッシュファイルを使用する
 // -------------------------------------------------------
 async function fetchVehiclePositions() {
+  // リアルタイムデータがない事業者はスキップする
+  if (currentOperator.hasRealtime === false) {
+    setStatus("ok", "リアルタイムデータなし");
+    return;
+  }
   setStatus("loading", "loading...");
   try {
     var url = getRealtimePath() + "?t=" + Date.now();
