@@ -514,6 +514,21 @@
         font-size: 1.6rem;
         padding: 0 8px;
       }
+      /* リアルタイムバス表示切替ボタン */
+      #toggle-bus-btn {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.4);
+        border-radius: 6px;
+        padding: 4px 10px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        white-space: nowrap;
+        transition: background 0.2s;
+      }
+      #toggle-bus-btn:hover {
+        background: rgba(255,255,255,0.35);
+      }
     }
   </style>
 </head>
@@ -526,6 +541,7 @@
       <label for="operator-select">事業者:</label>
       <select id="operator-select"></select>
     </div>
+    <button id="toggle-bus-btn" title="リアルタイムバスの表示切替">🚌 非表示</button>
     <div id="status-bar">
       <div id="status-dot"></div>
       <span id="status-text">待機中</span>

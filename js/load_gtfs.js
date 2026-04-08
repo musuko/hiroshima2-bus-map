@@ -934,6 +934,30 @@ function initOperatorSelector() {
   });
 }
 
+// -------------------------------------------------------
+// リアルタイムバスの表示・非表示を切り替える
+// ボタンを押すたびに表示状態がトグルする
+// -------------------------------------------------------
+var busVisible = true;  // 初期状態は表示
+
+document.getElementById("toggle-bus-btn")
+  .addEventListener("click", function() {
+    busVisible = !busVisible;
+
+    // 全バスマーカーの表示・非表示を切り替える
+    busMarkers.forEach(function(marker) {
+      if (busVisible) {
+        marker.addTo(map);
+      } else {
+        map.removeLayer(marker);
+      }
+    });
+
+    // ボタンのテキストを更新する
+    document.getElementById("toggle-bus-btn").textContent
+      = busVisible ? "🚌 非表示" : "🚌 表示";
+  });
+  
 // ============================================================
 // 起動処理（1回だけ実行する）
 // ============================================================
