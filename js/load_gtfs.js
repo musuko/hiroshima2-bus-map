@@ -768,6 +768,7 @@ async function initGtfs() {
     buildShapesIndex(results[6]);
     gtfsFareAttributes = results[7];
     gtfsFareRules = results[8];
+    buildFareIndex();
 
     console.log("[GTFS] stops:", gtfsStops.length);
     console.log("[GTFS] stop_times:", gtfsStopTimes.length);
