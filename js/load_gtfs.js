@@ -17,54 +17,72 @@
 // realtimeId... リアルタイムAPIの事業者ID
 // -------------------------------------------------------
 var OPERATORS = [
-  { folder: "hiroden", name: "広島電鉄", realtimeId: "8", color: "#4a7c2f" }, // モスグリーン
+  { folder: "hiroden", name: "広島電鉄", realtimeId: "8", color: "#4a7c2f" },
   {
     folder: "hiroshimabus",
     name: "広島バス",
     realtimeId: "9",
     color: "#cc0000",
-  }, // 赤（赤バス）
-  { folder: "hirokotsu", name: "広島交通", realtimeId: "10", color: "#e8a000" }, // オレンジ帯（クリーム地にオレンジ）
-  { folder: "geiyo", name: "芸陽バス", realtimeId: "11", color: "#f39800" }, // オレンジ
-  { folder: "bihoku", name: "備北交通", realtimeId: "12", color: "#00a050" }, // 緑
+  },
+  { folder: "hirokotsu", name: "広島交通", realtimeId: "10", color: "#e8a000" },
+  { folder: "geiyo", name: "芸陽バス", realtimeId: "11", color: "#f39800" },
+  { folder: "bihoku", name: "備北交通", realtimeId: "12", color: "#00a050" },
   {
     folder: "hdnishihiroshima",
     name: "HD西広島",
     realtimeId: "13",
     color: "#6ab04c",
-  }, // 黄緑（広電グループ緑・明るめ）
-  { folder: "fouble", name: "フォーブル", realtimeId: "14", color: "#8b4513" }, // 茶色
-  { folder: "jrbus", name: "JRバス中国", realtimeId: "15", color: "#003087" }, // 紺
+  },
+  { folder: "fouble", name: "フォーブル", realtimeId: "14", color: "#8b4513" },
+  { folder: "jrbus", name: "JRバス中国", realtimeId: "15", color: "#003087" },
   {
     folder: "sasaki",
     name: "ささき観光(ハートバス)",
     realtimeId: "17",
     color: "#9b59b6",
-  }, // 紫
+  },
   {
     folder: "kurebus",
     name: "呉市生活バス",
     realtimeId: "18",
     color: "#00b4d8",
-  }, // 水色
+  },
   {
     folder: "hatsukaichi",
     name: "廿日市市自主運行",
     realtimeId: "19",
     color: "#2ecc71",
-  }, // 黄緑
+  },
   {
     folder: "onomichi",
     name: "おのみちバス",
     realtimeId: "53",
     color: "#e67e22",
-  }, // オレンジ茶
+  },
   {
     folder: "asahi",
     name: "朝日交通(阿戸線)",
     realtimeId: "54",
     color: "#f1c40f",
-  }, // 黄色
+  },
+  // -------------------------------------------------------
+  // 以下4社は両備システムズ・タウンクリエーションのシステム
+  // realtimeId は使用しない（folder から直接パスを構築する）
+  // -------------------------------------------------------
+  {
+    folder: "chugokubus",
+    name: "中国バス",
+    realtimeId: null,
+    color: "#c0392b",
+  },
+  { folder: "tomotetsu", name: "鞆鉄道", realtimeId: null, color: "#27ae60" },
+  {
+    folder: "ikasabus",
+    name: "井笠バスカンパニー",
+    realtimeId: null,
+    color: "#8e44ad",
+  },
+  { folder: "etajima", name: "江田島バス", realtimeId: null, color: "#2980b9" },
 ];
 
 // -------------------------------------------------------

@@ -2,7 +2,7 @@ name: Fetch Realtime Data
 
 on:
   schedule:
-     - cron: '*/600 * * * *'   # 600分ごとに自動実行 
+     - cron: '*/30 * * * *'   # 30分ごとに自動実行 
   workflow_dispatch:
 
 jobs:
@@ -17,7 +17,11 @@ jobs:
 
       - name: 全事業者のリアルタイムバイナリを取得
         run: |
+          # -------------------------------------------------------
+          # Mobusta システム事業者（既存13社）
+          # -------------------------------------------------------
           BASE_URL="https://ajt-mobusta-gtfs.mcapps.jp/realtime"
+
           OPERATORS=(
             "hiroden            8"
             "hiroshimabus       9"
@@ -33,24 +37,33 @@ jobs:
             "onomichi          53"
             "asahi             54"
           )
+
           REALTIME_FILES=(
             "vehicle_position"
             "trip_updates"
             "alerts"
           )
-          TOTAL=0; SUCCESS=0; FAIL=0
+
+          TOTAL=0
+          SUCCESS=0
+          FAIL=0
+
           for ENTRY in "${OPERATORS[@]}"; do
             FOLDER=$(echo "$ENTRY" | awk '{print $1}')
             OP_ID=$(echo  "$ENTRY" | awk '{print $2}')
             mkdir -p "data/${FOLDER}/realtime"
+
             for FILE_TYPE in "${REALTIME_FILES[@]}"; do
               TOTAL=$((TOTAL + 1))
               URL="${BASE_URL}/${OP_ID}/${FILE_TYPE}.bin"
               DEST="data/${FOLDER}/realtime/${FILE_TYPE}.bin"
+
               HTTP_STATUS=$(curl -s -w "%{http_code}" \
                 --max-time 30 \
                 -A "Mozilla/5.0 GitHubActions-GTFSFetcher/1.0" \
-                -o "${DEST}" "${URL}")
+                -o "${DEST}" \
+                "${URL}")
+
               if [ "$HTTP_STATUS" = "200" ]; then
                 SIZE=$(wc -c < "${DEST}")
                 echo "[成功] ${FOLDER}/${FILE_TYPE}.bin (${SIZE} バイト)"
@@ -62,18 +75,94 @@ jobs:
               fi
             done
           done
-          echo "取得結果: ${SUCCESS}/${TOTAL} 成功, ${FAIL} 失敗"
 
-      - name: リアルタイムデータをコミット・プッシュ
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/*/realtime/*.bin
-          if git diff --cached --quiet; then
-            echo "変更なし。スキップします。"
+          # -------------------------------------------------------
+          # 両備システムズ事業者（3社）
+          # URLパターン:
+          #   TripUpdate:      https://bus-vision.jp/realtime/<社名>_trip_update_v2.bin
+          #   VehiclePosition: https://bus-vision.jp/realtime/<社名>_vpos_update_v2.bin
+          #   ServiceAlert:    https://bus-vision.jp/realtime/<社名>_alrt_update_v2.bin
+          # -------------------------------------------------------
+          BUSVISION_OPERATORS=(
+            "chugokubus  chugokubus"
+            "tomotetsu   tomotetsubus"
+            "ikasabus    ikasabus"
+          )
+
+          for ENTRY in "${BUSVISION_OPERATORS[@]}"; do
+            FOLDER=$(echo "$ENTRY" | awk '{print $1}')
+            API_NAME=$(echo "$ENTRY" | awk '{print $2}')
+            mkdir -p "data/${FOLDER}/realtime"
+
+            # VehiclePosition
+            TOTAL=$((TOTAL + 1))
+            URL="https://bus-vision.jp/realtime/${API_NAME}_vpos_update_v2.bin"
+            DEST="data/${FOLDER}/realtime/vehicle_position.bin"
+            HTTP_STATUS=$(curl -s -w "%{http_code}" --max-time 30 \
+              -A "Mozilla/5.0 GitHubActions-GTFSFetcher/1.0" \
+              -o "${DEST}" "${URL}")
+            if [ "$HTTP_STATUS" = "200" ]; then
+              echo "[成功] ${FOLDER}/vehicle_position.bin ($(wc -c < ${DEST}) バイト)"
+              SUCCESS=$((SUCCESS + 1))
+            else
+              echo "[失敗] ${FOLDER}/vehicle_position.bin (HTTP ${HTTP_STATUS})"
+              rm -f "${DEST}"
+              FAIL=$((FAIL + 1))
+            fi
+
+            # TripUpdate
+            TOTAL=$((TOTAL + 1))
+            URL="https://bus-vision.jp/realtime/${API_NAME}_trip_update_v2.bin"
+            DEST="data/${FOLDER}/realtime/trip_updates.bin"
+            HTTP_STATUS=$(curl -s -w "%{http_code}" --max-time 30 \
+              -A "Mozilla/5.0 GitHubActions-GTFSFetcher/1.0" \
+              -o "${DEST}" "${URL}")
+            if [ "$HTTP_STATUS" = "200" ]; then
+              echo "[成功] ${FOLDER}/trip_updates.bin ($(wc -c < ${DEST}) バイト)"
+              SUCCESS=$((SUCCESS + 1))
+            else
+              echo "[失敗] ${FOLDER}/trip_updates.bin (HTTP ${HTTP_STATUS})"
+              rm -f "${DEST}"
+              FAIL=$((FAIL + 1))
+            fi
+
+            # ServiceAlert
+            TOTAL=$((TOTAL + 1))
+            URL="https://bus-vision.jp/realtime/${API_NAME}_alrt_update_v2.bin"
+            DEST="data/${FOLDER}/realtime/alerts.bin"
+            HTTP_STATUS=$(curl -s -w "%{http_code}" --max-time 30 \
+              -A "Mozilla/5.0 GitHubActions-GTFSFetcher/1.0" \
+              -o "${DEST}" "${URL}")
+            if [ "$HTTP_STATUS" = "200" ]; then
+              echo "[成功] ${FOLDER}/alerts.bin ($(wc -c < ${DEST}) バイト)"
+              SUCCESS=$((SUCCESS + 1))
+            else
+              echo "[失敗] ${FOLDER}/alerts.bin (HTTP ${HTTP_STATUS})"
+              rm -f "${DEST}"
+              FAIL=$((FAIL + 1))
+            fi
+          done
+
+          # -------------------------------------------------------
+          # タウンクリエーション事業者（江田島バス）
+          # TripUpdateのみ（VehiclePositionなし）
+          # -------------------------------------------------------
+          mkdir -p "data/etajima/realtime"
+          TOTAL=$((TOTAL + 1))
+          URL="https://gtfs-rt.busit.jp/api/Etajimabus/TripUpdates"
+          DEST="data/etajima/realtime/trip_updates.bin"
+          HTTP_STATUS=$(curl -s -w "%{http_code}" --max-time 30 \
+            -A "Mozilla/5.0 GitHubActions-GTFSFetcher/1.0" \
+            -o "${DEST}" "${URL}")
+          if [ "$HTTP_STATUS" = "200" ]; then
+            echo "[成功] etajima/trip_updates.bin ($(wc -c < ${DEST}) バイト)"
+            SUCCESS=$((SUCCESS + 1))
           else
-            TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M UTC')
-            git commit -m "chore: update realtime data ${TIMESTAMP} [skip ci]"
-            git push
-            echo "プッシュしました。"
+            echo "[失敗] etajima/trip_updates.bin (HTTP ${HTTP_STATUS})"
+            rm -f "${DEST}"
+            FAIL=$((FAIL + 1))
           fi
+
+          echo "--------------------------------------------"
+          echo "取得結果: ${SUCCESS}/${TOTAL} 成功, ${FAIL} 失敗"
+          echo "--------------------------------------------"

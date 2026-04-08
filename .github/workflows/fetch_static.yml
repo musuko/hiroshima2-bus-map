@@ -56,32 +56,31 @@ jobs:
       #   3. リポジトリ内の feed_info.txt の feed_start_date と比較する
       #   4. 異なる場合（または強制更新の場合）のみ展開して保存する
       # -----------------------------------------------------------------------
-      - name: 各事業者の静的データを確認・更新
+      - name: 全事業者の静的GTFS-JPデータを取得・展開
         run: |
-          # Mobusta 静的データAPIのベースURL
+          # -------------------------------------------------------
+          # Mobusta システム事業者（既存13社）
+          # URLパターン: https://ajt-mobusta-gtfs.mcapps.jp/static/<ID>/current_data.zip
+          # -------------------------------------------------------
           BASE_URL="https://ajt-mobusta-gtfs.mcapps.jp/static"
 
-          # 手動実行時の強制更新フラグ
-          FORCE_UPDATE="${{ github.event.inputs.force_update }}"
-
-          # 事業者リスト: "フォルダ名  事業者ID"
           OPERATORS=(
-            "hiroden            8"   # 広島電鉄株式会社
-            "hiroshimabus       9"   # 広島バス株式会社
-            "hirokotsu         10"   # 広島交通株式会社
-            "geiyo             11"   # 芸陽バス株式会社
-            "bihoku            12"   # 備北交通株式会社
-            "hdnishihiroshima  13"   # エイチ・ディー西広島株式会社
-            "fouble            14"   # 株式会社フォーブル
-            "jrbus             15"   # JRバス中国株式会社
-            "sasaki            17"   # 株式会社ささき観光（おおのハートバス）
-            "kurebus           18"   # 呉市生活バス
-            "hatsukaichi       19"   # 廿日市市自主運行バス
-            "onomichi          53"   # おのみちバス株式会社
-            "asahi             54"   # 朝日交通株式会社 阿戸熊野線
+            "hiroden            8"
+            "hiroshimabus       9"
+            "hirokotsu         10"
+            "geiyo             11"
+            "bihoku            12"
+            "hdnishihiroshima  13"
+            "fouble            14"
+            "jrbus             15"
+            "sasaki            17"
+            "kurebus           18"
+            "hatsukaichi       19"
+            "onomichi          53"
+            "asahi             54"
           )
 
-          # 結果集計用カウンタ
+          FORCE_UPDATE="${{ github.event.inputs.force_update }}"
           UPDATED=0
           SKIPPED=0
           FAIL=0
@@ -93,7 +92,6 @@ jobs:
             echo "========================================"
             echo "確認中: ${FOLDER} (ID: ${OP_ID})"
 
-            # 作業用一時ディレクトリを作成する
             WORK_DIR="/tmp/${FOLDER}"
             mkdir -p "${WORK_DIR}"
             mkdir -p "data/${FOLDER}/static"
@@ -101,7 +99,6 @@ jobs:
             URL="${BASE_URL}/${OP_ID}/current_data.zip"
             ZIP_DEST="${WORK_DIR}/current_data.zip"
 
-            # ZIPファイルを取得する
             HTTP_STATUS=$(curl -s -w "%{http_code}" \
               --max-time 60 \
               -A "Mozilla/5.0 GitHubActions-GTFSFetcher/1.0" \
@@ -114,8 +111,6 @@ jobs:
               continue
             fi
 
-            # ZIPから feed_info.txt だけを取り出して
-            # 新しいデータの feed_start_date を取得する
             NEW_START_DATE=$(unzip -p "${ZIP_DEST}" feed_info.txt \
               | tail -n +2 \
               | cut -d',' -f4 \
@@ -123,14 +118,11 @@ jobs:
               | head -1)
 
             if [ -z "$NEW_START_DATE" ]; then
-              echo "[警告] ${FOLDER} feed_info.txt から開始日を取得できなかった"
-              echo "       強制的に更新する"
               NEW_START_DATE="unknown"
             fi
 
             echo "新しいデータの開始日: ${NEW_START_DATE}"
 
-            # リポジトリ内の現在の feed_start_date を取得する
             CURRENT_FEED_INFO="data/${FOLDER}/static/feed_info.txt"
             if [ -f "${CURRENT_FEED_INFO}" ]; then
               CURRENT_START_DATE=$(tail -n +2 "${CURRENT_FEED_INFO}" \
@@ -139,12 +131,10 @@ jobs:
                 | head -1)
               echo "現在のデータの開始日: ${CURRENT_START_DATE}"
             else
-              # feed_info.txt が存在しない場合は初回取得とみなす
               CURRENT_START_DATE="none"
               echo "現在のデータ: なし（初回取得）"
             fi
 
-            # 開始日が同じかつ強制更新でない場合はスキップする
             if [ "$NEW_START_DATE" = "$CURRENT_START_DATE" ] \
               && [ "$FORCE_UPDATE" != "yes" ]; then
               echo "[スキップ] ${FOLDER} データに変更なし"
@@ -152,51 +142,126 @@ jobs:
               continue
             fi
 
-            # 開始日が異なる（または強制更新）の場合は展開して保存する
-            echo "[更新] ${FOLDER} 開始日が変わった: ${CURRENT_START_DATE} → ${NEW_START_DATE}"
-
-            # 既存の静的データを削除してから展開する
+            echo "[更新] ${FOLDER}: ${CURRENT_START_DATE} → ${NEW_START_DATE}"
             rm -f "data/${FOLDER}/static/"*.txt
-
             unzip -o "${ZIP_DEST}" -d "data/${FOLDER}/static/"
             echo "展開完了:"
             ls "data/${FOLDER}/static/"
-
             UPDATED=$((UPDATED + 1))
           done
 
-          # 結果サマリーを表示する
+          # -------------------------------------------------------
+          # 両備システムズ事業者（3社）
+          # URLパターン: https://bus-vision.jp/gtfs_v2/<社名>/gtfsFeed
+          # feed_info.txt が含まれない場合があるため
+          # 強制更新またはファイルが存在しない場合のみ更新する
+          # -------------------------------------------------------
+          BUSVISION_OPERATORS=(
+            "chugokubus   https://bus-vision.jp/gtfs_v2/chugokubus/gtfsFeed"
+            "tomotetsu    https://bus-vision.jp/gtfs_v2/tomotetsubus/gtfsFeed"
+            "ikasabus     https://bus-vision.jp/gtfs_v2/ikasabus/gtfsFeed"
+          )
+
+          for ENTRY in "${BUSVISION_OPERATORS[@]}"; do
+            FOLDER=$(echo "$ENTRY" | awk '{print $1}')
+            URL=$(echo   "$ENTRY" | awk '{print $2}')
+
+            echo "========================================"
+            echo "確認中（両備）: ${FOLDER}"
+
+            mkdir -p "data/${FOLDER}/static"
+            ZIP_DEST="/tmp/${FOLDER}.zip"
+
+            HTTP_STATUS=$(curl -s -w "%{http_code}" \
+              --max-time 60 \
+              -L \
+              -A "Mozilla/5.0 GitHubActions-GTFSFetcher/1.0" \
+              -o "${ZIP_DEST}" \
+              "${URL}")
+
+            if [ "$HTTP_STATUS" != "200" ]; then
+              echo "[失敗] ${FOLDER} ZIPの取得に失敗 (HTTP ${HTTP_STATUS})"
+              FAIL=$((FAIL + 1))
+              continue
+            fi
+
+            # feed_info.txt があれば開始日で判定する
+            # なければ強制更新またはファイルなしの場合のみ更新する
+            NEW_START_DATE=$(unzip -p "${ZIP_DEST}" feed_info.txt 2>/dev/null \
+              | tail -n +2 \
+              | cut -d',' -f4 \
+              | tr -d '\r' \
+              | head -1)
+
+            if [ -z "$NEW_START_DATE" ]; then
+              # feed_info.txt がない場合はstops.txtの有無で判定する
+              if [ -f "data/${FOLDER}/static/stops.txt" ] \
+                && [ "$FORCE_UPDATE" != "yes" ]; then
+                echo "[スキップ] ${FOLDER} stops.txt存在・強制更新なし"
+                SKIPPED=$((SKIPPED + 1))
+                continue
+              fi
+            else
+              CURRENT_FEED_INFO="data/${FOLDER}/static/feed_info.txt"
+              if [ -f "${CURRENT_FEED_INFO}" ]; then
+                CURRENT_START_DATE=$(tail -n +2 "${CURRENT_FEED_INFO}" \
+                  | cut -d',' -f4 \
+                  | tr -d '\r' \
+                  | head -1)
+                if [ "$NEW_START_DATE" = "$CURRENT_START_DATE" ] \
+                  && [ "$FORCE_UPDATE" != "yes" ]; then
+                  echo "[スキップ] ${FOLDER} データに変更なし"
+                  SKIPPED=$((SKIPPED + 1))
+                  continue
+                fi
+              fi
+            fi
+
+            echo "[更新] ${FOLDER}"
+            rm -f "data/${FOLDER}/static/"*.txt
+            unzip -o "${ZIP_DEST}" -d "data/${FOLDER}/static/"
+            echo "展開完了:"
+            ls "data/${FOLDER}/static/"
+            UPDATED=$((UPDATED + 1))
+          done
+
+          # -------------------------------------------------------
+          # タウンクリエーション事業者（江田島バス）
+          # URLパターン: https://gtfs-st.busit.jp/api/etajimabus
+          # -------------------------------------------------------
           echo "========================================"
-          echo "確認結果: ${UPDATED} 件更新, ${SKIPPED} 件スキップ, ${FAIL} 件失敗"
-          echo "========================================"
+          echo "確認中（タウンクリエーション）: etajima"
 
-          # 更新件数をファイルに保存する（次のステップで使用する）
-          echo "${UPDATED}" > /tmp/updated_count.txt
+          mkdir -p "data/etajima/static"
+          ZIP_DEST="/tmp/etajima.zip"
 
-      # -----------------------------------------------------------------------
-      # ステップ4: 更新があった場合のみコミット・プッシュする
-      # -----------------------------------------------------------------------
-      - name: 更新データをコミット・プッシュ
-        run: |
-          # 更新件数を読み込む
-          UPDATED=$(cat /tmp/updated_count.txt)
+          HTTP_STATUS=$(curl -s -w "%{http_code}" \
+            --max-time 60 \
+            -L \
+            -A "Mozilla/5.0 GitHubActions-GTFSFetcher/1.0" \
+            -o "${ZIP_DEST}" \
+            "https://gtfs-st.busit.jp/api/etajimabus")
 
-          if [ "$UPDATED" = "0" ]; then
-            echo "更新なし。コミットをスキップします。"
-            exit 0
-          fi
-
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          # 更新された静的ファイルをステージングする
-          git add data/*/static/*.txt
-
-          if git diff --cached --quiet; then
-            echo "差分なし。コミットをスキップします。"
+          if [ "$HTTP_STATUS" = "200" ]; then
+            if [ -f "data/etajima/static/stops.txt" ] \
+              && [ "$FORCE_UPDATE" != "yes" ]; then
+              echo "[スキップ] etajima stops.txt存在・強制更新なし"
+              SKIPPED=$((SKIPPED + 1))
+            else
+              echo "[更新] etajima"
+              rm -f "data/etajima/static/"*.txt
+              unzip -o "${ZIP_DEST}" -d "data/etajima/static/"
+              echo "展開完了:"
+              ls "data/etajima/static/"
+              UPDATED=$((UPDATED + 1))
+            fi
           else
-            TIMESTAMP=$(date -u '+%Y-%m-%d')
-            git commit -m "chore: update static GTFS-JP data ${TIMESTAMP} [skip ci]"
-            git push
-            echo "静的データをコミット・プッシュしました。（${UPDATED} 件更新）"
+            echo "[失敗] etajima (HTTP ${HTTP_STATUS})"
+            FAIL=$((FAIL + 1))
           fi
+
+          echo "========================================"
+          echo "静的データ取得結果: ${UPDATED} 件更新, ${SKIPPED} 件スキップ, ${FAIL} 件失敗"
+          echo "========================================"
+
+          echo "${UPDATED}" > /tmp/updated_count.txt
