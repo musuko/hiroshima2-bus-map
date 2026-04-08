@@ -1,0 +1,2 @@
+"feed_publisher_name","feed_publisher_url","feed_lang","feed_start_date","feed_end_date","feed_version"
+"井笠バスカンパニー","https://www.ikasabusco.jp/routebus/","ja","20260401","20260710","20260401_20260408"

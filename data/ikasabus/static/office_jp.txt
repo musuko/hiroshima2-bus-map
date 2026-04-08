@@ -1,0 +1,4 @@
+"office_id","office_name","office_url","office_phone"
+"3","廃車",,
+"1","福山営業所",,
+"2","笠岡営業所",,

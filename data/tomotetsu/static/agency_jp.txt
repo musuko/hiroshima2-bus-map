@@ -1,0 +1,2 @@
+"agency_id","agency_official_name","agency_zip_number","agency_address","agency_president_pos","agency_president_name"
+"5240001032914","鞆鉄道","7200835","広島県福山市佐波町197-1","代表取締役","林 真至"

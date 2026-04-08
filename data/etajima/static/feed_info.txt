@@ -1,0 +1,2 @@
+feed_publisher_name,feed_publisher_url,feed_lang
+株式会社タウンクリエーション,http://www.towncreation.com,ja

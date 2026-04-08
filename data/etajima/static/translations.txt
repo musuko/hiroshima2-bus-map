@@ -1,0 +1,379 @@
+trans_id,lang,translation
+小用,ja,小用
+小用,en,Koyo
+小用,ja-Hrkt,こよう
+小用,ko,고요
+小用,zh_cn,小用
+小用,zh_tw,小用
+西の谷,ja,西の谷
+西の谷,en,Nishinotani
+西の谷,ja-Hrkt,にしのたに
+西の谷,ko,니시노타니
+西の谷,zh_cn,西之谷
+西の谷,zh_tw,西之谷
+柿の木田,ja,柿の木田
+柿の木田,en,Kakinokida
+柿の木田,ja-Hrkt,かきのきだ
+世上口,ja,世上口
+世上口,en,Sejoguchi
+世上口,ja-Hrkt,せじょうぐち
+第一術科学校前,ja,第一術科学校前
+第一術科学校前,en,Daiichi Jukka Gakko Mae
+第一術科学校前,ja-Hrkt,だいいちじゅっかがっこうまえ
+向側,ja,向側
+向側,en,Mukaigawa
+向側,ja-Hrkt,むかいがわ
+八幡神社前,ja,八幡神社前
+八幡神社前,en,Yahata Jinja-mae
+八幡神社前,ja-Hrkt,はちまんじんじゃまえ
+八幡神社前,ko,야하타진자 신사
+八幡神社前,zh_cn,八幡神社前
+八幡神社前,zh_tw,八幡神社前
+江田島小学校前,ja,江田島小学校前
+江田島小学校前,en,Etajima Shogakko
+江田島小学校前,ja-Hrkt,えたじましょうがっこうまえ
+山田,ja,山田
+山田,en,Yamada
+山田,ja-Hrkt,やまだ
+山田,ko,야마다
+山田,zh_cn,山田
+山田,zh_tw,山田
+江田島図書館前,ja,江田島図書館前
+江田島図書館前,en,Etajima Toshokan Mae
+江田島図書館前,ja-Hrkt,えたじまとしょかんまえ
+鷲部中郷,ja,鷲部中郷
+鷲部中郷,en,Washibe Nakago
+鷲部中郷,ja-Hrkt,わしべなかごう
+鷲部,ja,鷲部
+鷲部,en,Washibe
+鷲部,ja-Hrkt,わしべ
+江田島南部墓苑,ja,江田島南部墓苑
+江田島南部墓苑,en,Etajima Nanbu Boen
+江田島南部墓苑,ja-Hrkt,えたじまなんぶぼえん
+沖平,ja,沖平
+沖平,en,Okihira
+沖平,ja-Hrkt,おきひら
+江南橋,ja,江南橋
+江南橋,en,Konan Bashi
+江南橋,ja-Hrkt,こうなんばし
+中継ターミナルゆめタウン前,ja,中継ターミナルゆめタウン前
+中継ターミナルゆめタウン前,en,Chukei Terminal Youme Town Mae
+中継ターミナルゆめタウン前,ja-Hrkt,ちゅうけいたーみなるゆめたうんまえ
+外海,ja,外海
+外海,en,Sotoumi
+外海,ja-Hrkt,そとうみ
+庭草,ja,庭草
+庭草,en,Niwaso
+庭草,ja-Hrkt,にわそう
+楠田,ja,楠田
+楠田,en,Kusuda
+楠田,ja-Hrkt,くすだ
+阿浜,ja,阿浜
+阿浜,en,Abama
+阿浜,ja-Hrkt,あばま
+柿浦浜,ja,柿浦浜
+柿浦浜,en,Kakiura Hama
+柿浦浜,ja-Hrkt,かきうらはま
+柿浦桟橋,ja,柿浦桟橋
+柿浦桟橋,en,Kakiura Sanbashi
+柿浦桟橋,ja-Hrkt,かきうらさんばし
+柿浦峠,ja,柿浦峠
+柿浦峠,en,Kakiura Toge
+柿浦峠,ja-Hrkt,かきうらとうげ
+江田島市役所前,ja,江田島市役所前
+江田島市役所前,en,Etajima Shiyakusho Mae
+江田島市役所前,ja-Hrkt,えたじましやくしょまえ
+柿浦,ja,柿浦
+柿浦,en,Kakiura
+柿浦,ja-Hrkt,かきうら
+常道,ja,常道
+常道,en,Tsunemichi
+常道,ja-Hrkt,つねみち
+坊地,ja,坊地
+坊地,en,Boji
+坊地,ja-Hrkt,ぼうじ
+壱畝町,ja,壱畝町
+壱畝町,en,Hitosemachi 
+壱畝町,ja-Hrkt,ひとせまち
+大君,ja,大君
+大君,en,Okimi
+大君,ja-Hrkt,おおきみ
+南大君,ja,南大君
+南大君,en,Minami Okimi
+南大君,ja-Hrkt,みなみおおきみ
+河内,ja,河内
+河内,en,Kochi
+河内,ja-Hrkt,こうち
+能美大原,ja,能美大原
+能美大原,en,Nomi Ohara
+能美大原,ja-Hrkt,のうみおおはら
+大柿老人福祉センター,ja,大柿老人福祉センター
+大柿老人福祉センター,en,Ogaki Rojin Fukushi Center
+大柿老人福祉センター,ja-Hrkt,おおがきろうじんふくしせんたー
+認定こども園おおがき前,ja,認定こども園おおがき前
+認定こども園おおがき前,en,Nintei Kodomoen Ogaki Mae
+認定こども園おおがき前,ja-Hrkt,にんていこどもえんおおがきまえ
+大柿高校前,ja,大柿高校前
+大柿高校前,en,Ogaki Koko Mae
+大柿高校前,ja-Hrkt,おおがきこうこうまえ
+西沖,ja,西沖
+西沖,en,Nishi-oki
+西沖,ja-Hrkt,にしおき
+西沖,ko,니시오키
+西沖,zh_cn,西冲
+西沖,zh_tw,西衝
+鴨田,ja,鴨田
+鴨田,en,Kamoda
+鴨田,ja-Hrkt,かもだ
+深江東,ja,深江東
+深江東,en,Fukae Higashi
+深江東,ja-Hrkt,ふかえひがし
+深江,ja,深江
+深江,en,Fukae
+深江,ja-Hrkt,ふかえ
+深江,ko,후카에
+深江,zh_cn,深江
+深江,zh_tw,深江
+深江港,ja,深江港
+深江港,en,Fukaeko
+深江港,ja-Hrkt,ふかえこう
+須野本,ja,須野本
+須野本,en,Sunomoto
+須野本,ja-Hrkt,すのもと
+ＪＡ呉大古支店前,ja,ＪＡ呉大古支店前
+ＪＡ呉大古支店前,en,JA  Kure Ofuru Shiten Mae
+ＪＡ呉大古支店前,ja-Hrkt,じぇいえいくれおおふるしてんまえ
+峰ヶ迫,ja,峰ヶ迫
+峰ヶ迫,en,Minegasako
+峰ヶ迫,ja-Hrkt,みねがさこ
+澤医院前,ja,澤医院前
+澤医院前,en,Sawa Iin-mae
+澤医院前,ja-Hrkt,さわいいんまえ
+余防,ja,余防
+余防,en,Yobo
+余防,ja-Hrkt,よぼう
+鎌木,ja,鎌木
+鎌木,en,Kamagi
+鎌木,ja-Hrkt,かまぎ
+東浜,ja,東浜
+東浜,en,Higashihama
+東浜,ja-Hrkt,ひがしはま
+東浜,ko,히가시하마
+東浜,zh_cn,东滨
+東浜,zh_tw,東濱
+中浜,ja,中浜
+中浜,en,Nakahama
+中浜,ja-Hrkt,なかはま
+鹿川小学校前,ja,鹿川小学校前
+鹿川小学校前,en,Kanokawa Chugakko Mae
+鹿川小学校前,ja-Hrkt,かのかわしょうがっこうまえ
+是長口,ja,是長口
+是長口,en,Korenagaguchi
+是長口,ja-Hrkt,これながぐち
+下郷,ja,下郷
+下郷,en,Shimogo
+下郷,ja-Hrkt,しもごう
+下郷,ko,시모고
+下郷,zh_cn,下乡
+下郷,zh_tw,下鄉
+上郷,ja,上郷
+上郷,en,Kamigo
+上郷,ja-Hrkt,かみごう
+永田,ja,永田
+永田,en,Nagata
+永田,ja-Hrkt,えいだ
+永田,ko,나가타
+永田,zh_cn,永田
+永田,zh_tw,永田
+宮山,ja,宮山
+宮山,en,Miyayama
+宮山,ja-Hrkt,みややま
+迫田口,ja,迫田口
+迫田口,en,Sakodaguchi
+迫田口,ja-Hrkt,さこだぐち
+能美中学校前,ja,能美中学校前
+能美中学校前,en,Nomi Chugakko Mae
+能美中学校前,ja-Hrkt,のうみちゅうがっこうまえ
+長石,ja,長石
+長石,en,Nagaishi
+長石,ja-Hrkt,ながいし
+中町桟橋,ja,中町桟橋
+中町桟橋,en,Nakamachi Sanbashi
+中町桟橋,ja-Hrkt,なかまちさんばし
+黒張,ja,黒張
+黒張,en,Kurohari
+黒張,ja-Hrkt,くろはり
+長瀬海岸,ja,長瀬海岸
+長瀬海岸,en,Nagase Kaigan
+長瀬海岸,ja-Hrkt,ながせかいがん
+松ヶ鼻,ja,松ヶ鼻
+松ヶ鼻,en,Matsugahama
+松ヶ鼻,ja-Hrkt,まつがはな
+墓地公園前,ja,墓地公園前
+墓地公園前,en,Bochi Koen Mae
+墓地公園前,ja-Hrkt,ぼちこうえんまえ
+大盤団地,ja,大盤団地
+大盤団地,en,Oban Danchi
+大盤団地,ja-Hrkt,おおばんだんち
+内海,ja,内海
+内海,en,Uchiumi
+内海,ja-Hrkt,うちうみ
+見浪橋,ja,見浪橋
+見浪橋,en,Minamibashi
+見浪橋,ja-Hrkt,みなみばし
+南区,ja,南区
+南区,en,Minamiku
+南区,ja-Hrkt,みなみく
+荒神橋,ja,荒神橋
+荒神橋,en,Kojin Bashi
+荒神橋,ja-Hrkt,こうじんばし
+沖北,ja,沖北
+沖北,en,Okikita
+沖北,ja-Hrkt,おききた
+高田桟橋前,ja,高田桟橋前
+高田桟橋前,en,Takata Sanbashi Mae
+高田桟橋前,ja-Hrkt,たかたさんばしまえ
+高田桟橋,ja,高田桟橋
+高田桟橋,en,Takata Sanbashi
+高田桟橋,ja-Hrkt,たかたさんばし
+小方,ja,小方
+小方,en,Ogata
+小方,ja-Hrkt,おがた
+小島,ja,小島
+小島,en,Kojima
+小島,ja-Hrkt,こじま
+三高口,ja,三高口
+三高口,en,Mitakaguchi
+三高口,ja-Hrkt,みたかぐち
+三高桟橋,ja,三高桟橋
+三高桟橋,en,Mitaka Sanbashi
+三高桟橋,ja-Hrkt,みたかさんばし
+三高,ja,三高
+三高,en,Mitaka
+三高,ja-Hrkt,みたか
+三高中学校前,ja,三高中学校前
+三高中学校前,en,Mitaka Chugakko Mae
+三高中学校前,ja-Hrkt,みたかちゅうがっこうまえ
+高祖,ja,高祖
+高祖,en,Koso
+高祖,ja-Hrkt,こうそ
+豊作原住宅前,ja,豊作原住宅前
+豊作原住宅前,en,Horakubara Jutaku Mae
+豊作原住宅前,ja-Hrkt,ほうさくばらじゅうたくまえ
+大間,ja,大間
+大間,en,Oma
+大間,ja-Hrkt,おおま
+亀原,ja,亀原
+亀原,en,Kamehara
+亀原,ja-Hrkt,かめはら
+沖美ふれあいセンター前,ja,沖美ふれあいセンター前
+沖美ふれあいセンター前,en,Okimi Fureai Center Mae
+沖美ふれあいセンター前,ja-Hrkt,おきみふれあいせんたーまえ
+美能,ja,美能
+美能,en,Mino
+美能,ja-Hrkt,みのう
+わだて,ja,わだて
+わだて,en,Wadate
+わだて,ja-Hrkt,わだて
+ニューブルービーチ前,ja,ニューブルービーチ前
+ニューブルービーチ前,en,New Blue Beach Mae
+ニューブルービーチ前,ja-Hrkt,にゅーぶるーびーちまえ
+砠,ja,砠
+砠,en,Sowa
+砠,ja-Hrkt,そうわ
+鹿田公園前,ja,鹿田公園前
+鹿田公園前,en,Shikata Koen Mae
+鹿田公園前,ja-Hrkt,しかたこうえんまえ
+堂道,ja,堂道
+堂道,en,Dodo
+堂道,ja-Hrkt,どうどう
+林山,ja,林山
+林山,en,Hayashiyama
+林山,ja-Hrkt,はやしやま
+是長,ja,是長
+是長,en,Korenaga
+是長,ja-Hrkt,これなが
+松崎,ja,松崎
+松崎,en,Massaki
+松崎,ja-Hrkt,まさき
+松崎,ko,맛사키
+松崎,zh_cn,松崎
+松崎,zh_tw,松崎
+沖美市民センター前,ja,沖美市民センター前
+沖美市民センター前,en,Oki Shimin Center Mae
+沖美市民センター前,ja-Hrkt,おきみしみんせんたーまえ
+畑,ja,畑
+畑,en,Hata
+畑,ja-Hrkt,はた
+畑,ko,하타
+畑,zh_cn,畑
+畑,zh_tw,畑
+岡,ja,岡
+岡,en,Oka
+岡,ja-Hrkt,おか
+岡,ko,오카
+岡,zh_cn,冈
+岡,zh_tw,岡
+大王,ja,大王
+大王,en,Daiou
+大王,ja-Hrkt,だいおう
+大王神社前,ja,大王神社前
+大王神社前,en,Daiou Jinja Mae
+大王神社前,ja-Hrkt,だいおうじんじゃまえ
+小田,ja,小田
+小田,en,Oda
+小田,ja-Hrkt,おだ
+中郷公園,ja,中郷公園
+中郷公園,en,Nakago Koen Mae
+中郷公園,ja-Hrkt,なかごうこうえん
+奥小路,ja,奥小路
+奥小路,en,Okushoji
+奥小路,ja-Hrkt,おくしょうじ
+世上,ja,世上
+世上,en,Sejo
+世上,ja-Hrkt,せじょう
+世上大橋,ja,世上大橋
+世上大橋,en,Sejo Ohashi
+世上大橋,ja-Hrkt,せじょうおおはし
+宮ノ原２丁目,ja,宮ノ原２丁目
+宮ノ原２丁目,en,nichome
+宮ノ原２丁目,ja-Hrkt,みやのはらにちょうめ
+宮ノ原２丁目,ko,2초메
+宮ノ原２丁目,zh_cn,2丁目
+宮ノ原２丁目,zh_tw,2丁目
+一つ川橋,ja,一つ川橋
+一つ川橋,en,Hitotsu Kawa Bashi
+一つ川橋,ja-Hrkt,ひとつかわばし
+石風呂,ja,石風呂
+石風呂,en,Ishiburo
+石風呂,ja-Hrkt,いしぶろ
+大原,ja,大原
+大原,en,Ohara
+大原,ja-Hrkt,おおはら
+大原,ko,오하라
+大原,zh_cn,大原
+大原,zh_tw,大原
+大原口,ja,大原口
+大原口,en,Oharaguchi
+大原口,ja-Hrkt,おおはらぐち
+青少年交流の家入口,ja,青少年交流の家入口
+青少年交流の家入口,en,Seishonen Koryu no Ie Iriguchi
+青少年交流の家入口,ja-Hrkt,せいしょうねんこうりゅうのいえいりぐち
+津久茂,ja,津久茂
+津久茂,en,Tsukumo
+津久茂,ja-Hrkt,つくも
+津久茂,ko,쓰쿠모
+津久茂,zh_cn,津久茂
+津久茂,zh_tw,津久茂
+秋月,ja,秋月
+秋月,en,Akiduki
+秋月,ja-Hrkt,あきづき
+秋月桟橋,ja,秋月桟橋
+秋月桟橋,en,Akiduki Sanbashi
+秋月桟橋,ja-Hrkt,あきづきさんばし
+飛渡瀬,ja,飛渡瀬
+飛渡瀬,en,Hitonose
+飛渡瀬,ja-Hrkt,ひとのせ
+一光ハマ前,ja,一光ハマ前
+一光ハマ前,en,Ikko Hama-mae
+一光ハマ前,ja-Hrkt,いっこうはままえ

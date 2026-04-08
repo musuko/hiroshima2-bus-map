@@ -1,0 +1,2 @@
+"agency_id","agency_name","agency_url","agency_timezone","agency_lang","agency_phone","agency_fare_url"
+"5240001032914","鞆鉄道","https://www.tomotetsu.co.jp/?page_id=1288","Asia/Tokyo","ja","0849523700",

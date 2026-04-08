@@ -1,0 +1,2 @@
+agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url,agency_email
+9240001027175,江田島バス,https://etajimabus.jp,Asia/Tokyo,ja,0823-27-5585,https://etajimabus.jp/publics/index/23/,etajimabus@herb.ocn.ne.jp

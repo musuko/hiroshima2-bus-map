@@ -1,0 +1,2 @@
+"agency_id","agency_official_name","agency_zip_number","agency_address","agency_president_pos","agency_president_name"
+"5260001025577","井笠バスカンパニー","7140042","岡山県笠岡市美の浜5番地","代表取締役","山田 英夫"
