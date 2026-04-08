@@ -265,3 +265,31 @@ jobs:
           echo "========================================"
 
           echo "${UPDATED}" > /tmp/updated_count.txt
+
+          # -----------------------------------------------------------------------
+          # ステップ4: 更新があった場合のみコミット・プッシュする
+          # -----------------------------------------------------------------------
+          - name: 更新データをコミット・プッシュ
+            run: |
+              # 更新件数を読み込む
+              UPDATED=$(cat /tmp/updated_count.txt)
+
+              if [ "$UPDATED" = "0" ]; then
+                echo "更新なし。コミットをスキップします。"
+                exit 0
+              fi
+
+              git config user.name  "github-actions[bot]"
+              git config user.email "github-actions[bot]@users.noreply.github.com"
+
+              # 全事業者の静的ファイルをステージングする
+              git add data/*/static/*.txt
+
+              if git diff --cached --quiet; then
+                echo "差分なし。コミットをスキップします。"
+              else
+                TIMESTAMP=$(date -u '+%Y-%m-%d')
+                git commit -m "chore: update static GTFS-JP data ${TIMESTAMP} [skip ci]"
+                git push
+                echo "静的データをコミット・プッシュしました。（${UPDATED} 件更新）"
+              fi
