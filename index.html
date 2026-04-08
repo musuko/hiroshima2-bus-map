@@ -421,8 +421,9 @@
         top: auto;
         /* 上からの位置指定を無効にする */
         width: 100%;
-        max-height: 55vh;
-        /* 画面の55%の高さ */
+        height: 40vh;          /* デフォルト高さ40% */
+        max-height: 80vh;      /* 最大80% */
+        min-height: 15vh;      /* 最小15% */
         border-radius: 16px 16px 0 0;
         box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
         transform: translateY(100%);
@@ -470,7 +471,7 @@
       /* パネル本文の高さをスクロール可能にする */
       #stop-panel-body,
       #trip-panel-body {
-        max-height: calc(55vh - 50px);
+        max-height: calc(100% - 50px);  /* ヘッダー分を引いた高さ */
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
       }

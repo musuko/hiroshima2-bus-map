@@ -807,92 +807,115 @@ document
   .getElementById("refresh-btn")
   .addEventListener("click", fetchVehiclePositions);
 
-  // -------------------------------------------------------
-// パネルをドラッグで移動できるようにする
-// ヘッダー部分をつかんでドラッグすると
-// パネル全体が画面上を自由に移動できる
 // -------------------------------------------------------
-function makeDraggable(panelId, headerId) {
-  // スマホ（幅768px以下）ではドロワースタイルのため
-  // ドラッグ移動は無効にする
-  if (window.innerWidth <= 768) return;
-
-  var panel = document.getElementById(panelId);
+// パネルの操作機能を設定する
+//
+// PC（幅769px以上）の場合:
+//   ヘッダーをドラッグしてパネルを画面上で移動できる
+//
+// スマホ（幅768px以下）の場合:
+//   ヘッダーをドラッグしてパネルの高さを変更できる
+//   上ドラッグ → 高さ増加（最大80vh）
+//   下ドラッグ → 高さ減少（最小15vh）
+//   デフォルト: 40vh
+// -------------------------------------------------------
+function initPanelControl(panelId, headerId) {
+  var panel  = document.getElementById(panelId);
   var header = document.getElementById(headerId);
 
   var isDragging = false;
-  var startX, startY, startLeft, startTop;
+  var startX = 0, startY = 0;
+  var startLeft = 0, startTop = 0, startH = 0;
 
-  header.addEventListener("mousedown", function (e) {
-    // ×ボタンのクリックはドラッグ対象外にする
-    if (e.target.tagName === "BUTTON") return;
+  var winH = window.innerHeight;
+  var MAX_H = winH * 0.80;  // スマホ最大高さ: 80vh
+  var MIN_H = winH * 0.15;  // スマホ最小高さ: 15vh
+
+  // -------------------------------------------------------
+  // 操作開始（マウスダウン・タッチスタート）
+  // -------------------------------------------------------
+  function onStart(clientX, clientY) {
     isDragging = true;
+    startX = clientX;
+    startY = clientY;
+    panel.style.transition = "none";  // ドラッグ中はアニメーションを止める
 
-    // パネルを position:fixed に切り替えて自由移動を可能にする
-    var rect = panel.getBoundingClientRect();
-    panel.style.position = "fixed";
-    panel.style.right = "auto";
-    panel.style.top = rect.top + "px";
-    panel.style.left = rect.left + "px";
-
-    startX = e.clientX;
-    startY = e.clientY;
-    startLeft = rect.left;
-    startTop = rect.top;
-    e.preventDefault();
-  });
-
-  // タッチ操作（スマホ）にも対応する
-  header.addEventListener(
-    "touchstart",
-    function (e) {
-      if (e.target.tagName === "BUTTON") return;
-      var touch = e.touches[0];
-      isDragging = true;
+    if (window.innerWidth > 768) {
+      // PC: パネルの現在位置を記録する
       var rect = panel.getBoundingClientRect();
       panel.style.position = "fixed";
-      panel.style.right = "auto";
-      panel.style.top = rect.top + "px";
-      panel.style.left = rect.left + "px";
-      startX = touch.clientX;
-      startY = touch.clientY;
+      panel.style.right    = "auto";
+      panel.style.top      = rect.top  + "px";
+      panel.style.left     = rect.left + "px";
       startLeft = rect.left;
-      startTop = rect.top;
-      e.preventDefault();
-    },
-    { passive: false },
-  );
+      startTop  = rect.top;
+    } else {
+      // スマホ: パネルの現在の高さを記録する
+      startH = panel.getBoundingClientRect().height;
+    }
+  }
 
-  document.addEventListener("mousemove", function (e) {
+  // -------------------------------------------------------
+  // 操作中（マウスムーブ・タッチムーブ）
+  // -------------------------------------------------------
+  function onMove(clientX, clientY) {
     if (!isDragging) return;
-    var dx = e.clientX - startX;
-    var dy = e.clientY - startY;
-    panel.style.left = startLeft + dx + "px";
-    panel.style.top = startTop + dy + "px";
-  });
+    var dx = clientX - startX;
+    var dy = clientY - startY;
 
-  document.addEventListener(
-    "touchmove",
-    function (e) {
-      if (!isDragging) return;
-      var touch = e.touches[0];
-      var dx = touch.clientX - startX;
-      var dy = touch.clientY - startY;
-      panel.style.left = startLeft + dx + "px";
-      panel.style.top = startTop + dy + "px";
-      e.preventDefault();
-    },
-    { passive: false },
-  );
+    if (window.innerWidth > 768) {
+      // PC: パネルを移動する
+      panel.style.left = (startLeft + dx) + "px";
+      panel.style.top  = (startTop  + dy) + "px";
+    } else {
+      // スマホ: パネルの高さを変更する
+      // 上ドラッグ（dyマイナス）→ 高さ増加
+      var newH = Math.max(MIN_H, Math.min(MAX_H, startH - dy));
+      panel.style.height = newH + "px";
+    }
+  }
 
-  document.addEventListener("mouseup", function () {
+  // -------------------------------------------------------
+  // 操作終了（マウスアップ・タッチエンド）
+  // -------------------------------------------------------
+  function onEnd() {
+    if (!isDragging) return;
     isDragging = false;
+    // アニメーションを元に戻す
+    panel.style.transition = "transform 0.3s ease";
+  }
+
+  // -------------------------------------------------------
+  // マウスイベント（PC用）
+  // -------------------------------------------------------
+  header.addEventListener("mousedown", function(e) {
+    if (e.target.tagName === "BUTTON") return;
+    onStart(e.clientX, e.clientY);
+    e.preventDefault();
   });
-  document.addEventListener("touchend", function () {
-    isDragging = false;
+  document.addEventListener("mousemove", function(e) {
+    onMove(e.clientX, e.clientY);
   });
+  document.addEventListener("mouseup", onEnd);
+
+  // -------------------------------------------------------
+  // タッチイベント（スマホ用）
+  // -------------------------------------------------------
+  header.addEventListener("touchstart", function(e) {
+    if (e.target.tagName === "BUTTON") return;
+    onStart(e.touches[0].clientX, e.touches[0].clientY);
+    e.preventDefault();
+  }, { passive: false });
+  document.addEventListener("touchmove", function(e) {
+    if (!isDragging) return;
+    onMove(e.touches[0].clientX, e.touches[0].clientY);
+    e.preventDefault();
+  }, { passive: false });
+  document.addEventListener("touchend", onEnd);
 }
 
-// バス停パネルと便情報パネルをドラッグ可能にする
-makeDraggable("stop-panel",  "stop-panel-header");
-makeDraggable("trip-panel",  "trip-panel-header");
+// -------------------------------------------------------
+// バス停パネルと便情報パネルに操作機能を設定する
+// -------------------------------------------------------
+initPanelControl("stop-panel",  "stop-panel-header");
+initPanelControl("trip-panel",  "trip-panel-header");
