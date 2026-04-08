@@ -769,59 +769,6 @@ async function initGtfs() {
     gtfsFareAttributes = results[7];
     gtfsFareRules = results[8];
 
-    // -------------------------------------------------------
-    // 運賃インデックスを構築する
-    //
-    // fare_rules.txt を元に以下の構造のMapを作成する:
-    //   "route_id→origin_id→destination_id" → price
-    //
-    // route_id も含めることで同じバス停間でも
-    // 路線によって異なる運賃に正しく対応できる
-    // -------------------------------------------------------
-    function buildFareIndex() {
-      fareIndex = new Map();
-
-      // fare_attributes.txt を fare_id でインデックス化する
-      var fareAttrMap = {};
-      gtfsFareAttributes.forEach(function (row) {
-        fareAttrMap[row.fare_id] = parseInt(row.price);
-      });
-
-      // fare_rules.txt を route_id→origin_id→destination_id の
-      // 組み合わせでMapに格納する
-      gtfsFareRules.forEach(function (row) {
-        var price = fareAttrMap[row.fare_id];
-        if (price == null) return;
-
-        // route_id を含めた3要素キーで格納する
-        var key = row.route_id + "→" + row.origin_id + "→" + row.destination_id;
-        fareIndex.set(key, price);
-      });
-
-      console.log("[GTFS] 運賃インデックス構築完了:", fareIndex.size, "件");
-    }
-
-    // -------------------------------------------------------
-    // 乗車バス停から降車バス停までの運賃を検索する
-    //
-    // 引数:
-    //   routeId           ... 路線ID（trip.route_id）
-    //   originZoneId      ... 乗車バス停の zone_id
-    //   destinationZoneId ... 降車バス停の zone_id
-    //
-    // 戻り値:
-    //   運賃（円）または null（データなし）
-    // -------------------------------------------------------
-    function getFare(routeId, originZoneId, destinationZoneId) {
-      // 同じバス停は乗車地点なので null を返す
-      if (originZoneId === destinationZoneId) return null;
-
-      // route_id を含めたキーで検索する
-      var key = routeId + "→" + originZoneId + "→" + destinationZoneId;
-      var price = fareIndex.get(key);
-      return price != null ? price : null;
-    }
-
     console.log("[GTFS] stops:", gtfsStops.length);
     console.log("[GTFS] stop_times:", gtfsStopTimes.length);
     console.log("[GTFS] trips:", gtfsTrips.length);
@@ -829,59 +776,8 @@ async function initGtfs() {
     console.log("[GTFS] calendar:", gtfsCalendar.length);
     console.log("[GTFS] calendar_dates:", gtfsCalendarDates.length);
     console.log("[GTFS] shapes:", gtfsShapes.size, "件");
-    console.log("[GTFS] fare_attributes:", gtfsFareAttributes.length); // 追加
-    console.log("[GTFS] fare_rules:", gtfsFareRules.length); // 追加
-
-    // -------------------------------------------------------
-    // shapes.txt を読み込んで shape_id ごとの座標配列を作成する
-    //
-    // shapes.txt の各行は以下の形式:
-    //   shape_id, shape_pt_lat, shape_pt_lon, shape_pt_sequence
-    //
-    // shape_pt_sequence 順にソートして
-    // gtfsShapes に Map として格納する:
-    //   shape_id → [[lat, lng], [lat, lng], ...]
-    // -------------------------------------------------------
-    function buildShapesIndex(shapesData) {
-      // 一旦 shape_id ごとに配列に収集する
-      var shapeTemp = {};
-
-      shapesData.forEach(function (row) {
-        var shapeId = row.shape_id;
-        if (!shapeId) return;
-
-        if (!shapeTemp[shapeId]) {
-          shapeTemp[shapeId] = [];
-        }
-
-        shapeTemp[shapeId].push({
-          seq: parseInt(row.shape_pt_sequence),
-          lat: parseFloat(row.shape_pt_lat),
-          lng: parseFloat(row.shape_pt_lon),
-        });
-      });
-
-      // shape_pt_sequence 順にソートして座標配列として格納する
-      gtfsShapes = new Map();
-      Object.keys(shapeTemp).forEach(function (shapeId) {
-        var points = shapeTemp[shapeId];
-
-        // sequence 順にソートする
-        points.sort(function (a, b) {
-          return a.seq - b.seq;
-        });
-
-        // [lat, lng] の配列に変換してMapに格納する
-        gtfsShapes.set(
-          shapeId,
-          points.map(function (p) {
-            return [p.lat, p.lng];
-          }),
-        );
-      });
-
-      console.log("[GTFS] shapes インデックス構築完了:", gtfsShapes.size, "件");
-    }
+    console.log("[GTFS] fare_attributes:", gtfsFareAttributes.length);
+    console.log("[GTFS] fare_rules:", gtfsFareRules.length);
 
     calcActiveServiceIds();
     renderStops();
@@ -891,6 +787,110 @@ async function initGtfs() {
     setStatus("error", "読み込みエラー: " + currentOperator.name);
     console.error("[GTFS] 初期化失敗:", err);
   }
+}
+
+// -------------------------------------------------------
+// shapes.txt を読み込んで shape_id ごとの座標配列を作成する
+//
+// shapes.txt の各行は以下の形式:
+//   shape_id, shape_pt_lat, shape_pt_lon, shape_pt_sequence
+//
+// shape_pt_sequence 順にソートして
+// gtfsShapes に Map として格納する:
+//   shape_id → [[lat, lng], [lat, lng], ...]
+// -------------------------------------------------------
+function buildShapesIndex(shapesData) {
+  // 一旦 shape_id ごとに配列に収集する
+  var shapeTemp = {};
+
+  shapesData.forEach(function (row) {
+    var shapeId = row.shape_id;
+    if (!shapeId) return;
+
+    if (!shapeTemp[shapeId]) {
+      shapeTemp[shapeId] = [];
+    }
+
+    shapeTemp[shapeId].push({
+      seq: parseInt(row.shape_pt_sequence),
+      lat: parseFloat(row.shape_pt_lat),
+      lng: parseFloat(row.shape_pt_lon),
+    });
+  });
+
+  // shape_pt_sequence 順にソートして座標配列として格納する
+  gtfsShapes = new Map();
+  Object.keys(shapeTemp).forEach(function (shapeId) {
+    var points = shapeTemp[shapeId];
+
+    // sequence 順にソートする
+    points.sort(function (a, b) {
+      return a.seq - b.seq;
+    });
+
+    // [lat, lng] の配列に変換してMapに格納する
+    gtfsShapes.set(
+      shapeId,
+      points.map(function (p) {
+        return [p.lat, p.lng];
+      }),
+    );
+  });
+
+  console.log("[GTFS] shapes インデックス構築完了:", gtfsShapes.size, "件");
+}
+
+// -------------------------------------------------------
+// 運賃インデックスを構築する
+//
+// fare_rules.txt を元に以下の構造のMapを作成する:
+//   "route_id→origin_id→destination_id" → price
+//
+// route_id も含めることで同じバス停間でも
+// 路線によって異なる運賃に正しく対応できる
+// -------------------------------------------------------
+function buildFareIndex() {
+  fareIndex = new Map();
+
+  // fare_attributes.txt を fare_id でインデックス化する
+  var fareAttrMap = {};
+  gtfsFareAttributes.forEach(function (row) {
+    fareAttrMap[row.fare_id] = parseInt(row.price);
+  });
+
+  // fare_rules.txt を route_id→origin_id→destination_id の
+  // 組み合わせでMapに格納する
+  gtfsFareRules.forEach(function (row) {
+    var price = fareAttrMap[row.fare_id];
+    if (price == null) return;
+
+    // route_id を含めた3要素キーで格納する
+    var key = row.route_id + "→" + row.origin_id + "→" + row.destination_id;
+    fareIndex.set(key, price);
+  });
+
+  console.log("[GTFS] 運賃インデックス構築完了:", fareIndex.size, "件");
+}
+
+// -------------------------------------------------------
+// 乗車バス停から降車バス停までの運賃を検索する
+//
+// 引数:
+//   routeId           ... 路線ID（trip.route_id）
+//   originZoneId      ... 乗車バス停の zone_id
+//   destinationZoneId ... 降車バス停の zone_id
+//
+// 戻り値:
+//   運賃（円）または null（データなし）
+// -------------------------------------------------------
+function getFare(routeId, originZoneId, destinationZoneId) {
+  // 同じバス停は乗車地点なので null を返す
+  if (originZoneId === destinationZoneId) return null;
+
+  // route_id を含めたキーで検索する
+  var key = routeId + "→" + originZoneId + "→" + destinationZoneId;
+  var price = fareIndex.get(key);
+  return price != null ? price : null;
 }
 
 // ============================================================
