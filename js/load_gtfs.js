@@ -359,6 +359,19 @@ function loadCsv(path) {
 }
 
 // -------------------------------------------------------
+// オプションのCSVファイルを読み込む
+// ファイルが存在しない場合はエラーにせず空配列を返す
+// shapes.txt や fare_attributes.txt など
+// 事業者によって存在しない場合があるファイルに使用する
+// -------------------------------------------------------
+function loadCsvOptional(path) {
+  return loadCsv(path).catch(function() {
+    console.log("[GTFS] オプションファイルなし（スキップ）: " + path);
+    return [];
+  });
+}
+
+// -------------------------------------------------------
 // 今日の日付をYYYYMMDD形式で返す
 // -------------------------------------------------------
 function getTodayStr() {
@@ -769,10 +782,10 @@ async function initGtfs() {
       loadCsv(base + "trips.txt"),
       loadCsv(base + "routes.txt"),
       loadCsv(base + "calendar.txt"),
-      loadCsv(base + "calendar_dates.txt"),
-      loadCsv(base + "shapes.txt"),
-      loadCsv(base + "fare_attributes.txt"),
-      loadCsv(base + "fare_rules.txt"),
+      loadCsvOptional(base + "calendar_dates.txt"), // ない場合あり
+      loadCsvOptional(base + "shapes.txt"), // ない場合あり 
+      loadCsvOptional(base + "fare_attributes.txt"), // ない場合あり
+      loadCsvOptional(base + "fare_rules.txt"), // ない場合あり
     ]);
 
     gtfsStops = results[0];
