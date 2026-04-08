@@ -405,9 +405,14 @@ function calcActiveServiceIds() {
 // バス停マーカーのアイコンを生成する（青い小円）
 // -------------------------------------------------------
 function createStopIcon() {
+  // 現在選択中の事業者のカラーを使用する
+  // color が未定義の場合はデフォルトの青を使用する
+  var color = currentOperator.color || "#2c7be5";
   var svg =
     '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14">' +
-    '<circle cx="7" cy="7" r="6" fill="#2c7be5" stroke="white" stroke-width="1.5"/>' +
+    '<circle cx="7" cy="7" r="6" fill="' +
+    color +
+    '" stroke="white" stroke-width="1.5"/>' +
     "</svg>";
   return L.divIcon({
     html: svg,
