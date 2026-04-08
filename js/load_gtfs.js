@@ -72,6 +72,10 @@ var stopMarkers = [];
 // 地図上に描画した路線ライン（別の便選択時に削除するために保持する）
 var currentTripLine = null;
 
+// shapes.txt のデータを格納する変数
+// shape_id → 座標配列 のMapとして管理する
+var gtfsShapes = new Map();
+
 // -------------------------------------------------------
 // Leaflet マップ初期化（広島市中心部）
 // -------------------------------------------------------
@@ -570,13 +574,36 @@ function showTripPanel(tripId, currentStopId) {
   html += "</ul>";
   body.innerHTML = html;
 
-  // 前の路線を削除して新しい路線を描画する
+  // -------------------------------------------------------
+  // 地図上に路線を描画する
+  // shapes.txt が利用可能な場合はそれを使用する
+  // shapes.txt がない場合はバス停を繋いで描画する（フォールバック）
+  // -------------------------------------------------------
   if (currentTripLine) {
     map.removeLayer(currentTripLine);
     currentTripLine = null;
   }
-  if (coords.length >= 2) {
-    currentTripLine = L.polyline(coords, {
+
+  // trip の shape_id を取得する
+  var shapeCoords = null;
+  if (trip && trip.shape_id) {
+    // shape_id はスペース入り文字列のため trim して検索する
+    var shapeId = trip.shape_id.trim();
+    shapeCoords = gtfsShapes.get(shapeId) || null;
+    if (shapeCoords) {
+      console.log(
+        "[GTFS] shapes使用: " + shapeId + " (" + shapeCoords.length + "点)",
+      );
+    } else {
+      console.log("[GTFS] shape_id未発見: " + shapeId + " → バス停接続で代替");
+    }
+  }
+
+  // shapes.txt の座標があればそれを使い、なければバス停を繋ぐ
+  var lineCoords = shapeCoords || coords;
+
+  if (lineCoords.length >= 2) {
+    currentTripLine = L.polyline(lineCoords, {
       color: "#2c7be5",
       weight: 4,
       opacity: 0.8,
@@ -645,6 +672,7 @@ async function initGtfs() {
       loadCsv(base + "routes.txt"),
       loadCsv(base + "calendar.txt"),
       loadCsv(base + "calendar_dates.txt"),
+      loadCsv(base + "shapes.txt"),
     ]);
 
     gtfsStops = results[0];
@@ -653,6 +681,9 @@ async function initGtfs() {
     gtfsRoutes = results[3];
     gtfsCalendar = results[4];
     gtfsCalendarDates = results[5];
+    // shapes.txt を shape_id ごとに座標配列としてインデックス化する
+    // shape_id はスペース入り文字列のため文字列のまま扱う
+    buildShapesIndex(results[6]);
 
     console.log("[GTFS] stops:", gtfsStops.length);
     console.log("[GTFS] stop_times:", gtfsStopTimes.length);
@@ -660,6 +691,58 @@ async function initGtfs() {
     console.log("[GTFS] routes:", gtfsRoutes.length);
     console.log("[GTFS] calendar:", gtfsCalendar.length);
     console.log("[GTFS] calendar_dates:", gtfsCalendarDates.length);
+    console.log("[GTFS] shapes:", gtfsShapes.size, "件");
+
+    // -------------------------------------------------------
+    // shapes.txt を読み込んで shape_id ごとの座標配列を作成する
+    //
+    // shapes.txt の各行は以下の形式:
+    //   shape_id, shape_pt_lat, shape_pt_lon, shape_pt_sequence
+    //
+    // shape_pt_sequence 順にソートして
+    // gtfsShapes に Map として格納する:
+    //   shape_id → [[lat, lng], [lat, lng], ...]
+    // -------------------------------------------------------
+    function buildShapesIndex(shapesData) {
+      // 一旦 shape_id ごとに配列に収集する
+      var shapeTemp = {};
+
+      shapesData.forEach(function (row) {
+        var shapeId = row.shape_id;
+        if (!shapeId) return;
+
+        if (!shapeTemp[shapeId]) {
+          shapeTemp[shapeId] = [];
+        }
+
+        shapeTemp[shapeId].push({
+          seq: parseInt(row.shape_pt_sequence),
+          lat: parseFloat(row.shape_pt_lat),
+          lng: parseFloat(row.shape_pt_lon),
+        });
+      });
+
+      // shape_pt_sequence 順にソートして座標配列として格納する
+      gtfsShapes = new Map();
+      Object.keys(shapeTemp).forEach(function (shapeId) {
+        var points = shapeTemp[shapeId];
+
+        // sequence 順にソートする
+        points.sort(function (a, b) {
+          return a.seq - b.seq;
+        });
+
+        // [lat, lng] の配列に変換してMapに格納する
+        gtfsShapes.set(
+          shapeId,
+          points.map(function (p) {
+            return [p.lat, p.lng];
+          }),
+        );
+      });
+
+      console.log("[GTFS] shapes インデックス構築完了:", gtfsShapes.size, "件");
+    }
 
     calcActiveServiceIds();
     renderStops();
