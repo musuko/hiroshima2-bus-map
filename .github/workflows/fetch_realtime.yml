@@ -166,24 +166,24 @@ jobs:
           echo "--------------------------------------------"
           echo "取得結果: ${SUCCESS}/${TOTAL} 成功, ${FAIL} 失敗"
           echo "--------------------------------------------"
-          
-          # -----------------------------------------------------------------------
-          # ステップ3: 更新されたリアルタイムファイルをコミット・プッシュする
-          # -----------------------------------------------------------------------
-          - name: リアルタイムデータをコミット・プッシュ
-            run: |
-              git config user.name  "github-actions[bot]"
-              git config user.email "github-actions[bot]@users.noreply.github.com"
 
-              # 全事業者のリアルタイムバイナリをステージングする
-              git add data/*/realtime/*.bin
+      # -----------------------------------------------------------------------
+      # ステップ3: 更新されたリアルタイムファイルをコミット・プッシュする
+      # -----------------------------------------------------------------------
+      - name: リアルタイムデータをコミット・プッシュ
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-              # 差分がある場合のみコミットする（空コミット防止）
-              if git diff --cached --quiet; then
-                echo "リアルタイムデータに変更なし。コミットをスキップします。"
-              else
-                TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M UTC')
-                git commit -m "chore: update realtime data ${TIMESTAMP} [skip ci]"
-                git push
-                echo "リアルタイムデータをコミット・プッシュしました。"
-              fi          
+          # 全事業者のリアルタイムバイナリをステージングする
+          git add data/*/realtime/*.bin
+
+          # 差分がある場合のみコミットする（空コミット防止）
+          if git diff --cached --quiet; then
+            echo "リアルタイムデータに変更なし。コミットをスキップします。"
+          else
+            TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M UTC')
+            git commit -m "chore: update realtime data ${TIMESTAMP} [skip ci]"
+            git push
+            echo "リアルタイムデータをコミット・プッシュしました。"
+          fi          
