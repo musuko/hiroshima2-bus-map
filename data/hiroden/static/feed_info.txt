@@ -1,2 +1,2 @@
 ﻿feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version
-広島電鉄,https://www.hiroden.co.jp/bus/,ja,20260329,20260929,20260329
+広島電鉄,https://www.hiroden.co.jp/bus/,ja,20260408,20261008,20260408
