@@ -81,10 +81,11 @@ var gtfsShapes = new Map();
 // -------------------------------------------------------
 var map = L.map("map").setView([34.3853, 132.4553], 13);
 
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  attribution:
-    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  maxZoom: 19,
+// 国土地理院地図（淡色地図）
+// 日本の地図として最も正確で、色が薄く見やすい
+L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png", {
+  attribution: '<a href="https://maps.gsi.go.jp/development/ichiran.html">国土地理院</a>',
+  maxZoom: 21,
 }).addTo(map);
 
 // バスマーカーを管理するMap（vehicle_id → Leafletマーカー）
