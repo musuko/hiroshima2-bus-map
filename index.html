@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>広島県バス協会 バス位置情報</title>
 
-  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <style>
@@ -26,21 +25,47 @@
     header {
       background: #1a6b3c;
       color: white;
-      padding: 12px 20px;
+      padding: 10px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
       z-index: 1000;
       position: relative;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
     header h1 {
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 600;
     }
 
-    /* ステータスバー（ヘッダー右側） */
+    /* 事業者セレクター */
+    #operator-selector {
+      display: flex;
+      align-items: center;
+      color: white;
+    }
+
+    #operator-selector label {
+      font-size: 0.8rem;
+      margin-right: 6px;
+      white-space: nowrap;
+    }
+
+    #operator-select {
+      font-size: 0.85rem;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: none;
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+      cursor: pointer;
+      max-width: 160px;
+    }
+
+    /* ステータスバー */
     #status-bar {
       font-size: 0.8rem;
       background: rgba(255, 255, 255, 0.15);
@@ -57,6 +82,7 @@
       border-radius: 50%;
       background: #aaa;
       transition: background 0.3s;
+      flex-shrink: 0;
     }
 
     #status-dot.loading {
@@ -98,13 +124,14 @@
       transform: translateX(-50%);
       background: white;
       border-radius: 10px;
-      padding: 10px 20px;
+      padding: 8px 16px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       z-index: 999;
       display: flex;
-      gap: 20px;
+      gap: 12px;
       align-items: center;
+      white-space: nowrap;
     }
 
     #info-panel span {
@@ -113,10 +140,10 @@
 
     #info-panel strong {
       color: #1a6b3c;
-      font-size: 1.1rem;
+      font-size: 1rem;
     }
 
-    /* 手動更新ボタン */
+    /* 更新ボタン */
     #refresh-btn {
       background: #1a6b3c;
       color: white;
@@ -126,17 +153,16 @@
       cursor: pointer;
       font-size: 0.8rem;
       transition: background 0.2s;
+      white-space: nowrap;
     }
 
     #refresh-btn:hover {
       background: #155530;
     }
 
-    /* -------------------------------------------------------
-       バス停情報パネル
-       バス停マーカーをクリックすると右側に表示される。
-       バス停名・stop_id・当日の時刻表を表示する。
-       ------------------------------------------------------- */
+    /* ===============================================
+       バス停情報パネル（PC: 右側固定）
+       =============================================== */
     #stop-panel {
       position: absolute;
       top: 70px;
@@ -148,7 +174,6 @@
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
       z-index: 1000;
       display: none;
-      /* 初期状態は非表示 */
       flex-direction: column;
       overflow: hidden;
     }
@@ -157,7 +182,6 @@
       display: flex;
     }
 
-    /* パネルのヘッダー部分 */
     #stop-panel-header {
       background: #1a6b3c;
       color: white;
@@ -166,6 +190,11 @@
       justify-content: space-between;
       align-items: center;
       flex-shrink: 0;
+      cursor: grab;
+    }
+
+    #stop-panel-header:active {
+      cursor: grabbing;
     }
 
     #stop-panel-title {
@@ -173,24 +202,83 @@
       font-weight: 600;
     }
 
-    /* ×閉じるボタン */
     #stop-panel-close {
       background: none;
       border: none;
       color: white;
-      font-size: 1.2rem;
+      font-size: 1.4rem;
       cursor: pointer;
       line-height: 1;
+      padding: 0 4px;
     }
 
-    /* パネルの本文（スクロール可能） */
     #stop-panel-body {
       overflow-y: auto;
       padding: 12px;
       flex: 1;
+      -webkit-overflow-scrolling: touch;
     }
 
-    /* バス停のサブ情報（stop_id等） */
+    /* ===============================================
+       便情報パネル（PC: バス停パネルの左側）
+       =============================================== */
+    #trip-panel {
+      position: absolute;
+      top: 70px;
+      right: 340px;
+      width: 300px;
+      max-height: calc(100vh - 160px);
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #trip-panel.visible {
+      display: flex;
+    }
+
+    #trip-panel-header {
+      background: #2c5f8a;
+      color: white;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+      cursor: grab;
+    }
+
+    #trip-panel-header:active {
+      cursor: grabbing;
+    }
+
+    #trip-panel-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    #trip-panel-close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.4rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 4px;
+    }
+
+    #trip-panel-body {
+      overflow-y: auto;
+      padding: 12px;
+      flex: 1;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* バス停のメタ情報 */
     .stop-meta {
       font-size: 0.75rem;
       color: #888;
@@ -214,12 +302,11 @@
     }
 
     .timetable td {
-      padding: 6px 8px;
+      padding: 7px 8px;
       border-bottom: 1px solid #eee;
       vertical-align: top;
     }
 
-    /* 時刻セルはクリック可能なリンク風に表示 */
     .timetable td.time-cell {
       color: #1a6b3c;
       font-weight: 600;
@@ -235,62 +322,6 @@
       background: #f9f9f9;
     }
 
-    /* -------------------------------------------------------
-       便情報パネル
-       時刻をクリックすると表示される。
-       その便の全停留所と時刻を表示し、地図上にルートを描画する。
-       ------------------------------------------------------- */
-    #trip-panel {
-      position: absolute;
-      top: 70px;
-      right: 340px;
-      /* バス停パネルの左側に表示 */
-      width: 300px;
-      max-height: calc(100vh - 160px);
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-      z-index: 1000;
-      display: none;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    #trip-panel.visible {
-      display: flex;
-    }
-
-    #trip-panel-header {
-      background: #2c5f8a;
-      /* バス停パネルと色を変えて区別する */
-      color: white;
-      padding: 10px 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-shrink: 0;
-    }
-
-    #trip-panel-title {
-      font-size: 0.95rem;
-      font-weight: 600;
-    }
-
-    #trip-panel-close {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 1.2rem;
-      cursor: pointer;
-      line-height: 1;
-    }
-
-    #trip-panel-body {
-      overflow-y: auto;
-      padding: 12px;
-      flex: 1;
-    }
-
     /* 便の停留所リスト */
     .stop-list {
       list-style: none;
@@ -301,12 +332,11 @@
     .stop-list li {
       display: flex;
       gap: 10px;
-      padding: 5px 0;
+      padding: 6px 0;
       border-bottom: 1px solid #eee;
       font-size: 0.82rem;
     }
 
-    /* 現在のバス停をハイライト表示 */
     .stop-list li.current-stop {
       background: #fff8e1;
       font-weight: 600;
@@ -326,60 +356,176 @@
       text-align: center;
       padding: 20px;
     }
-    /* 事業者セレクター */
-    #operator-selector {
-      display: flex;
-      align-items: center;
-      color: white;
-    }
-    #operator-select {
-      font-size: 0.85rem;
-      padding: 4px 8px;
-      border-radius: 6px;
-      border: none;
-      background: rgba(255,255,255,0.9);
-      color: #333;
-      cursor: pointer;
-      max-width: 180px;
-    }
-    /* パネルのヘッダーをドラッグ可能にする */
-    #stop-panel-header,
-    #trip-panel-header {
-      cursor: grab;
-    }
-    #stop-panel-header:active,
-    #trip-panel-header:active {
-      cursor: grabbing;
+
+    /* ===============================================
+       スマホ対応（幅768px以下）
+       =============================================== */
+    @media (max-width: 768px) {
+
+      /* ヘッダーを2行に折り返す */
+      header {
+        padding: 8px 12px;
+      }
+
+      header h1 {
+        font-size: 0.9rem;
+        flex: 1;
+      }
+
+      #operator-select {
+        font-size: 0.9rem;
+        max-width: 140px;
+        padding: 6px 8px;
+      }
+
+      #status-bar {
+        font-size: 0.75rem;
+        padding: 3px 10px;
+      }
+
+      /* 地図の高さを調整する */
+      #map {
+        height: calc(100vh - 100px);
+      }
+
+      /* フッターをシンプルにする */
+      #info-panel {
+        bottom: 10px;
+        padding: 6px 12px;
+        gap: 8px;
+        font-size: 0.78rem;
+        max-width: calc(100vw - 20px);
+      }
+
+      /* スマホでは最終更新時刻を非表示にする（省スペース） */
+      #last-updated {
+        display: none;
+      }
+
+      /* 更新ボタンを大きくする */
+      #refresh-btn {
+        font-size: 0.85rem;
+        padding: 8px 16px;
+      }
+
+      /* -----------------------------------------------
+         スマホ: パネルを画面下部のドロワーにする
+         上部に小さなつまみを表示してドラッグで開閉できる
+         ----------------------------------------------- */
+      #stop-panel,
+      #trip-panel {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: auto;
+        /* 上からの位置指定を無効にする */
+        width: 100%;
+        max-height: 55vh;
+        /* 画面の55%の高さ */
+        border-radius: 16px 16px 0 0;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+        transform: translateY(100%);
+        /* 初期状態は画面外（下）に隠す */
+        transition: transform 0.3s ease;
+        display: flex;
+        /* 常にdisplayはflexにする */
+      }
+
+      /* visibleクラスで画面内にスライドインする */
+      #stop-panel.visible,
+      #trip-panel.visible {
+        transform: translateY(0);
+      }
+
+      /* 便情報パネルはバス停パネルの上に重ねる */
+      #trip-panel {
+        z-index: 1001;
+      }
+
+      /* パネルヘッダーにつまみを表示する */
+      #stop-panel-header::before,
+      #trip-panel-header::before {
+        content: '';
+        display: block;
+        width: 40px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 2px;
+        position: absolute;
+        top: 6px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      #stop-panel-header,
+      #trip-panel-header {
+        position: relative;
+        padding-top: 16px;
+        /* つまみの分だけ上に余白を取る */
+        cursor: default;
+        /* スマホではドラッグカーソルを無効にする */
+      }
+
+      /* パネル本文の高さをスクロール可能にする */
+      #stop-panel-body,
+      #trip-panel-body {
+        max-height: calc(55vh - 50px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* 時刻表の文字を大きくして押しやすくする */
+      .timetable th,
+      .timetable td {
+        padding: 10px 8px;
+        font-size: 0.9rem;
+      }
+
+      .timetable td.time-cell {
+        font-size: 1rem;
+      }
+
+      /* 停留所リストも文字を大きくする */
+      .stop-list li {
+        padding: 8px 0;
+        font-size: 0.9rem;
+      }
+
+      /* ×ボタンを大きくして押しやすくする */
+      #stop-panel-close,
+      #trip-panel-close {
+        font-size: 1.6rem;
+        padding: 0 8px;
+      }
     }
   </style>
 </head>
 
 <body>
 
-<header>
-  <h1>🚌 広島県バス協会 バス位置情報</h1>
-  <div id="operator-selector">
-    <label for="operator-select" style="font-size:0.8rem;margin-right:6px;">事業者:</label>
-    <select id="operator-select">
-      <!-- JavaScriptで動的に生成する -->
-    </select>
-  </div>
-  <div id="status-bar">
-    <div id="status-dot"></div>
-    <span id="status-text">待機中</span>
-  </div>
-</header>
+  <header>
+    <h1>🚌 広島県バス協会 バス位置情報</h1>
+    <div id="operator-selector">
+      <label for="operator-select">事業者:</label>
+      <select id="operator-select"></select>
+    </div>
+    <div id="status-bar">
+      <div id="status-dot"></div>
+      <span id="status-text">待機中</span>
+    </div>
+  </header>
 
   <div id="map"></div>
 
   <!-- フッター情報パネル -->
   <div id="info-panel">
-    <span>表示中のバス台数: <strong id="bus-count">0</strong> 台</span>
+    <span>バス: <strong id="bus-count">0</strong> 台</span>
     <span id="last-updated">最終更新: —</span>
-    <button id="refresh-btn">🔄 手動更新</button>
+    <button id="refresh-btn">🔄 更新</button>
   </div>
 
-  <!-- バス停情報パネル（右側） -->
+  <!-- バス停情報パネル -->
   <div id="stop-panel">
     <div id="stop-panel-header">
       <span id="stop-panel-title">バス停情報</span>
@@ -390,7 +536,7 @@
     </div>
   </div>
 
-  <!-- 便情報パネル（バス停パネルの左側） -->
+  <!-- 便情報パネル -->
   <div id="trip-panel">
     <div id="trip-panel-header">
       <span id="trip-panel-title">便情報</span>
@@ -403,9 +549,9 @@
 
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <!-- protobufjs (CDN) -->
+  <!-- protobufjs -->
   <script src="https://cdn.jsdelivr.net/npm/protobufjs@7/dist/protobuf.min.js"></script>
-  <!-- Papa Parse: CSVファイル（stops.txt等）を読み込むために使用 -->
+  <!-- PapaParse: CSV読み込み用 -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
 
   <script src="js/load_gtfs.js"></script>
