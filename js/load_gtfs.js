@@ -111,6 +111,15 @@ var currentTripLine = null;
 // shape_id → 座標配列 のMapとして管理する
 var gtfsShapes = new Map();
 
+// 運賃データを格納する変数
+var gtfsFareAttributes = [];  // fare_attributes.txt
+var gtfsFareRules      = [];  // fare_rules.txt
+
+// 運賃検索用インデックス
+// キー: "route_id→origin_id→destination_id"
+// 値: 運賃（円）
+var fareIndex = new Map();
+
 // -------------------------------------------------------
 // Leaflet マップ初期化（広島市中心部）
 // -------------------------------------------------------
@@ -583,6 +592,15 @@ function showTripPanel(tripId, currentStopId) {
     stopMap[s.stop_id] = s;
   });
 
+  // -------------------------------------------------------
+  // 乗車バス停の zone_id を取得する（運賃計算の起点）
+  // -------------------------------------------------------
+  var originStop = stopMap[currentStopId];
+  var originZoneId = originStop ? originStop.zone_id : null;
+
+  // trip の route_id を取得する（運賃検索に必要）
+  var routeId = trip ? trip.route_id : null;
+
   var html = '<ul class="stop-list">';
   var coords = [];
 
@@ -593,6 +611,24 @@ function showTripPanel(tripId, currentStopId) {
     var isCurrent = st.stop_id === currentStopId;
     var liClass = isCurrent ? ' class="current-stop"' : "";
 
+    // -------------------------------------------------------
+    // 運賃を検索して表示文字列を決める
+    //   乗車地点    → "乗車"
+    //   運賃あり    → "240円"
+    //   運賃データなし → "--"
+    // -------------------------------------------------------
+    var fareDisp = "--";
+    if (stop && originZoneId && routeId) {
+      if (isCurrent) {
+        fareDisp = "乗車";
+      } else {
+        var price = getFare(routeId, originZoneId, stop.zone_id);
+        if (price != null) {
+          fareDisp = price + "円";
+        }
+      }
+    }
+
     html +=
       "<li" +
       liClass +
@@ -600,8 +636,11 @@ function showTripPanel(tripId, currentStopId) {
       '<span class="stop-time">' +
       timeDisp +
       "</span>" +
-      "<span>" +
+      '<span class="stop-name">' +
       stopName +
+      "</span>" +
+      '<span class="stop-fare">' +
+      fareDisp +
       "</span>" +
       "</li>";
 
@@ -714,6 +753,8 @@ async function initGtfs() {
       loadCsv(base + "calendar.txt"),
       loadCsv(base + "calendar_dates.txt"),
       loadCsv(base + "shapes.txt"),
+      loadCsv(base + "fare_attributes.txt"),
+      loadCsv(base + "fare_rules.txt"),
     ]);
 
     gtfsStops = results[0];
@@ -725,6 +766,61 @@ async function initGtfs() {
     // shapes.txt を shape_id ごとに座標配列としてインデックス化する
     // shape_id はスペース入り文字列のため文字列のまま扱う
     buildShapesIndex(results[6]);
+    gtfsFareAttributes = results[7];
+    gtfsFareRules = results[8];
+
+    // -------------------------------------------------------
+    // 運賃インデックスを構築する
+    //
+    // fare_rules.txt を元に以下の構造のMapを作成する:
+    //   "route_id→origin_id→destination_id" → price
+    //
+    // route_id も含めることで同じバス停間でも
+    // 路線によって異なる運賃に正しく対応できる
+    // -------------------------------------------------------
+    function buildFareIndex() {
+      fareIndex = new Map();
+
+      // fare_attributes.txt を fare_id でインデックス化する
+      var fareAttrMap = {};
+      gtfsFareAttributes.forEach(function (row) {
+        fareAttrMap[row.fare_id] = parseInt(row.price);
+      });
+
+      // fare_rules.txt を route_id→origin_id→destination_id の
+      // 組み合わせでMapに格納する
+      gtfsFareRules.forEach(function (row) {
+        var price = fareAttrMap[row.fare_id];
+        if (price == null) return;
+
+        // route_id を含めた3要素キーで格納する
+        var key = row.route_id + "→" + row.origin_id + "→" + row.destination_id;
+        fareIndex.set(key, price);
+      });
+
+      console.log("[GTFS] 運賃インデックス構築完了:", fareIndex.size, "件");
+    }
+
+    // -------------------------------------------------------
+    // 乗車バス停から降車バス停までの運賃を検索する
+    //
+    // 引数:
+    //   routeId           ... 路線ID（trip.route_id）
+    //   originZoneId      ... 乗車バス停の zone_id
+    //   destinationZoneId ... 降車バス停の zone_id
+    //
+    // 戻り値:
+    //   運賃（円）または null（データなし）
+    // -------------------------------------------------------
+    function getFare(routeId, originZoneId, destinationZoneId) {
+      // 同じバス停は乗車地点なので null を返す
+      if (originZoneId === destinationZoneId) return null;
+
+      // route_id を含めたキーで検索する
+      var key = routeId + "→" + originZoneId + "→" + destinationZoneId;
+      var price = fareIndex.get(key);
+      return price != null ? price : null;
+    }
 
     console.log("[GTFS] stops:", gtfsStops.length);
     console.log("[GTFS] stop_times:", gtfsStopTimes.length);
@@ -733,6 +829,8 @@ async function initGtfs() {
     console.log("[GTFS] calendar:", gtfsCalendar.length);
     console.log("[GTFS] calendar_dates:", gtfsCalendarDates.length);
     console.log("[GTFS] shapes:", gtfsShapes.size, "件");
+    console.log("[GTFS] fare_attributes:", gtfsFareAttributes.length); // 追加
+    console.log("[GTFS] fare_rules:", gtfsFareRules.length); // 追加
 
     // -------------------------------------------------------
     // shapes.txt を読み込んで shape_id ごとの座標配列を作成する
