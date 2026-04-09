@@ -4,7 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>広島県バス協会 バス位置情報</title>
+  <!-- Safe Areaを有効にするために必要 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>バス位置情報</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
@@ -545,10 +547,21 @@
         right: auto !important;
         left: 0 !important;
       }
+      /* Androidのナビゲーションバー・ジェスチャーエリアの
+        上にクレジットを表示する
+        env(safe-area-inset-bottom) は
+        画面下部の操作エリアの高さを自動取得する */
+      .leaflet-bottom {
+        bottom: max(8px, env(safe-area-inset-bottom)) !important;
+      }
+
       .leaflet-control-attribution {
         font-size: 0.7rem !important;
         max-width: 70vw !important;
-      }      
+        white-space: normal !important;
+        background: rgba(255,255,255,0.85) !important;
+        padding: 2px 6px !important;
+      } 
     }
   </style>
 </head>
