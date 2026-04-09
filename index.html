@@ -693,6 +693,8 @@
     <h1>🚌 広島県バス協会 バス位置情報</h1>
     <!-- 事業者選択ボタン -->
     <button id="operator-toggle-btn">🏢 事業者選択 ▼</button>
+    <!-- リアルタイムバス表示切替ボタン -->
+    <button id="toggle-bus-btn">🚌 非表示</button>
     <div id="status-bar">
       <div id="status-dot"></div>
       <span id="status-text">待機中</span>
@@ -706,9 +708,7 @@
       <button id="deselect-all-btn">全解除</button>
       <span id="selected-count">0社選択中</span>
     </div>
-    <div id="operator-checkboxes">
-      <!-- JavaScriptで動的に生成する -->
-    </div>
+    <div id="operator-checkboxes"></div>
   </div>
 
   <div id="map"></div>
