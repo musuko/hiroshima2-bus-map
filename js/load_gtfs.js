@@ -123,6 +123,9 @@ var stopMarkersByOperator = new Map();
 // -------------------------------------------------------
 var busMarkersByOperator = new Map();
 
+// 現在選択中のバス停マーカー（強調表示用）
+var selectedStopMarker = null;
+
 // 地図上に描画した路線ライン（別の便選択時に削除するために保持する）
 var currentTripLine = null;
 
@@ -548,20 +551,40 @@ function getFare(fareIdx, routeId, originZoneId, destinationZoneId) {
 // バス停マーカーのアイコンを生成する
 // 事業者カラーを使用する
 // -------------------------------------------------------
+// -------------------------------------------------------
+// 通常のバス停アイコンを生成する（小さい円）
+// -------------------------------------------------------
 function createStopIcon(color) {
-  var c = color || "#2c7be5";
+  var c   = color || "#2c7be5";
   var svg =
     '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14">' +
-    '<circle cx="7" cy="7" r="6" fill="' +
-    c +
-    '" stroke="white" stroke-width="1.5"/>' +
-    "</svg>";
+    '<circle cx="7" cy="7" r="6" fill="' + c + '" stroke="white" stroke-width="1.5"/>' +
+    '</svg>';
   return L.divIcon({
     html: svg,
     className: "",
     iconSize: [14, 14],
     iconAnchor: [7, 7],
     popupAnchor: [0, -8],
+  });
+}
+
+// -------------------------------------------------------
+// 選択中のバス停アイコンを生成する（大きい円・強調表示）
+// -------------------------------------------------------
+function createSelectedStopIcon(color) {
+  var c   = color || "#2c7be5";
+  var svg =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">' +
+    '<circle cx="14" cy="14" r="12" fill="' + c + '" stroke="white" stroke-width="3"/>' +
+    '<circle cx="14" cy="14" r="5" fill="white"/>' +
+    '</svg>';
+  return L.divIcon({
+    html: svg,
+    className: "",
+    iconSize: [28, 28],
+    iconAnchor: [14, 14],
+    popupAnchor: [0, -14],
   });
 }
 
@@ -607,7 +630,18 @@ function renderStops(op, stops) {
     });
 
     marker.on("click", function () {
-      // クリックされたバス停の事業者を currentOperator にセットする
+      // -------------------------------------------------------
+      // 前回選択したバス停を通常アイコンに戻す
+      // -------------------------------------------------------
+      if (selectedStopMarker && selectedStopMarker.marker !== marker) {
+        selectedStopMarker.marker.setIcon(createStopIcon(selectedStopMarker.color));
+      }
+
+      // このバス停を強調表示する
+      marker.setIcon(createSelectedStopIcon(op.color));
+      selectedStopMarker = { marker: marker, color: op.color };
+
+      // currentOperator をセットしてパネルを表示する
       currentOperator = op;
       showStopPanel(stopId, stopName);
     });
@@ -852,6 +886,13 @@ document
     if (currentTripLine) {
       map.removeLayer(currentTripLine);
       currentTripLine = null;
+    }
+    // 強調表示を解除する
+    if (selectedStopMarker) {
+      selectedStopMarker.marker.setIcon(
+        createStopIcon(selectedStopMarker.color)
+      );
+      selectedStopMarker = null;
     }
   });
 
