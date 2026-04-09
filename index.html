@@ -578,8 +578,8 @@
         right: max(0px, env(safe-area-inset-right)) !important;
       }
     }
-    /* 事業者選択ボタン */
-    #operator-toggle-btn {
+    /* 事業者選択ボタン・バス表示切替ボタン共通 */
+    #operator-toggle-btn, #toggle-bus-btn {
       background: rgba(255,255,255,0.2);
       color: white;
       border: 1px solid rgba(255,255,255,0.4);
@@ -675,7 +675,7 @@
 
     /* スマホ対応 */
     @media (max-width: 768px) {
-      #operator-toggle-btn {
+      #operator-toggle-btn, #toggle-bus-btn {
         font-size: 0.75rem;
         padding: 4px 8px;
       }
