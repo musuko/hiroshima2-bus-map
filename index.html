@@ -126,8 +126,8 @@
     #info-panel {
       position: absolute;
       bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
+      left: 10px;           /* 左寄せに変更 */
+      transform: none;      /* 中央寄せを解除 */
       background: white;
       border-radius: 10px;
       padding: 8px 16px;
@@ -416,13 +416,15 @@
         height: calc(100vh - 100px);
       }
 
-      /* フッターをシンプルにする */
+      /* フッターを左下に固定する */
       #info-panel {
-        bottom: 1px;
+        bottom: max(8px, env(safe-area-inset-bottom));
+        left: 10px;
+        transform: none;
         padding: 6px 12px;
         gap: 8px;
         font-size: 0.78rem;
-        max-width: calc(100vw - 20px);
+        max-width: calc(60vw - 20px);  /* クレジットと重ならないよう幅を制限 */
       }
 
       /* スマホでは最終更新時刻を非表示にする（省スペース） */
@@ -544,8 +546,8 @@
       }
       /* スマホでは左下に移動して確実に表示する */
       .leaflet-bottom.leaflet-right {
-        right: auto !important;
-        left: 0 !important;
+        right: 0 !important;
+        left: auto !important;
       }
       /* Androidのナビゲーションバー・ジェスチャーエリアの
         上にクレジットを表示する
@@ -557,12 +559,25 @@
 
       .leaflet-control-attribution {
         font-size: 0.7rem !important;
-        max-width: 70vw !important;
+        max-width: 35vw !important;
         white-space: normal !important;
         background: rgba(255,255,255,0.85) !important;
         padding: 2px 6px !important;
       } 
     }
+    /* 横画面対応: safe-area を左右にも適用する */
+    @media (orientation: landscape) {
+      #info-panel {
+        bottom: max(4px, env(safe-area-inset-bottom));
+        left: max(10px, env(safe-area-inset-left));
+      }
+      .leaflet-bottom {
+        bottom: max(4px, env(safe-area-inset-bottom)) !important;
+      }
+      .leaflet-bottom.leaflet-right {
+        right: max(0px, env(safe-area-inset-right)) !important;
+      }
+    }    
   </style>
 </head>
 
