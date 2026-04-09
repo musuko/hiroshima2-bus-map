@@ -926,15 +926,32 @@ function buildFareIndex() {
 // 戻り値:
 //   運賃（円）または null（データなし）
 // -------------------------------------------------------
-function getFare(routeId, originZoneId, destinationZoneId) {
-  // 同じバス停は乗車地点なので null を返す
-  if (originZoneId === destinationZoneId) return null;
+// function getFare(routeId, originZoneId, destinationZoneId) {
+//   // 同じバス停は乗車地点なので null を返す
+//   if (originZoneId === destinationZoneId) return null;
 
-  // route_id を含めたキーで検索する
+//   // route_id を含めたキーで検索する
+//   var key = routeId + "→" + originZoneId + "→" + destinationZoneId;
+//   var price = fareIndex.get(key);
+//   return price != null ? price : null;
+// }
+
+
+function getFare(routeId, originZoneId, destinationZoneId) {
+  if (originZoneId === destinationZoneId) return null;
   var key = routeId + "→" + originZoneId + "→" + destinationZoneId;
+  // デバッグ用：最初の5回だけキーを表示する
+  if (typeof getFare.count === "undefined") getFare.count = 0;
+  if (getFare.count < 5) {
+    console.log("検索キー:", key, "結果:", fareIndex.get(key));
+    getFare.count++;
+  }
   var price = fareIndex.get(key);
   return price != null ? price : null;
 }
+
+
+
 
 // ============================================================
 // 事業者セレクターの初期化
