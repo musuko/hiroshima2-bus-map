@@ -163,6 +163,17 @@
     #refresh-btn:hover {
       background: #155530;
     }
+    /* クレジットが画面外にはみ出さないようにする */
+    .leaflet-control-attribution {
+      font-size: 0.75rem !important;
+      background: rgba(255,255,255,0.85) !important;
+      padding: 2px 6px !important;
+      z-index: 1000 !important;
+      /* 最大幅を画面幅に収める */
+      max-width: 60vw !important;
+      /* テキストを折り返す */
+      white-space: normal !important;
+    }
 
     /* ===============================================
        バス停情報パネル（PC: 右側固定）
@@ -334,35 +345,35 @@
     }
 
     .stop-list li {
-  display: flex;
-  gap: 6px;
-  padding: 6px 0;
-  border-bottom: 1px solid #eee;
-  font-size: 0.82rem;
-  align-items: center;
-}
-.stop-list .stop-time {
-  color: #1a6b3c;
-  font-weight: 600;
-  min-width: 42px;
-  white-space: nowrap;
-}
-/* バス停名は残りのスペースを全て使う */
-.stop-list .stop-name {
-  flex: 1;
-}
-/* 運賃は赤色で右寄せ表示する */
-.stop-list .stop-fare {
-  color: #e74c3c;
-  font-weight: 600;
-  min-width: 45px;
-  text-align: right;
-  white-space: nowrap;
-}
-/* 乗車地点は緑色で表示する */
-.stop-list li.current-stop .stop-fare {
-  color: #1a6b3c;
-}
+      display: flex;
+      gap: 6px;
+      padding: 6px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 0.82rem;
+      align-items: center;
+    }
+    .stop-list .stop-time {
+      color: #1a6b3c;
+      font-weight: 600;
+      min-width: 42px;
+      white-space: nowrap;
+    }
+    /* バス停名は残りのスペースを全て使う */
+    .stop-list .stop-name {
+      flex: 1;
+    }
+    /* 運賃は赤色で右寄せ表示する */
+    .stop-list .stop-fare {
+      color: #e74c3c;
+      font-weight: 600;
+      min-width: 45px;
+      text-align: right;
+      white-space: nowrap;
+    }
+    /* 乗車地点は緑色で表示する */
+    .stop-list li.current-stop .stop-fare {
+      color: #1a6b3c;
+    }
 
     /* 読み込み中メッセージ */
     .loading-msg {
@@ -529,6 +540,15 @@
       #toggle-bus-btn:hover {
         background: rgba(255,255,255,0.35);
       }
+      /* スマホでは左下に移動して確実に表示する */
+      .leaflet-bottom.leaflet-right {
+        right: auto !important;
+        left: 0 !important;
+      }
+      .leaflet-control-attribution {
+        font-size: 0.7rem !important;
+        max-width: 70vw !important;
+      }      
     }
   </style>
 </head>
