@@ -577,6 +577,112 @@
       .leaflet-bottom.leaflet-right {
         right: max(0px, env(safe-area-inset-right)) !important;
       }
+    }
+    /* 事業者選択ボタン */
+    #operator-toggle-btn {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 6px;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+    #operator-toggle-btn:hover {
+      background: rgba(255,255,255,0.35);
+    }
+
+    /* 事業者選択ドロワー */
+    #operator-drawer {
+      display: none;           /* 初期状態は非表示 */
+      position: absolute;
+      top: 100%;               /* ヘッダーの直下に表示 */
+      left: 0;
+      right: 0;
+      background: #1a6b3c;
+      padding: 10px 16px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 1100;
+    }
+    #operator-drawer.open {
+      display: block;
+    }
+
+    /* 全選択・全解除ボタン行 */
+    #operator-drawer-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    #select-all-btn,
+    #deselect-all-btn {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 6px;
+      padding: 4px 12px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: background 0.2s;
+    }
+    #select-all-btn:hover,
+    #deselect-all-btn:hover {
+      background: rgba(255,255,255,0.35);
+    }
+    #selected-count {
+      color: rgba(255,255,255,0.8);
+      font-size: 0.8rem;
+    }
+
+    /* チェックボックス一覧 */
+    #operator-checkboxes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .operator-checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: white;
+      font-size: 0.82rem;
+      cursor: pointer;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.1);
+      transition: background 0.2s;
+    }
+    .operator-checkbox-item:hover {
+      background: rgba(255,255,255,0.25);
+    }
+    .operator-checkbox-item input[type="checkbox"] {
+      cursor: pointer;
+      width: 14px;
+      height: 14px;
+      accent-color: white;
+    }
+    /* 事業者カラーのドット */
+    .operator-color-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.5);
+      flex-shrink: 0;
+    }
+
+    /* スマホ対応 */
+    @media (max-width: 768px) {
+      #operator-toggle-btn {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+      }
+      .operator-checkbox-item {
+        font-size: 0.78rem;
+        padding: 4px 8px;
+      }
     }    
   </style>
 </head>
@@ -585,16 +691,25 @@
 
   <header>
     <h1>🚌 広島県バス協会 バス位置情報</h1>
-    <div id="operator-selector">
-      <label for="operator-select">事業者:</label>
-      <select id="operator-select"></select>
-    </div>
-    <button id="toggle-bus-btn" title="リアルタイムバスの表示切替">🚌 非表示</button>
+    <!-- 事業者選択ボタン -->
+    <button id="operator-toggle-btn">🏢 事業者選択 ▼</button>
     <div id="status-bar">
       <div id="status-dot"></div>
       <span id="status-text">待機中</span>
     </div>
   </header>
+
+  <!-- 事業者選択ドロワー（ヘッダー直下に展開） -->
+  <div id="operator-drawer">
+    <div id="operator-drawer-controls">
+      <button id="select-all-btn">全選択</button>
+      <button id="deselect-all-btn">全解除</button>
+      <span id="selected-count">0社選択中</span>
+    </div>
+    <div id="operator-checkboxes">
+      <!-- JavaScriptで動的に生成する -->
+    </div>
+  </div>
 
   <div id="map"></div>
 

@@ -3,18 +3,20 @@
 // 広島県バス協会 GTFSデータ表示システム
 //
 // 【機能】
-//   1. 事業者セレクターで表示する事業者を切り替える
-//   2. バス停を地図上にマーカー表示（stops.txt）
-//   3. バス停クリックで時刻表パネルを表示（stop_times.txt）
-//   4. 時刻クリックで便情報パネルと路線を地図表示
-//   5. 当日の運行日（平日・土曜・日曜・祝日）を自動判定
+//   1. 複数事業者を同時選択してバス停を地図上に表示
+//   2. バス停クリックで時刻表パネルを表示（stop_times.txt）
+//   3. 時刻クリックで便情報パネルと路線を地図表示
+//   4. 当日の運行日（平日・土曜・日曜・祝日）を自動判定
+//   5. 選択中の全事業者のリアルタイムバス位置を表示
 // ============================================================
 
 // -------------------------------------------------------
 // 事業者リスト
-// folder    ... data/以下のフォルダ名
-// name      ... セレクターに表示する名称
-// realtimeId... リアルタイムAPIの事業者ID
+// folder      ... data/以下のフォルダ名
+// name        ... ドロワーに表示する名称
+// realtimeId  ... リアルタイムAPIの事業者ID（Mobistaシステム）
+// color       ... バス停マーカーの色
+// hasRealtime ... false の場合リアルタイムデータなし
 // -------------------------------------------------------
 var OPERATORS = [
   { folder: "hiroden", name: "広島電鉄", realtimeId: "8", color: "#4a7c2f" },
@@ -67,7 +69,7 @@ var OPERATORS = [
   },
   // -------------------------------------------------------
   // 以下4社は両備システムズ・タウンクリエーションのシステム
-  // realtimeId は使用しない（folder から直接パスを構築する）
+  // realtimeId は使用しない（folderから直接パスを構築する）
   // -------------------------------------------------------
   {
     folder: "chugokubus",
@@ -92,57 +94,40 @@ var OPERATORS = [
 ];
 
 // -------------------------------------------------------
-// 現在選択中の事業者（初期値はHD西広島）
+// 現在選択中の事業者セット（複数選択対応）
+// バス停クリック時にどの事業者のデータを使うかを currentOperator で管理する
 // -------------------------------------------------------
+var selectedOperators = new Set(["hdnishihiroshima"]);
+
+// バス停クリック時に時刻表・運賃表示に使う事業者
 var currentOperator = OPERATORS.find(function (o) {
   return o.folder === "hdnishihiroshima";
 });
 
 // -------------------------------------------------------
-// 現在の事業者の静的データパスを返す
+// 事業者ごとの静的データキャッシュ
+// Map<folder, {stops, stopTimes, trips, routes,
+//              calendar, calendarDates, fareAttrs, fareRules, shapes}>
 // -------------------------------------------------------
-function getStaticBase() {
-  return "./data/" + currentOperator.folder + "/static/";
-}
+var operatorDataCache = new Map();
 
 // -------------------------------------------------------
-// 現在の事業者のリアルタイムデータパスを返す
+// 事業者ごとのバス停マーカー
+// Map<folder, Leafletマーカー配列>
 // -------------------------------------------------------
-function getRealtimePath() {
-  return "./data/" + currentOperator.folder + "/realtime/vehicle_position.bin";
-}
+var stopMarkersByOperator = new Map();
 
 // -------------------------------------------------------
-// GTFSデータを格納するグローバル変数
+// 事業者ごとのリアルタイムバスマーカー
+// Map<folder, Map<vehicleId, Leafletマーカー>>
 // -------------------------------------------------------
-var gtfsStops = [];
-var gtfsStopTimes = [];
-var gtfsTrips = [];
-var gtfsRoutes = [];
-var gtfsCalendar = [];
-var gtfsCalendarDates = [];
-
-// 当日の運行サービスIDセット
-var activateServiceIds = new Set();
-
-// バス停マーカーの配列（事業者切替時に全削除するために保持する）
-var stopMarkers = [];
+var busMarkersByOperator = new Map();
 
 // 地図上に描画した路線ライン（別の便選択時に削除するために保持する）
 var currentTripLine = null;
 
-// shapes.txt のデータを格納する変数
-// shape_id → 座標配列 のMapとして管理する
-var gtfsShapes = new Map();
-
-// 運賃データを格納する変数
-var gtfsFareAttributes = [];  // fare_attributes.txt
-var gtfsFareRules      = [];  // fare_rules.txt
-
-// 運賃検索用インデックス
-// キー: "route_id→origin_id→destination_id"
-// 値: 運賃（円）
-var fareIndex = new Map();
+// リアルタイムバスの表示・非表示フラグ
+var busVisible = true;
 
 // -------------------------------------------------------
 // Leaflet マップ初期化（広島市中心部）
@@ -152,12 +137,10 @@ var map = L.map("map").setView([34.3853, 132.4553], 13);
 // 国土地理院地図（淡色地図）
 // 日本の地図として最も正確で、色が薄く見やすい
 L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png", {
-  attribution: '<a href="https://maps.gsi.go.jp/development/ichiran.html">国土地理院</a>',
+  attribution:
+    '<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank">国土地理院</a>',
   maxZoom: 21,
 }).addTo(map);
-
-// バスマーカーを管理するMap（vehicle_id → Leafletマーカー）
-var busMarkers = new Map();
 
 // ============================================================
 // GTFSリアルタイム関連
@@ -227,6 +210,7 @@ function createBusIcon(bearing) {
 
 // -------------------------------------------------------
 // ヘッダーのステータス表示を更新する
+// state: 'loading'（黄色点滅）/ 'ok'（緑）/ 'error'（赤）
 // -------------------------------------------------------
 function setStatus(state, text) {
   var dot = document.getElementById("status-dot");
@@ -236,16 +220,16 @@ function setStatus(state, text) {
 }
 
 // -------------------------------------------------------
-// フッターの情報パネルを更新する
+// フッターのバス台数を全事業者の合計で更新する
 // -------------------------------------------------------
-function updateInfoPanel(count, feedTimestamp) {
-  document.getElementById("bus-count").textContent = count;
-  var fetchedAt = new Date().toLocaleTimeString("ja-JP");
-  var dataTime = feedTimestamp
-    ? new Date(Number(feedTimestamp) * 1000).toLocaleTimeString("ja-JP")
-    : "--";
-  document.getElementById("last-updated").textContent =
-    "取得: " + fetchedAt + "  データ時刻: " + dataTime;
+function updateInfoPanelTotal() {
+  var total = 0;
+  busMarkersByOperator.forEach(function (markers) {
+    total += markers.size;
+  });
+  document.getElementById("bus-count").textContent = total;
+  var now = new Date().toLocaleTimeString("ja-JP");
+  document.getElementById("last-updated").textContent = "取得: " + now;
 }
 
 // -------------------------------------------------------
@@ -258,18 +242,15 @@ async function decodeFeedMessage(buffer) {
 }
 
 // -------------------------------------------------------
-// リアルタイムデータを取得して地図に描画する
-// 現在選択中の事業者のキャッシュファイルを使用する
+// 指定した事業者のリアルタイムデータを取得して地図に描画する
 // -------------------------------------------------------
-async function fetchVehiclePositions() {
+async function fetchVehiclePositionsForOperator(op) {
   // リアルタイムデータがない事業者はスキップする
-  if (currentOperator.hasRealtime === false) {
-    setStatus("ok", "リアルタイムデータなし");
-    return;
-  }
-  setStatus("loading", "loading...");
+  if (op.hasRealtime === false) return;
+
   try {
-    var url = getRealtimePath() + "?t=" + Date.now();
+    var url =
+      "./data/" + op.folder + "/realtime/vehicle_position.bin?t=" + Date.now();
     var res = await fetch(url, {
       cache: "no-store",
       headers: {
@@ -280,29 +261,56 @@ async function fetchVehiclePositions() {
     if (!res.ok) throw new Error("HTTP " + res.status);
     var buffer = await res.arrayBuffer();
     var feed = await decodeFeedMessage(buffer);
-    renderVehicles(feed.entity || [], feed.header && feed.header.timestamp);
-    setStatus("ok", "updated");
+    renderVehiclesForOperator(
+      op,
+      feed.entity || [],
+      feed.header && feed.header.timestamp,
+    );
   } catch (err) {
-    setStatus("error", "error: " + err.message);
-    console.error("[GTFS-RT] 取得失敗:", err);
+    console.warn("[GTFS-RT] " + op.name + " 取得失敗:", err.message);
   }
 }
 
 // -------------------------------------------------------
-// 地図上にバスマーカーを描画する
+// 選択中の全事業者のリアルタイムデータを更新する
+// 更新ボタン押下時・定期更新時に呼び出す
+// -------------------------------------------------------
+async function fetchAllVehiclePositions() {
+  setStatus("loading", "loading...");
+  for (var i = 0; i < OPERATORS.length; i++) {
+    var op = OPERATORS[i];
+    if (!selectedOperators.has(op.folder)) continue;
+    await fetchVehiclePositionsForOperator(op);
+  }
+  setStatus("ok", "updated");
+  updateInfoPanelTotal();
+}
+
+// -------------------------------------------------------
+// 指定した事業者のバスマーカーを地図上に描画する
 // 前回から消えた車両のマーカーは削除する
 // -------------------------------------------------------
-function renderVehicles(entities, feedTimestamp) {
+function renderVehiclesForOperator(op, entities, feedTimestamp) {
+  var folder = op.folder;
+
+  // この事業者のバスマーカーMapを取得または作成する
+  if (!busMarkersByOperator.has(folder)) {
+    busMarkersByOperator.set(folder, new Map());
+  }
+  var markers = busMarkersByOperator.get(folder);
   var activeIds = new Set();
+
   for (var i = 0; i < entities.length; i++) {
     var entity = entities[i];
     var vp = entity.vehicle;
     if (!vp || !vp.position) continue;
+
     var lat = vp.position.latitude;
     var lng = vp.position.longitude;
     var bearing = vp.position.bearing;
     var speed = vp.position.speed;
     if (!lat || !lng) continue;
+
     var vehicleId =
       (vp.vehicle && (vp.vehicle.id || vp.vehicle.label)) ||
       entity.id ||
@@ -312,8 +320,12 @@ function renderVehicles(entities, feedTimestamp) {
     var ts = vp.timestamp
       ? new Date(Number(vp.timestamp) * 1000).toLocaleTimeString("ja-JP")
       : "--";
+
     var popupHtml =
       '<div style="font-size:13px;line-height:1.7">' +
+      "<b>" +
+      op.name +
+      "</b><br>" +
       "<b>車両ID:</b> " +
       label +
       "<br>" +
@@ -323,27 +335,36 @@ function renderVehicles(entities, feedTimestamp) {
       "<b>時刻:</b> " +
       ts +
       "</div>";
+
     activeIds.add(vehicleId);
-    if (busMarkers.has(vehicleId)) {
-      var marker = busMarkers.get(vehicleId);
+
+    if (markers.has(vehicleId)) {
+      var marker = markers.get(vehicleId);
       marker.setLatLng([lat, lng]);
       marker.setIcon(createBusIcon(bearing));
       marker.getPopup().setContent(popupHtml);
+      // busVisible フラグに応じて表示・非表示を切り替える
+      if (busVisible) {
+        marker.addTo(map);
+      } else {
+        map.removeLayer(marker);
+      }
     } else {
-      var newMarker = L.marker([lat, lng], { icon: createBusIcon(bearing) })
-        .bindPopup(popupHtml)
-        .addTo(map);
-      busMarkers.set(vehicleId, newMarker);
+      var newMarker = L.marker([lat, lng], {
+        icon: createBusIcon(bearing),
+      }).bindPopup(popupHtml);
+      if (busVisible) newMarker.addTo(map);
+      markers.set(vehicleId, newMarker);
     }
   }
+
   // 前回のデータに存在したが今回ないバスのマーカーを削除する
-  busMarkers.forEach(function (marker, id) {
+  markers.forEach(function (marker, id) {
     if (!activeIds.has(id)) {
       map.removeLayer(marker);
-      busMarkers.delete(id);
+      markers.delete(id);
     }
   });
-  updateInfoPanel(activeIds.size, feedTimestamp);
 }
 
 // ============================================================
@@ -372,11 +393,11 @@ function loadCsv(path) {
 // -------------------------------------------------------
 // オプションのCSVファイルを読み込む
 // ファイルが存在しない場合はエラーにせず空配列を返す
-// shapes.txt や fare_attributes.txt など
-// 事業者によって存在しない場合があるファイルに使用する
+// shapes.txt・fare_attributes.txt など事業者によって
+// 存在しない場合があるファイルに使用する
 // -------------------------------------------------------
 function loadCsvOptional(path) {
-  return loadCsv(path).catch(function() {
+  return loadCsv(path).catch(function () {
     console.log("[GTFS] オプションファイルなし（スキップ）: " + path);
     return [];
   });
@@ -384,6 +405,7 @@ function loadCsvOptional(path) {
 
 // -------------------------------------------------------
 // 今日の日付をYYYYMMDD形式で返す
+// calendar.txt の start_date/end_date と比較するために使用する
 // -------------------------------------------------------
 function getTodayStr() {
   var d = new Date();
@@ -394,7 +416,7 @@ function getTodayStr() {
 }
 
 // -------------------------------------------------------
-// 今日が何曜日かをcalendar.txtの列名形式で返す
+// 今日が何曜日かを calendar.txt の列名形式で返す
 // -------------------------------------------------------
 function getTodayDayName() {
   var days = [
@@ -410,18 +432,17 @@ function getTodayDayName() {
 }
 
 // -------------------------------------------------------
-// 当日の運行サービスIDを判定する
+// calendar・calendarDates から今日の運行サービスIDセットを返す
 // calendar_dates.txt の例外を優先して適用する
 // -------------------------------------------------------
-function calcActiveServiceIds() {
-  activateServiceIds = new Set();
+function calcServiceIds(calendar, calendarDates) {
+  var serviceIds = new Set();
   var todayStr = getTodayStr();
   var todayDay = getTodayDayName();
-
-  // calendar_dates.txt の例外を収集する
   var addedByException = new Set();
   var removedByException = new Set();
-  gtfsCalendarDates.forEach(function (row) {
+
+  calendarDates.forEach(function (row) {
     if (row.date === todayStr) {
       if (row.exception_type === "1") {
         addedByException.add(row.service_id);
@@ -431,38 +452,105 @@ function calcActiveServiceIds() {
     }
   });
 
-  // calendar.txt の曜日フラグで基本的な運行日を判定する
-  gtfsCalendar.forEach(function (row) {
+  calendar.forEach(function (row) {
     if (row.start_date <= todayStr && todayStr <= row.end_date) {
       if (row[todayDay] === "1" && !removedByException.has(row.service_id)) {
-        activateServiceIds.add(row.service_id);
+        serviceIds.add(row.service_id);
       }
     }
   });
 
-  // 例外で追加されたservice_idを加える
   addedByException.forEach(function (sid) {
-    activateServiceIds.add(sid);
+    serviceIds.add(sid);
   });
 
   console.log(
     "[GTFS] 今日のサービスID数:",
-    activateServiceIds.size,
-    Array.from(activateServiceIds),
+    serviceIds.size,
+    Array.from(serviceIds),
   );
+  return serviceIds;
 }
 
 // -------------------------------------------------------
-// バス停マーカーのアイコンを生成する（青い小円）
+// shapes データから shape_id → 座標配列 の Map を構築する
 // -------------------------------------------------------
-function createStopIcon() {
-  // 現在選択中の事業者のカラーを使用する
-  // color が未定義の場合はデフォルトの青を使用する
-  var color = currentOperator.color || "#2c7be5";
+function buildShapesMap(shapesData) {
+  var shapeTemp = {};
+  shapesData.forEach(function (row) {
+    var shapeId = row.shape_id;
+    if (!shapeId) return;
+    if (!shapeTemp[shapeId]) shapeTemp[shapeId] = [];
+    shapeTemp[shapeId].push({
+      seq: parseInt(row.shape_pt_sequence),
+      lat: parseFloat(row.shape_pt_lat),
+      lng: parseFloat(row.shape_pt_lon),
+    });
+  });
+  var shapesMap = new Map();
+  Object.keys(shapeTemp).forEach(function (shapeId) {
+    var points = shapeTemp[shapeId];
+    points.sort(function (a, b) {
+      return a.seq - b.seq;
+    });
+    shapesMap.set(
+      shapeId,
+      points.map(function (p) {
+        return [p.lat, p.lng];
+      }),
+    );
+  });
+  return shapesMap;
+}
+
+// -------------------------------------------------------
+// fare_attributes・fare_rules から運賃インデックスを構築する
+// キー: "route_id→origin_id→destination_id"
+// 値: 運賃（円）
+// -------------------------------------------------------
+function buildFareIndexForData(fareAttrs, fareRules) {
+  var index = new Map();
+  var attrMap = {};
+  fareAttrs.forEach(function (row) {
+    attrMap[row.fare_id] = parseInt(row.price);
+  });
+  fareRules.forEach(function (row) {
+    var price = attrMap[row.fare_id];
+    if (price == null) return;
+    var key = row.route_id + "→" + row.origin_id + "→" + row.destination_id;
+    index.set(key, price);
+  });
+  return index;
+}
+
+// -------------------------------------------------------
+// 乗車バス停から降車バス停までの運賃を検索する
+//
+// 引数:
+//   fareIdx           ... 事業者ごとの運賃インデックス
+//   routeId           ... 路線ID（trip.route_id）
+//   originZoneId      ... 乗車バス停の zone_id
+//   destinationZoneId ... 降車バス停の zone_id
+//
+// 戻り値: 運賃（円）または null（データなし）
+// -------------------------------------------------------
+function getFare(fareIdx, routeId, originZoneId, destinationZoneId) {
+  if (originZoneId === destinationZoneId) return null;
+  var key = routeId + "→" + originZoneId + "→" + destinationZoneId;
+  var price = fareIdx.get(key);
+  return price != null ? price : null;
+}
+
+// -------------------------------------------------------
+// バス停マーカーのアイコンを生成する
+// 事業者カラーを使用する
+// -------------------------------------------------------
+function createStopIcon(color) {
+  var c = color || "#2c7be5";
   var svg =
     '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14">' +
     '<circle cx="7" cy="7" r="6" fill="' +
-    color +
+    c +
     '" stroke="white" stroke-width="1.5"/>' +
     "</svg>";
   return L.divIcon({
@@ -475,43 +563,63 @@ function createStopIcon() {
 }
 
 // -------------------------------------------------------
-// 既存のバス停マーカーを全て地図から削除する
-// 事業者切替時に呼び出す
+// 指定した事業者のバス停マーカーを全て地図から削除する
+// folder が null の場合は全事業者を削除する
 // -------------------------------------------------------
-function clearStopMarkers() {
-  stopMarkers.forEach(function (m) {
-    map.removeLayer(m);
-  });
-  stopMarkers = [];
+function clearStopMarkers(folder) {
+  if (folder) {
+    var markers = stopMarkersByOperator.get(folder) || [];
+    markers.forEach(function (m) {
+      map.removeLayer(m);
+    });
+    stopMarkersByOperator.delete(folder);
+  } else {
+    stopMarkersByOperator.forEach(function (markers) {
+      markers.forEach(function (m) {
+        map.removeLayer(m);
+      });
+    });
+    stopMarkersByOperator.clear();
+  }
 }
 
 // -------------------------------------------------------
-// 全バス停を地図上にマーカーとして表示する
+// 指定した事業者のバス停を地図上に描画する
+// バス停クリック時にその事業者を currentOperator にセットする
 // -------------------------------------------------------
-function renderStops() {
-  clearStopMarkers();
-  gtfsStops.forEach(function (stop) {
+function renderStops(op, stops) {
+  clearStopMarkers(op.folder);
+  var markers = [];
+
+  stops.forEach(function (stop) {
     var lat = parseFloat(stop.stop_lat);
     var lng = parseFloat(stop.stop_lon);
     if (isNaN(lat) || isNaN(lng)) return;
 
-    // stop_id はスペース入り文字列のため文字列のまま扱う
     var stopId = stop.stop_id;
     var stopName = stop.stop_name || "不明";
 
-    var marker = L.marker([lat, lng], { icon: createStopIcon() });
+    var marker = L.marker([lat, lng], {
+      icon: createStopIcon(op.color),
+    });
+
     marker.on("click", function () {
+      // クリックされたバス停の事業者を currentOperator にセットする
+      currentOperator = op;
       showStopPanel(stopId, stopName);
     });
+
     marker.addTo(map);
-    stopMarkers.push(marker);
+    markers.push(marker);
   });
-  console.log("[GTFS] バス停描画完了:", stopMarkers.length, "件");
+
+  stopMarkersByOperator.set(op.folder, markers);
+  console.log("[GTFS] " + op.name + " バス停描画完了:", markers.length, "件");
 }
 
 // -------------------------------------------------------
 // バス停情報パネルを表示する
-// 当日運行中の便の時刻表を表示する
+// currentOperator のキャッシュデータを使用する
 // -------------------------------------------------------
 function showStopPanel(stopId, stopName) {
   document.getElementById("stop-panel-title").textContent = stopName;
@@ -519,40 +627,41 @@ function showStopPanel(stopId, stopName) {
   body.innerHTML = '<p class="loading-msg">時刻表を読み込み中...</p>';
   document.getElementById("stop-panel").classList.add("visible");
 
-  // trips.txt と routes.txt をインデックス化する
+  // currentOperator のキャッシュデータを取得する
+  var data = operatorDataCache.get(currentOperator.folder);
+  if (!data) {
+    body.innerHTML = '<p class="loading-msg">データがありません</p>';
+    return;
+  }
+
+  // 今日の運行サービスIDを計算する
+  var activeIds = calcServiceIds(data.calendar, data.calendarDates);
+
   var tripMap = {};
-  gtfsTrips.forEach(function (t) {
+  data.trips.forEach(function (t) {
     tripMap[t.trip_id] = t;
   });
   var routeMap = {};
-  gtfsRoutes.forEach(function (r) {
+  data.routes.forEach(function (r) {
     routeMap[r.route_id] = r;
   });
 
   // このバス停に停車する当日の便を抽出する
   var rows = [];
-  gtfsStopTimes.forEach(function (st) {
+  data.stopTimes.forEach(function (st) {
     if (st.stop_id !== stopId) return;
+    // pickup_type=1 は降車専用（終点）のため除外する
+    if (st.pickup_type === "1") return;
     var trip = tripMap[st.trip_id];
     if (!trip) return;
-    if (!activateServiceIds.has(trip.service_id)) return;
-    var route = routeMap[trip.route_id] || {};
-    // -------------------------------------------------------
-    // pickup_type=1 は降車専用（終点）のため除外する
-    // 乗車可能なバス停のみ時刻表に表示する
-    // -------------------------------------------------------
-    if (st.pickup_type === "1") return;
-
+    if (!activeIds.has(trip.service_id)) return;
     var route = routeMap[trip.route_id] || {};
     rows.push({
-      time:      st.arrival_time,
-      // 路線番号は routes.txt の route_short_name を使用する
-      routeNo:   route.route_short_name || "--",
-      // 行先は stop_times.txt の stop_headsign を優先して使用する
-      // stop_headsign がない場合は trip_headsign を使用する
-      headsign:  st.stop_headsign || trip.trip_headsign || "--",
-      tripId:    st.trip_id,
-      stopId:    stopId
+      time: st.arrival_time,
+      routeNo: route.route_short_name || "--",
+      headsign: st.stop_headsign || trip.trip_headsign || "--",
+      tripId: st.trip_id,
+      stopId: stopId,
     });
   });
 
@@ -608,9 +717,14 @@ function showStopPanel(stopId, stopName) {
 
 // -------------------------------------------------------
 // 便情報パネルを表示して地図上に路線を描画する
+// currentOperator のキャッシュデータを使用する
 // -------------------------------------------------------
 function showTripPanel(tripId, currentStopId) {
-  var trip = gtfsTrips.find(function (t) {
+  // currentOperator のキャッシュデータを取得する
+  var data = operatorDataCache.get(currentOperator.folder);
+  if (!data) return;
+
+  var trip = data.trips.find(function (t) {
     return t.trip_id === tripId;
   });
   var headsign = trip ? trip.trip_headsign || "--" : "--";
@@ -621,7 +735,7 @@ function showTripPanel(tripId, currentStopId) {
   document.getElementById("trip-panel").classList.add("visible");
 
   // この便の全停留所を stop_sequence 順に抽出する
-  var stopTimes = gtfsStopTimes.filter(function (st) {
+  var stopTimes = data.stopTimes.filter(function (st) {
     return st.trip_id === tripId;
   });
   stopTimes.sort(function (a, b) {
@@ -630,18 +744,19 @@ function showTripPanel(tripId, currentStopId) {
 
   // stops.txt をインデックス化する
   var stopMap = {};
-  gtfsStops.forEach(function (s) {
+  data.stops.forEach(function (s) {
     stopMap[s.stop_id] = s;
   });
 
-  // -------------------------------------------------------
   // 乗車バス停の zone_id を取得する（運賃計算の起点）
-  // -------------------------------------------------------
   var originStop = stopMap[currentStopId];
   var originZoneId = originStop ? originStop.zone_id : null;
 
   // trip の route_id を取得する（運賃検索に必要）
   var routeId = trip ? trip.route_id : null;
+
+  // 事業者ごとの運賃インデックスを構築する
+  var fareIdx = buildFareIndexForData(data.fareAttrs, data.fareRules);
 
   var html = '<ul class="stop-list">';
   var coords = [];
@@ -653,21 +768,14 @@ function showTripPanel(tripId, currentStopId) {
     var isCurrent = st.stop_id === currentStopId;
     var liClass = isCurrent ? ' class="current-stop"' : "";
 
-    // -------------------------------------------------------
     // 運賃を検索して表示文字列を決める
-    //   乗車地点    → "乗車"
-    //   運賃あり    → "240円"
-    //   運賃データなし → "--"
-    // -------------------------------------------------------
     var fareDisp = "--";
     if (stop && originZoneId && routeId) {
       if (isCurrent) {
         fareDisp = "乗車";
       } else {
-        var price = getFare(routeId, originZoneId, stop.zone_id);
-        if (price != null) {
-          fareDisp = price + "円";
-        }
+        var price = getFare(fareIdx, routeId, originZoneId, stop.zone_id);
+        if (price != null) fareDisp = price + "円";
       }
     }
 
@@ -696,22 +804,18 @@ function showTripPanel(tripId, currentStopId) {
   html += "</ul>";
   body.innerHTML = html;
 
-  // -------------------------------------------------------
-  // 地図上に路線を描画する
-  // shapes.txt が利用可能な場合はそれを使用する
-  // shapes.txt がない場合はバス停を繋いで描画する（フォールバック）
-  // -------------------------------------------------------
+  // 前の路線を削除して新しい路線を描画する
   if (currentTripLine) {
     map.removeLayer(currentTripLine);
     currentTripLine = null;
   }
 
-  // trip の shape_id を取得する
+  // shapes.txt がある場合はそれを使う（なければバス停を繋ぐ）
   var shapeCoords = null;
   if (trip && trip.shape_id) {
-    // shape_id はスペース入り文字列のため trim して検索する
     var shapeId = trip.shape_id.trim();
-    shapeCoords = gtfsShapes.get(shapeId) || null;
+    var shapesMap = buildShapesMap(data.shapes);
+    shapeCoords = shapesMap.get(shapeId) || null;
     if (shapeCoords) {
       console.log(
         "[GTFS] shapes使用: " + shapeId + " (" + shapeCoords.length + "点)",
@@ -721,9 +825,7 @@ function showTripPanel(tripId, currentStopId) {
     }
   }
 
-  // shapes.txt の座標があればそれを使い、なければバス停を繋ぐ
   var lineCoords = shapeCoords || coords;
-
   if (lineCoords.length >= 2) {
     currentTripLine = L.polyline(lineCoords, {
       color: "#2c7be5",
@@ -762,274 +864,217 @@ document
   });
 
 // ============================================================
-// 静的データ読み込み（事業者切替時も呼び出す）
+// 指定した事業者の静的データを読み込んで地図に表示する
 // ============================================================
-async function initGtfs() {
-  console.log("[GTFS] 静的データ読み込み開始:", currentOperator.name);
-  setStatus("loading", currentOperator.name + " 読み込み中...");
-
-  // パネルを閉じる
-  document.getElementById("stop-panel").classList.remove("visible");
-  document.getElementById("trip-panel").classList.remove("visible");
-  if (currentTripLine) {
-    map.removeLayer(currentTripLine);
-    currentTripLine = null;
-  }
-
-  // GTFSデータをリセットする
-  gtfsStops = [];
-  gtfsStopTimes = [];
-  gtfsTrips = [];
-  gtfsRoutes = [];
-  gtfsCalendar = [];
-  gtfsCalendarDates = [];
-  activateServiceIds = new Set();
+async function loadOperator(op) {
+  var base = "./data/" + op.folder + "/static/";
+  console.log("[GTFS] 静的データ読み込み開始:", op.name);
 
   try {
-    var base = getStaticBase();
     var results = await Promise.all([
       loadCsv(base + "stops.txt"),
       loadCsv(base + "stop_times.txt"),
       loadCsv(base + "trips.txt"),
       loadCsv(base + "routes.txt"),
       loadCsv(base + "calendar.txt"),
-      loadCsvOptional(base + "calendar_dates.txt"), // ない場合あり
-      loadCsvOptional(base + "shapes.txt"), // ない場合あり 
-      loadCsvOptional(base + "fare_attributes.txt"), // ない場合あり
-      loadCsvOptional(base + "fare_rules.txt"), // ない場合あり
+      loadCsvOptional(base + "calendar_dates.txt"),
+      loadCsvOptional(base + "shapes.txt"),
+      loadCsvOptional(base + "fare_attributes.txt"),
+      loadCsvOptional(base + "fare_rules.txt"),
     ]);
 
-    gtfsStops = results[0];
-    gtfsStopTimes = results[1];
-    gtfsTrips = results[2];
-    gtfsRoutes = results[3];
-    gtfsCalendar = results[4];
-    gtfsCalendarDates = results[5];
-    // shapes.txt を shape_id ごとに座標配列としてインデックス化する
-    // shape_id はスペース入り文字列のため文字列のまま扱う
-    buildShapesIndex(results[6]);
-    gtfsFareAttributes = results[7];
-    gtfsFareRules = results[8];
-    buildFareIndex();
+    // 事業者ごとのデータをキャッシュに格納する
+    var data = {
+      stops: results[0],
+      stopTimes: results[1],
+      trips: results[2],
+      routes: results[3],
+      calendar: results[4],
+      calendarDates: results[5],
+      shapes: results[6],
+      fareAttrs: results[7],
+      fareRules: results[8],
+    };
+    operatorDataCache.set(op.folder, data);
 
-    console.log("[GTFS] stops:", gtfsStops.length);
-    console.log("[GTFS] stop_times:", gtfsStopTimes.length);
-    console.log("[GTFS] trips:", gtfsTrips.length);
-    console.log("[GTFS] routes:", gtfsRoutes.length);
-    console.log("[GTFS] calendar:", gtfsCalendar.length);
-    console.log("[GTFS] calendar_dates:", gtfsCalendarDates.length);
-    console.log("[GTFS] shapes:", gtfsShapes.size, "件");
-    console.log("[GTFS] fare_attributes:", gtfsFareAttributes.length);
-    console.log("[GTFS] fare_rules:", gtfsFareRules.length);
-
-    calcActiveServiceIds();
-    renderStops();
-    setStatus("ok", currentOperator.name + " 読み込み完了");
-    console.log("[GTFS] 初期化完了");
-  } catch (err) {
-    setStatus("error", "読み込みエラー: " + currentOperator.name);
-    console.error("[GTFS] 初期化失敗:", err);
-  }
-}
-
-// -------------------------------------------------------
-// shapes.txt を読み込んで shape_id ごとの座標配列を作成する
-//
-// shapes.txt の各行は以下の形式:
-//   shape_id, shape_pt_lat, shape_pt_lon, shape_pt_sequence
-//
-// shape_pt_sequence 順にソートして
-// gtfsShapes に Map として格納する:
-//   shape_id → [[lat, lng], [lat, lng], ...]
-// -------------------------------------------------------
-function buildShapesIndex(shapesData) {
-  // 一旦 shape_id ごとに配列に収集する
-  var shapeTemp = {};
-
-  shapesData.forEach(function (row) {
-    var shapeId = row.shape_id;
-    if (!shapeId) return;
-
-    if (!shapeTemp[shapeId]) {
-      shapeTemp[shapeId] = [];
-    }
-
-    shapeTemp[shapeId].push({
-      seq: parseInt(row.shape_pt_sequence),
-      lat: parseFloat(row.shape_pt_lat),
-      lng: parseFloat(row.shape_pt_lon),
-    });
-  });
-
-  // shape_pt_sequence 順にソートして座標配列として格納する
-  gtfsShapes = new Map();
-  Object.keys(shapeTemp).forEach(function (shapeId) {
-    var points = shapeTemp[shapeId];
-
-    // sequence 順にソートする
-    points.sort(function (a, b) {
-      return a.seq - b.seq;
-    });
-
-    // [lat, lng] の配列に変換してMapに格納する
-    gtfsShapes.set(
-      shapeId,
-      points.map(function (p) {
-        return [p.lat, p.lng];
-      }),
+    console.log(
+      "[GTFS] " + op.name + " 読み込み完了:",
+      data.stops.length,
+      "バス停",
+      data.stopTimes.length,
+      "時刻",
+      data.fareRules.length,
+      "運賃ルール",
     );
-  });
 
-  console.log("[GTFS] shapes インデックス構築完了:", gtfsShapes.size, "件");
-}
+    // バス停を地図上に描画する
+    renderStops(op, data.stops);
 
-// -------------------------------------------------------
-// 運賃インデックスを構築する
-//
-// fare_rules.txt を元に以下の構造のMapを作成する:
-//   "route_id→origin_id→destination_id" → price
-//
-// route_id も含めることで同じバス停間でも
-// 路線によって異なる運賃に正しく対応できる
-// -------------------------------------------------------
-function buildFareIndex() {
-  fareIndex = new Map();
-
-  // fare_attributes.txt を fare_id でインデックス化する
-  var fareAttrMap = {};
-  gtfsFareAttributes.forEach(function (row) {
-    fareAttrMap[row.fare_id] = parseInt(row.price);
-  });
-
-  // fare_rules.txt を route_id→origin_id→destination_id の
-  // 組み合わせでMapに格納する
-  gtfsFareRules.forEach(function (row) {
-    var price = fareAttrMap[row.fare_id];
-    if (price == null) return;
-
-    // route_id を含めた3要素キーで格納する
-    var key = row.route_id + "→" + row.origin_id + "→" + row.destination_id;
-    fareIndex.set(key, price);
-  });
-
-  console.log("[GTFS] 運賃インデックス構築完了:", fareIndex.size, "件");
-}
-
-// -------------------------------------------------------
-// 乗車バス停から降車バス停までの運賃を検索する
-//
-// 引数:
-//   routeId           ... 路線ID（trip.route_id）
-//   originZoneId      ... 乗車バス停の zone_id
-//   destinationZoneId ... 降車バス停の zone_id
-//
-// 戻り値:
-//   運賃（円）または null（データなし）
-// -------------------------------------------------------
-// function getFare(routeId, originZoneId, destinationZoneId) {
-//   // 同じバス停は乗車地点なので null を返す
-//   if (originZoneId === destinationZoneId) return null;
-
-//   // route_id を含めたキーで検索する
-//   var key = routeId + "→" + originZoneId + "→" + destinationZoneId;
-//   var price = fareIndex.get(key);
-//   return price != null ? price : null;
-// }
-
-
-function getFare(routeId, originZoneId, destinationZoneId) {
-  if (originZoneId === destinationZoneId) return null;
-  var key = routeId + "→" + originZoneId + "→" + destinationZoneId;
-  // デバッグ用：最初の5回だけキーを表示する
-  if (typeof getFare.count === "undefined") getFare.count = 0;
-  if (getFare.count < 5) {
-    console.log("検索キー:", key, "結果:", fareIndex.get(key));
-    getFare.count++;
+    // リアルタイムデータを取得する
+    await fetchVehiclePositionsForOperator(op);
+  } catch (err) {
+    console.error("[GTFS] " + op.name + " 読み込み失敗:", err);
   }
-  var price = fareIndex.get(key);
-  return price != null ? price : null;
 }
 
-
-
-
 // ============================================================
-// 事業者セレクターの初期化
+// 事業者選択ドロワーの初期化
 // ============================================================
-function initOperatorSelector() {
-  var select = document.getElementById("operator-select");
-  select.innerHTML = "";
+function initOperatorDrawer() {
+  var drawer = document.getElementById("operator-drawer");
+  var toggleBtn = document.getElementById("operator-toggle-btn");
+  var checkboxContainer = document.getElementById("operator-checkboxes");
+  var selectedCountEl = document.getElementById("selected-count");
 
+  // -------------------------------------------------------
+  // 事業者ごとのチェックボックスを動的に生成する
+  // -------------------------------------------------------
   OPERATORS.forEach(function (op) {
-    var option = document.createElement("option");
-    option.value = op.folder;
-    option.textContent = op.name;
-    if (op.folder === currentOperator.folder) {
-      option.selected = true;
+    var item = document.createElement("label");
+    item.className = "operator-checkbox-item";
+
+    var checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.value = op.folder;
+    checkbox.checked = selectedOperators.has(op.folder);
+
+    // 事業者カラーのドット
+    var dot = document.createElement("span");
+    dot.className = "operator-color-dot";
+    dot.style.background = op.color;
+
+    var name = document.createTextNode(op.name);
+
+    item.appendChild(checkbox);
+    item.appendChild(dot);
+    item.appendChild(name);
+    checkboxContainer.appendChild(item);
+
+    // チェックボックス変更時の処理
+    checkbox.addEventListener("change", function () {
+      if (checkbox.checked) {
+        // 事業者を追加して静的データを読み込む
+        selectedOperators.add(op.folder);
+        loadOperator(op);
+      } else {
+        // 事業者を削除してマーカーを消す
+        selectedOperators.delete(op.folder);
+        clearStopMarkers(op.folder);
+        // バスマーカーも削除する
+        var bm = busMarkersByOperator.get(op.folder);
+        if (bm) {
+          bm.forEach(function (marker) {
+            map.removeLayer(marker);
+          });
+          busMarkersByOperator.delete(op.folder);
+        }
+        // キャッシュも削除する
+        operatorDataCache.delete(op.folder);
+      }
+      updateSelectedCount();
+      updateInfoPanelTotal();
+    });
+  });
+
+  // -------------------------------------------------------
+  // ドロワーの開閉処理
+  // -------------------------------------------------------
+  toggleBtn.addEventListener("click", function () {
+    drawer.classList.toggle("open");
+    toggleBtn.textContent = drawer.classList.contains("open")
+      ? "🏢 事業者選択 ▲"
+      : "🏢 事業者選択 ▼";
+  });
+
+  // ドロワー外をクリックしたら閉じる
+  document.addEventListener("click", function (e) {
+    if (!drawer.contains(e.target) && e.target !== toggleBtn) {
+      drawer.classList.remove("open");
+      toggleBtn.textContent = "🏢 事業者選択 ▼";
     }
-    select.appendChild(option);
   });
 
   // -------------------------------------------------------
-  // セレクター変更時の処理
-  // 事業者を切り替えてバス停・リアルタイムデータを再読み込みする
+  // 全選択ボタン
   // -------------------------------------------------------
-  select.addEventListener("change", function () {
-    var folder = select.value;
-    currentOperator = OPERATORS.find(function (o) {
-      return o.folder === folder;
+  document
+    .getElementById("select-all-btn")
+    .addEventListener("click", function () {
+      checkboxContainer
+        .querySelectorAll("input[type=checkbox]")
+        .forEach(function (cb) {
+          if (!cb.checked) {
+            cb.checked = true;
+            var op = OPERATORS.find(function (o) {
+              return o.folder === cb.value;
+            });
+            selectedOperators.add(cb.value);
+            loadOperator(op);
+          }
+        });
+      updateSelectedCount();
     });
-    console.log("[GTFS] 事業者切替:", currentOperator.name);
 
-    // バスマーカーを全削除する（前の事業者のバスを消す）
-    busMarkers.forEach(function (marker) {
-      map.removeLayer(marker);
+  // -------------------------------------------------------
+  // 全解除ボタン
+  // -------------------------------------------------------
+  document
+    .getElementById("deselect-all-btn")
+    .addEventListener("click", function () {
+      checkboxContainer
+        .querySelectorAll("input[type=checkbox]")
+        .forEach(function (cb) {
+          cb.checked = false;
+          selectedOperators.delete(cb.value);
+          clearStopMarkers(cb.value);
+          var bm = busMarkersByOperator.get(cb.value);
+          if (bm) {
+            bm.forEach(function (marker) {
+              map.removeLayer(marker);
+            });
+            busMarkersByOperator.delete(cb.value);
+          }
+          operatorDataCache.delete(cb.value);
+        });
+      updateSelectedCount();
+      updateInfoPanelTotal();
     });
-    busMarkers.clear();
 
-    // リアルタイムデータと静的データを再読み込みする
-    fetchVehiclePositions();
-    initGtfs();
-  });
+  // -------------------------------------------------------
+  // 選択中の事業者数を更新する
+  // -------------------------------------------------------
+  function updateSelectedCount() {
+    selectedCountEl.textContent = selectedOperators.size + "社選択中";
+  }
+  updateSelectedCount();
 }
 
 // -------------------------------------------------------
 // リアルタイムバスの表示・非表示を切り替える
 // ボタンを押すたびに表示状態がトグルする
 // -------------------------------------------------------
-var busVisible = true;  // 初期状態は表示
-
-document.getElementById("toggle-bus-btn")
-  .addEventListener("click", function() {
+document
+  .getElementById("toggle-bus-btn")
+  .addEventListener("click", function () {
     busVisible = !busVisible;
 
-    // 全バスマーカーの表示・非表示を切り替える
-    busMarkers.forEach(function(marker) {
-      if (busVisible) {
-        marker.addTo(map);
-      } else {
-        map.removeLayer(marker);
-      }
+    // 全事業者のバスマーカーを一括で表示・非表示にする
+    busMarkersByOperator.forEach(function (markers) {
+      markers.forEach(function (marker) {
+        if (busVisible) {
+          marker.addTo(map);
+        } else {
+          map.removeLayer(marker);
+        }
+      });
     });
 
-    // ボタンのテキストを更新する
-    document.getElementById("toggle-bus-btn").textContent
-      = busVisible ? "🚌 非表示" : "🚌 表示";
+    document.getElementById("toggle-bus-btn").textContent = busVisible
+      ? "🚌 非表示"
+      : "🚌 表示";
   });
-  
-// ============================================================
-// 起動処理（1回だけ実行する）
-// ============================================================
-initOperatorSelector(); // セレクターを初期化する
-fetchVehiclePositions(); // リアルタイムデータを取得する
-initGtfs(); // 静的データを読み込む
 
-// 更新ボタンでリアルタイムデータを再取得する
-document
-  .getElementById("refresh-btn")
-  .addEventListener("click", fetchVehiclePositions);
-
-// -------------------------------------------------------
+// ============================================================
 // パネルの操作機能を設定する
 //
 // PC（幅769px以上）の場合:
@@ -1040,104 +1085,112 @@ document
 //   上ドラッグ → 高さ増加（最大80vh）
 //   下ドラッグ → 高さ減少（最小15vh）
 //   デフォルト: 40vh
-// -------------------------------------------------------
+// ============================================================
 function initPanelControl(panelId, headerId) {
-  var panel  = document.getElementById(panelId);
+  var panel = document.getElementById(panelId);
   var header = document.getElementById(headerId);
 
   var isDragging = false;
-  var startX = 0, startY = 0;
-  var startLeft = 0, startTop = 0, startH = 0;
+  var startX = 0,
+    startY = 0;
+  var startLeft = 0,
+    startTop = 0,
+    startH = 0;
 
   var winH = window.innerHeight;
-  var MAX_H = winH * 0.80;  // スマホ最大高さ: 80vh
-  var MIN_H = winH * 0.15;  // スマホ最小高さ: 15vh
+  var MAX_H = winH * 0.8;
+  var MIN_H = winH * 0.15;
 
-  // -------------------------------------------------------
-  // 操作開始（マウスダウン・タッチスタート）
-  // -------------------------------------------------------
   function onStart(clientX, clientY) {
     isDragging = true;
     startX = clientX;
     startY = clientY;
-    panel.style.transition = "none";  // ドラッグ中はアニメーションを止める
+    panel.style.transition = "none";
 
     if (window.innerWidth > 768) {
-      // PC: パネルの現在位置を記録する
       var rect = panel.getBoundingClientRect();
       panel.style.position = "fixed";
-      panel.style.right    = "auto";
-      panel.style.top      = rect.top  + "px";
-      panel.style.left     = rect.left + "px";
+      panel.style.right = "auto";
+      panel.style.top = rect.top + "px";
+      panel.style.left = rect.left + "px";
       startLeft = rect.left;
-      startTop  = rect.top;
+      startTop = rect.top;
     } else {
-      // スマホ: パネルの現在の高さを記録する
       startH = panel.getBoundingClientRect().height;
     }
   }
 
-  // -------------------------------------------------------
-  // 操作中（マウスムーブ・タッチムーブ）
-  // -------------------------------------------------------
   function onMove(clientX, clientY) {
     if (!isDragging) return;
     var dx = clientX - startX;
     var dy = clientY - startY;
 
     if (window.innerWidth > 768) {
-      // PC: パネルを移動する
-      panel.style.left = (startLeft + dx) + "px";
-      panel.style.top  = (startTop  + dy) + "px";
+      panel.style.left = startLeft + dx + "px";
+      panel.style.top = startTop + dy + "px";
     } else {
-      // スマホ: パネルの高さを変更する
-      // 上ドラッグ（dyマイナス）→ 高さ増加
       var newH = Math.max(MIN_H, Math.min(MAX_H, startH - dy));
       panel.style.height = newH + "px";
     }
   }
 
-  // -------------------------------------------------------
-  // 操作終了（マウスアップ・タッチエンド）
-  // -------------------------------------------------------
   function onEnd() {
     if (!isDragging) return;
     isDragging = false;
-    // アニメーションを元に戻す
     panel.style.transition = "transform 0.3s ease";
   }
 
-  // -------------------------------------------------------
-  // マウスイベント（PC用）
-  // -------------------------------------------------------
-  header.addEventListener("mousedown", function(e) {
+  header.addEventListener("mousedown", function (e) {
     if (e.target.tagName === "BUTTON") return;
     onStart(e.clientX, e.clientY);
     e.preventDefault();
   });
-  document.addEventListener("mousemove", function(e) {
+  document.addEventListener("mousemove", function (e) {
     onMove(e.clientX, e.clientY);
   });
   document.addEventListener("mouseup", onEnd);
 
-  // -------------------------------------------------------
-  // タッチイベント（スマホ用）
-  // -------------------------------------------------------
-  header.addEventListener("touchstart", function(e) {
-    if (e.target.tagName === "BUTTON") return;
-    onStart(e.touches[0].clientX, e.touches[0].clientY);
-    e.preventDefault();
-  }, { passive: false });
-  document.addEventListener("touchmove", function(e) {
-    if (!isDragging) return;
-    onMove(e.touches[0].clientX, e.touches[0].clientY);
-    e.preventDefault();
-  }, { passive: false });
+  header.addEventListener(
+    "touchstart",
+    function (e) {
+      if (e.target.tagName === "BUTTON") return;
+      onStart(e.touches[0].clientX, e.touches[0].clientY);
+      e.preventDefault();
+    },
+    { passive: false },
+  );
+  document.addEventListener(
+    "touchmove",
+    function (e) {
+      if (!isDragging) return;
+      onMove(e.touches[0].clientX, e.touches[0].clientY);
+      e.preventDefault();
+    },
+    { passive: false },
+  );
   document.addEventListener("touchend", onEnd);
 }
 
 // -------------------------------------------------------
 // バス停パネルと便情報パネルに操作機能を設定する
 // -------------------------------------------------------
-initPanelControl("stop-panel",  "stop-panel-header");
-initPanelControl("trip-panel",  "trip-panel-header");
+initPanelControl("stop-panel", "stop-panel-header");
+initPanelControl("trip-panel", "trip-panel-header");
+
+// ============================================================
+// 起動処理（1回だけ実行する）
+// ============================================================
+
+// 事業者選択ドロワーを初期化する
+initOperatorDrawer();
+
+// 初期選択事業者（HD西広島）のデータを読み込む
+var initialOp = OPERATORS.find(function (o) {
+  return o.folder === "hdnishihiroshima";
+});
+loadOperator(initialOp);
+
+// 更新ボタンで全選択事業者のリアルタイムデータを更新する
+document
+  .getElementById("refresh-btn")
+  .addEventListener("click", fetchAllVehiclePositions);
