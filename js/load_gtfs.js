@@ -132,7 +132,10 @@ var busVisible = true;
 // -------------------------------------------------------
 // Leaflet マップ初期化（広島市中心部）
 // -------------------------------------------------------
-var map = L.map("map").setView([34.3853, 132.4553], 13);
+// zoomControl: false で左上のデフォルトを非表示にして
+// 右上に再配置する
+var map = L.map("map", { zoomControl: false }).setView([34.3853, 132.4553], 13);
+L.control.zoom({ position: "topright" }).addTo(map);
 
 // 国土地理院地図（淡色地図）
 // 日本の地図として最も正確で、色が薄く見やすい

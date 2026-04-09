@@ -564,6 +564,20 @@
         background: rgba(255,255,255,0.85) !important;
         padding: 2px 6px !important;
       } 
+      /* スマホではチェックボックスを大きくして見やすくする */
+      .operator-checkbox-item input[type="checkbox"] {
+        width: 20px !important;
+        height: 20px !important;
+      }
+      .operator-checkbox-item {
+        font-size: 0.9rem !important;
+        padding: 6px 10px !important;
+        gap: 8px !important;
+      }
+      .operator-color-dot {
+        width: 14px !important;
+        height: 14px !important;
+      }
     }
     /* 横画面対応: safe-area を左右にも適用する */
     @media (orientation: landscape) {
