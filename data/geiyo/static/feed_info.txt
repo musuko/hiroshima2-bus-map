@@ -1,2 +1,2 @@
 ﻿feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version
-芸陽バス,https://www.geiyo.co.jp/route_bus.html,ja,20260401,20261001,20260401
+芸陽バス,https://www.geiyo.co.jp/route_bus.html,ja,20260411,20261011,20260411
