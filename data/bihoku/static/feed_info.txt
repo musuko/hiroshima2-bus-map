@@ -1,2 +1,2 @@
 ﻿feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version
-備北交通,http://bihoku.co.jp/about/local-bus/,ja,20260401,20261001,20260401
+備北交通,http://bihoku.co.jp/about/local-bus/,ja,20260412,20261012,20260412
