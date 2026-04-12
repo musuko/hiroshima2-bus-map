@@ -94,10 +94,25 @@ var OPERATORS = [
 ];
 
 // -------------------------------------------------------
-// 現在選択中の事業者セット（複数選択対応）
-// バス停クリック時にどの事業者のデータを使うかを currentOperator で管理する
+// 前回の選択状態を localStorage から復元する
+// 初回または保存データがない場合は HD西広島 をデフォルトにする
 // -------------------------------------------------------
-var selectedOperators = new Set(["hdnishihiroshima"]);
+function loadSelectedOperators() {
+  try {
+    var saved = localStorage.getItem("selectedOperators");
+    if (saved) {
+      var arr = JSON.parse(saved);
+      if (Array.isArray(arr) && arr.length > 0) {
+        return new Set(arr);
+      }
+    }
+  } catch (e) {
+    console.warn("[GTFS] localStorage 読み込み失敗:", e);
+  }
+  return new Set(["hiroden"]);
+}
+
+var selectedOperators = loadSelectedOperators();
 
 // バス停クリック時に時刻表・運賃表示に使う事業者
 var currentOperator = OPERATORS.find(function (o) {
@@ -130,7 +145,7 @@ var selectedStopMarker = null;
 var currentTripLine = null;
 
 // リアルタイムバスの表示・非表示フラグ
-var busVisible = true;
+var busVisible = false;
 
 // -------------------------------------------------------
 // Leaflet マップ初期化（広島市中心部）
@@ -1085,10 +1100,20 @@ function initOperatorDrawer() {
     });
 
   // -------------------------------------------------------
-  // 選択中の事業者数を更新する
+  // 選択中の事業者数を更新して localStorage に保存する
   // -------------------------------------------------------
   function updateSelectedCount() {
     selectedCountEl.textContent = selectedOperators.size + "社選択中";
+
+    // 選択状態を localStorage に保存する
+    try {
+      localStorage.setItem(
+        "selectedOperators",
+        JSON.stringify(Array.from(selectedOperators)),
+      );
+    } catch (e) {
+      console.warn("[GTFS] localStorage 保存失敗:", e);
+    }
   }
   updateSelectedCount();
 }
@@ -1228,13 +1253,16 @@ initPanelControl("trip-panel", "trip-panel-header");
 // 事業者選択ドロワーを初期化する
 initOperatorDrawer();
 
-// 初期選択事業者（HD西広島）のデータを読み込む
-var initialOp = OPERATORS.find(function (o) {
-  return o.folder === "hdnishihiroshima";
+// -------------------------------------------------------
+// 前回選択していた全事業者のデータを読み込む
+// localStorage に保存データがある場合はそれを復元する
+// ない場合は広島電鉄のみ読み込む
+// -------------------------------------------------------
+selectedOperators.forEach(function(folder) {
+  var op = OPERATORS.find(function(o) { return o.folder === folder; });
+  if (op) loadOperator(op);
 });
-loadOperator(initialOp);
 
 // 更新ボタンで全選択事業者のリアルタイムデータを更新する
-document
-  .getElementById("refresh-btn")
+document.getElementById("refresh-btn")
   .addEventListener("click", fetchAllVehiclePositions);
