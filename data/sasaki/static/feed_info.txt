@@ -1,2 +1,2 @@
 ﻿feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version
-ささき観光,https://www.sasakikanko.co.jp/ono-heart-bus.html,ja,20260117,20260717,20260117
+ささき観光,https://www.sasakikanko.co.jp/ono-heart-bus.html,ja,20260417,20261017,20260417
