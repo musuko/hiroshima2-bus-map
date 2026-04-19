@@ -1,2 +1,2 @@
 ﻿feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version
-廿日市市,https://www.city.hatsukaichi.hiroshima.jp/soshiki/118/12398.html,ja,20260329,20260929,20260329
+廿日市市,https://www.city.hatsukaichi.hiroshima.jp/soshiki/118/12398.html,ja,20260419,20261019,20260419
