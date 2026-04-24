@@ -1,2 +1,2 @@
 ﻿feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version
-おのみちバス,https://onomichibus.jp/,ja,20260402,20261002,20260402
+おのみちバス,https://onomichibus.jp/,ja,20260424,20261024,20260424

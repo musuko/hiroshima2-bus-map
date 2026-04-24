@@ -368,10 +368,10 @@ fd6de6ea-fd93-4e17-9c0d-88158fa09719,77412010@HiroshimaArea,,1,,土生港方面,
 fa8a0d6e-2f4f-4816-b476-88dc4bbd4b48,77414010@HiroshimaArea,,1,,降車専用,松永（到着用）@HiroshimaArea
 76c0e7cd-a50f-4d3c-8e3a-74ed93044b51,774201@HiroshimaArea,,3,,高須車庫・市民病院・瀬戸田港・東尾道駅方面,尾崎@HiroshimaArea
 2f00ba89-7dc8-4530-8b09-27bfaec0ab68,774202@HiroshimaArea,,3,,尾道駅前方面,尾崎@HiroshimaArea
-29499c79-3cd6-444c-924e-ede7b5e78013,@HiroshimaArea,,3,1,尾道駅前・尾道流通団地方面,尾道流通団地南@HiroshimaArea
+29499c79-3cd6-444c-924e-ede7b5e78013,7742001@HiroshimaArea,,3,1,尾道駅前・尾道流通団地方面,尾道流通団地南@HiroshimaArea
 44603598-38ac-4ded-af85-fb9b9350768f,7742101@HiroshimaArea,,3,1,尾道駅前・尾道流通団地方面,尾道流通団地西@HiroshimaArea
-813a2398-c798-4f5a-a338-293351f8aa8c,@HiroshimaArea,,3,1,尾道駅前方面,尾道流通団地東@HiroshimaArea
-d0b77408-a816-4795-aab5-a3a54e835fd9,@HiroshimaArea,,3,,,尾道流通団地東@HiroshimaArea
+813a2398-c798-4f5a-a338-293351f8aa8c,7742201@HiroshimaArea,,3,1,尾道駅前方面,尾道流通団地東@HiroshimaArea
+d0b77408-a816-4795-aab5-a3a54e835fd9,7742210@HiroshimaArea,,1,,降車専用,尾道流通団地東@HiroshimaArea
 aefd5b7c-23f8-4a79-a1f9-0467534ccfaa,774301@HiroshimaArea,,3,,高須車庫・瀬戸田港・東尾道駅・尾道駅前方面,尾商入口@HiroshimaArea
 1be027ec-c472-4ab2-ad56-d3dc2c94cdc0,774302@HiroshimaArea,,3,,ＪＡ尾道総合病院・合同庁舎入口・鳴滝登山口方面,尾商入口@HiroshimaArea
 695ce6b5-3537-4d77-99e9-7fe2d0403dc5,774401@HiroshimaArea,,3,,土生港前方面,鬼岩@HiroshimaArea
@@ -450,9 +450,9 @@ bdfc4013-cccf-41b4-a621-9d244740ccef,778002@HiroshimaArea,,3,,尾道駅前・鳴
 f1ce9291-db72-44bc-bde5-84a942f73b81,778101@HiroshimaArea,,3,,尾道市立大学・陽光台方面,栗原一丁目@HiroshimaArea
 9229dc00-d22a-4df3-a31b-dfc957a472fe,778102@HiroshimaArea,,3,,合同庁舎入口・尾道駅前方面,栗原一丁目@HiroshimaArea
 a7c906b1-0cdf-4c85-b319-364f47f56d5a,778201@HiroshimaArea,,3,,びんご運動公園・尾道流通団地方面,栗原上@HiroshimaArea
-46cddbb2-8ac7-40c1-947b-3000bc8a7152,@HiroshimaArea,,3,,,栗原上@HiroshimaArea
+46cddbb2-8ac7-40c1-947b-3000bc8a7152,778202@HiroshimaArea,,3,,,栗原上@HiroshimaArea
 dc6bb37f-4e88-4c0e-89cf-b7ed9000f3b2,778301@HiroshimaArea,,3,,びんご運動公園・尾道流通団地方面,栗原中@HiroshimaArea
-e77ad5e9-0052-42e7-84b1-551138d117c8,@HiroshimaArea,,3,,,栗原中@HiroshimaArea
+e77ad5e9-0052-42e7-84b1-551138d117c8,778302@HiroshimaArea,,3,,,栗原中@HiroshimaArea
 a4f863c4-13f9-4a56-8485-450c0b368217,778401@HiroshimaArea,,3,,尾道市立大学・陽光台方面,栗原二丁目@HiroshimaArea
 daead386-8f08-4888-9b2c-872eca7360f1,778402@HiroshimaArea,,3,,合同庁舎入口・尾道駅前方面,栗原二丁目@HiroshimaArea
 25b6bfdb-c042-4495-b6a9-75f45b0a9690,778501@HiroshimaArea,,3,,尾道市立大学・陽光台方面,栗原本通り@HiroshimaArea
