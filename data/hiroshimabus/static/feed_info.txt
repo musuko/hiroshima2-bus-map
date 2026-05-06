@@ -1,2 +1,2 @@
 ﻿feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version
-広島バス,http://www.hirobus.co.jp/route-bus/index.html,ja,20260505,20261105,20260505
+広島バス,http://www.hirobus.co.jp/route-bus/index.html,ja,20260506,20261106,20260506
