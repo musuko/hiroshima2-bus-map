@@ -1066,6 +1066,12 @@
 修道学園入口,ko,슈도 가쿠엔 이리구치
 修道学園入口,zh-cn,修道学园入口
 修道学園入口,zh-tw,修道學園入口
+縮景園入口,ja,縮景園入口
+縮景園入口,ja-Hrkt,しゅっけいえんいりぐち
+縮景園入口,en,Shukkeien-iriguchi (Shukkeien Garden Entrance)
+縮景園入口,ko,슛케이엔 정원
+縮景園入口,zh-cn,缩景园入口
+縮景園入口,zh-tw,縮景園入口
 商工センター一丁目,ja,商工センター一丁目
 商工センター一丁目,ja-Hrkt,しょうこうせんたーいっちょうめ
 商工センター一丁目,en,Shoko Center-itchome (Shoko Center 1)
@@ -1312,6 +1318,12 @@
 幟町,ko,노보리초
 幟町,zh-cn,帜町
 幟町,zh-tw,幟町
+幟町中学校前,ja,幟町中学校前
+幟町中学校前,ja-Hrkt,のぼりまちちゅうがっこうまえ
+幟町中学校前,en,Noboricho Chugakko-mae (Noboricho Junior High School)
+幟町中学校前,ko,노보리초 중학교
+幟町中学校前,zh-cn,帜町中学前
+幟町中学校前,zh-tw,幟町中學前
 羽衣町,ja,羽衣町
 羽衣町,ja-Hrkt,はごろもちょう
 羽衣町,en,Hagoromocho
