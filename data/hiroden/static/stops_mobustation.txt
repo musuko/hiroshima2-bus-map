@@ -1465,8 +1465,8 @@ defe8b8f-a9d3-4490-8ce3-ff61d670d6bf,0520002@HiroshimaArea,,3,,向洋方面,大�
 70ffed4b-0bf8-4c81-85ed-de50ac76db11,5200002@HiroshimaArea,,3,,八丁堀・広島駅新幹線口方面,保健所前@HiroshimaArea
 2b23d076-a1fe-4c1c-96bb-110c56892c7e,5201001@HiroshimaArea,,3,,仁保方面,南竹屋町@HiroshimaArea
 8d58446e-52a4-4882-9c63-304c1e052ffe,5201002@HiroshimaArea,,3,,戸坂方面,南竹屋町@HiroshimaArea
-cc21c283-b1a5-4dc6-9a34-ff66d909bb43,5202001@HiroshimaArea,,3,,仁保方面,広電ボウル前@HiroshimaArea
-c160234e-0fe2-4729-ab85-166853ad3938,5202002@HiroshimaArea,,3,,戸坂方面,広電ボウル前@HiroshimaArea
+cc21c283-b1a5-4dc6-9a34-ff66d909bb43,5202001@HiroshimaArea,,3,,仁保方面,千田小学校前@HiroshimaArea
+c160234e-0fe2-4729-ab85-166853ad3938,5202002@HiroshimaArea,,3,,戸坂方面,千田小学校前@HiroshimaArea
 f1bf2176-aa36-4422-b0a7-bacb55b5e159,5203001@HiroshimaArea,,3,1,1番のりば 12号仁保方面,御幸橋@HiroshimaArea
 70ef5a32-d6ce-455a-ae19-b58d4619b5c5,5203002@HiroshimaArea,,3,2,2番のりば 12号戸坂方面,御幸橋@HiroshimaArea
 2cf6a80f-008e-4f31-8705-422be4858d29,5203003@HiroshimaArea,,3,3,3番のりば まちのわループ・21号広島港方面,御幸橋@HiroshimaArea
