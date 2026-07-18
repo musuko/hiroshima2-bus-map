@@ -436,8 +436,6 @@ d9a8ff57-e69b-484f-825e-5f9a2d82ba99,0001009@HiroshimaArea,,3,9,9 高速バス�
 99d503b7-a062-4209-b96f-145fe79c6add,0001006@HiroshimaArea,,3,6,6 高速バス等,広島バスセンター@HiroshimaArea
 8795ade9-d8b0-454e-a31e-b5ca5e00c731,5003000@HiroshimaArea,,3,0,広島バスセンターゆき,八丁堀@HiroshimaArea
 d909139d-7b44-46e3-ac8e-4b90fbe17397,5003001@HiroshimaArea,,3,1,29号温品、40号向洋、32号高陽、芸陽高速など,八丁堀@HiroshimaArea
-f1057dc1-772f-4bb8-b1cd-e1b63aa1ac65,5003001@HiroshimaArea,,3,1,29号温品、40号向洋、32号高陽、芸陽高速など,八丁堀@HiroshimaArea
-c8b9c263-9886-43b6-a2cb-57f2799591d7,5003051@HiroshimaArea,,3,流川入口,めいぷる～ぷ,八丁堀@HiroshimaArea
 32397ce2-b922-4fd5-b67d-d2e8beb58d1e,5032032@HiroshimaArea,,3,32,32番のりば 北ゆき,本通り@HiroshimaArea
 2d4e9d4c-3f4d-4c4d-abed-3c06d5f7ceb1,5032031@HiroshimaArea,,3,31,31番のりば 南ゆき,本通り@HiroshimaArea
 65e09f2e-68eb-47c1-b541-a897c6531cda,5034002@HiroshimaArea,,3,,北ゆき,中電前@HiroshimaArea
@@ -457,7 +455,6 @@ e4451ae0-9f3f-4d4b-b5d0-734e7e23e1a9,5066001@HiroshimaArea,,3,,仁保・熊野�
 27b348ee-f2f3-456f-855c-e602b920bf92,5124001@HiroshimaArea,,3,1,高陽方面,横川駅前@HiroshimaArea
 0021fe9c-311f-4124-99c1-97369b49acd3,7346001@HiroshimaArea,,3,,広島駅方面,別院前@HiroshimaArea
 1e565b37-596d-4043-8e3c-e29186397151,0641001@HiroshimaArea,,3,,22・70-74号　広島駅方面,広瀬町@HiroshimaArea
-bccd17b0-40ee-4b06-a448-67b935b897fd,5002005@HiroshimaArea,,3,,めいぷる～ぷ,紙屋町@HiroshimaArea
 98a81838-34ed-4348-9374-3f540b10f7df,@HiroshimaArea,,1,,,広島駅@HiroshimaArea
 3346f8c3-b7fa-418b-a53e-6b2eb57c4c59,5006007@HiroshimaArea,,3,7,30号高陽方面、71-74号横川・祇園方面,広島駅@HiroshimaArea
 0ff63363-9aeb-48d5-a497-af789493c09c,5006023@HiroshimaArea,,3,,(郵便局前)広島市内ゆき,広島駅@HiroshimaArea
