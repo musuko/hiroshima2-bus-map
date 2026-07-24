@@ -555,7 +555,7 @@ da8f24bf-de92-465c-8329-1672b4f957a0,5186002@HiroshimaArea,,3,,高陽・戸坂�
 4e277868-cf18-47d7-93d0-eb80abb40bba,5185002@HiroshimaArea,,3,,高陽・戸坂方面,天水@HiroshimaArea
 292ff67c-517d-4774-8d63-319b622b0537,5184001@HiroshimaArea,,3,,広島方面,牛田新町四丁目@HiroshimaArea
 3ad9a644-29e1-4ed0-a99c-fd3a01d4af97,5184002@HiroshimaArea,,3,,高陽・戸坂方面,牛田新町四丁目@HiroshimaArea
-21590f2a-f53f-41b0-8394-91dad3ff5b56,5183001@HiroshimaArea,,3,,広島駅・徳山方面,不動院@HiroshimaArea
+21590f2a-f53f-41b0-8394-91dad3ff5b56,5183001@HiroshimaArea,,3,,広島方面,不動院@HiroshimaArea
 8f1b4b4a-0cd4-46f4-ab50-042b6502322d,5183002@HiroshimaArea,,3,,高陽・戸坂方面,不動院@HiroshimaArea
 91768402-cd90-436d-983e-640f34d5f236,5181001@HiroshimaArea,,3,,広島方面,牛田新町二丁目@HiroshimaArea
 d5e5595e-0a63-4e3a-a802-8dd270e5839e,5181002@HiroshimaArea,,3,,高陽・戸坂方面,牛田新町二丁目@HiroshimaArea
