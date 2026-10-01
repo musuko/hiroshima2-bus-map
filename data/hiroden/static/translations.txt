@@ -2228,12 +2228,6 @@
 中広二丁目,ko,나카히로 2초메
 中広二丁目,zh-cn,中广二丁目
 中広二丁目,zh-tw,中廣二丁目
-マツダスタジアム前,ja,マツダスタジアム前
-マツダスタジアム前,ja-Hrkt,まつだすたじあむまえ
-マツダスタジアム前,en,MAZDA Zoom-Zoom STADIUM Hiroshima
-マツダスタジアム前,ko,마쓰다 스타디움 마에
-マツダスタジアム前,zh-cn,马自达体育场前
-マツダスタジアム前,zh-tw,馬自達體育場前
 矢野駅入口,ja,矢野駅入口
 矢野駅入口,ja-Hrkt,やのえきくりぐち
 矢野駅入口,en,Yano Sta. Entrance
@@ -4246,12 +4240,6 @@
 翠町第二公園前,ko,미도리마치 다이니 공원
 翠町第二公園前,zh-cn,翠町第二公园前
 翠町第二公園前,zh-tw,翠町第二公園前
-荒神町,ja,荒神町
-荒神町,ja-Hrkt,こうじんまち
-荒神町,en,Kojinmachi
-荒神町,ko,고진마치
-荒神町,zh-cn,荒神町
-荒神町,zh-tw,荒神町
 東区スポーツセンター入口,ja,東区スポーツセンター入口
 東区スポーツセンター入口,ja-Hrkt,ひがしくすぽーつせんたーいりぐち
 東区スポーツセンター入口,en,Higashiku Sports Center-iriguchi
@@ -4270,12 +4258,6 @@
 新白島駅,ko,신하쿠시마 역
 新白島駅,zh-cn,新白岛站
 新白島駅,zh-tw,新白島站
-西蟹屋,ja,西蟹屋
-西蟹屋,ja-Hrkt,にしかにや
-西蟹屋,en,Nishi-kaniya
-西蟹屋,ko,니시카니야
-西蟹屋,zh-cn,西蟹屋
-西蟹屋,zh-tw,西蟹屋
 牛田新町一丁目,ja,牛田新町一丁目
 牛田新町一丁目,ja-Hrkt,うしたしんまちいっちょうめ
 牛田新町一丁目,en,Ushita-shinmachi-itchome (Ushita-shinmachi 1)
@@ -4338,12 +4320,6 @@
 くるめ木二丁目,ko,구루메기 2초메
 くるめ木二丁目,zh-cn,KURUME木二丁目
 くるめ木二丁目,zh-tw,KURUME木二丁目
-広島バス大州車庫前,ja,広島バス大州車庫前
-広島バス大州車庫前,ja-Hrkt,おおずしゃこまえ
-広島バス大州車庫前,en,HIROSHIMA-BUS Ozu Shako-mae (Ozu Depot)
-広島バス大州車庫前,ko,히로시마 버스 오즈 샤코 마에
-広島バス大州車庫前,zh-cn,广岛巴士大州车库前
-広島バス大州車庫前,zh-tw,廣島巴士大州車庫前
 桜ヶ丘団地入口,ja,桜ヶ丘団地入口
 桜ヶ丘団地入口,ja-Hrkt,さくらがおかだんちいりぐち
 桜ヶ丘団地入口,en,Sakuragaoka Danchi-iriguchi
@@ -4418,12 +4394,6 @@
 田中町,ko,다나카마치
 田中町,zh-cn,田中町
 田中町,zh-tw,田中町
-大州四丁目,ja,大州四丁目
-大州四丁目,ja-Hrkt,おおずよんちょうめ
-大州四丁目,en,Ozu-yonchome (Ozu 4)
-大州四丁目,ko,오즈 4초메
-大州四丁目,zh-cn,大州四丁目
-大州四丁目,zh-tw,大州四丁目
 保健所前,ja,保健所前
 保健所前,ja-Hrkt,ほけんしょまえ
 保健所前,en,Hokensho-mae
@@ -4526,12 +4496,6 @@
 向洋駅前,ko,무카이나다 역（마쓰다 본사）
 向洋駅前,zh-cn,向洋站前（马自达总部前）
 向洋駅前,zh-tw,向洋站前（馬自達總部前）
-青崎一丁目,ja,青崎一丁目
-青崎一丁目,ja-Hrkt,あおさきいっちょうめ
-青崎一丁目,en,Aosaki-itchome (Aosaki 1)
-青崎一丁目,ko,아오사키 1초메
-青崎一丁目,zh-cn,青崎一丁目
-青崎一丁目,zh-tw,青崎一丁目
 空城山公園入口,ja,空城山公園入口
 空城山公園入口,ja-Hrkt,そらじょうざんこうえんいりぐち
 空城山公園入口,en,Sorajoyama Koen-iriguchi (Sorajoyama Park)
@@ -4592,12 +4556,6 @@
 段原中央,ko,단바라 추오
 段原中央,zh-cn,段原中央
 段原中央,zh-tw,段原中央
-青崎二丁目,ja,青崎二丁目
-青崎二丁目,ja-Hrkt,あおさきにちょうめ
-青崎二丁目,en,Aosaki-nichome (Aosaki 2)
-青崎二丁目,ko,아오사키 2초메
-青崎二丁目,zh-cn,青崎二丁目
-青崎二丁目,zh-tw,青崎二丁目
 牛田早稲田三丁目,ja,牛田早稲田三丁目
 牛田早稲田三丁目,ja-Hrkt,うしたわせださんちょうめ
 牛田早稲田三丁目,en,Ushita-waseda-sanchome (Ushita-waseda 3)
@@ -4610,12 +4568,6 @@
 江波トンネル北,ko,에바 터널 키타
 江波トンネル北,zh-cn,江波隧道北
 江波トンネル北,zh-tw,江波隧道北
-東堀越,ja,東堀越
-東堀越,ja-Hrkt,ひがしほりこし
-東堀越,en,Higashi-horikoshi
-東堀越,ko,히가시호리코시
-東堀越,zh-cn,东堀越
-東堀越,zh-tw,東堀越
 舟入小学校入口,ja,舟入小学校入口
 舟入小学校入口,ja-Hrkt,ふないりしょうがっこういりぐち
 舟入小学校入口,en,Funairi Shogakko-iriguchi (Funairi Elementary School)
@@ -4628,48 +4580,26 @@
 江波本町,ko,에바 혼마치
 江波本町,zh-cn,江波本町
 江波本町,zh-tw,江波本町
-入川,ja,入川
-入川,ja-Hrkt,いりかわ
-入川,en,Irikawa
-入川,ko,이리카와
-入川,zh-cn,入川
-入川,zh-tw,入川
 南観音七丁目,ja,南観音七丁目
 南観音七丁目,ja-Hrkt,みなみかんおんななちょうめ
 南観音七丁目,en,Minami-kanon-nanachome (Minami-kanon 7)
 南観音七丁目,ko,미나미칸온 7초메
 南観音七丁目,zh-cn,南观音七丁目
 南観音七丁目,zh-tw,南觀音七丁目
-船越町,ja,船越町
-船越町,ja-Hrkt,ふなこしちょう
-船越町,en,Funakoshicho
-船越町,ko,후나코시초
-船越町,zh-cn,船越町
-船越町,zh-tw,船越町
-海田,ja,海田
-海田,ja-Hrkt,かいた
-海田,en,Kaita
-海田,ko,가이타
-海田,zh-cn,海田
-海田,zh-tw,海田
-海田市駅入口,ja,海田市駅入口
-海田市駅入口,ja-Hrkt,かいたいちえきいりぐち
-海田市駅入口,en,Kaitaichi Sta. Entrance
-海田市駅入口,ko,가이타이치 역
-海田市駅入口,zh-cn,海田市站入口
-海田市駅入口,zh-tw,海田市站入口
+南観音二丁目,ja,南観音二丁目
+南観音二丁目,ja-Hrkt,みなみかんおんにちょうめ
+舟入高校北,ja,舟入高校北
+舟入高校北,ja-Hrkt,ふないりこうこうきた
+広島刑務所北,ja,広島刑務所北
+広島刑務所北,ja-Hrkt,ひろしまけいむしょきた
+日赤病院南,ja,日赤病院南
+日赤病院南,ja-Hrkt,にっせきびょういんみなみ
 白神社前,ja,白神社前
 白神社前,ja-Hrkt,しらかみしゃまえ
 白神社前,en,Shirakamisha-mae
 白神社前,ko,시라카미샤 마에
 白神社前,zh-cn,白神社前
 白神社前,zh-tw,白神社前
-海田大正町,ja,海田大正町
-海田大正町,ja-Hrkt,かいたたいしょうまち
-海田大正町,en,Kaita Taishomachi
-海田大正町,ko,가이타 타이쇼마치
-海田大正町,zh-cn,海田大正町
-海田大正町,zh-tw,海田大正町
 南海田,ja,南海田
 南海田,ja-Hrkt,みなみかいた
 南海田,en,Minami-kaita
@@ -4910,6 +4840,8 @@
 呉地橋,ko,구레치바시
 呉地橋,zh-cn,吴地桥
 呉地橋,zh-tw,吳地橋
+熊野モール前,ja,熊野モール前
+熊野モール前,ja-Hrkt,クマノモールマエ
 広瀬町,ja,広瀬町
 広瀬町,ja-Hrkt,ひろせまち
 広瀬町,en,Hirose-machi
@@ -7242,5 +7174,7 @@
 友田,zh-tw,友田
 河内,ja,河内
 河内,ja-Hrkt,こうち
+筆の里工房,ja,筆の里工房
+筆の里工房,ja-Hrkt,フデノサトコウボウ
 河内小学校,ja,河内小学校
 河内小学校,ja-Hrkt,こうちしょうがっこう

@@ -53,6 +53,8 @@ c4b61003-5ebd-4585-ae39-bd57ca9dfdb8,8821002@HiroshimaArea,,3,,明山台方面,�
 557b8466-05cd-41ec-ade0-66b4475fd3a1,8824001@HiroshimaArea,,3,,高須台方面,共立ハイツ上@HiroshimaArea
 b6a232d8-a60e-40a2-a7c4-c58b7d4e0cc9,8824002@HiroshimaArea,,3,,明山台方面,共立ハイツ上@HiroshimaArea
 7d407a1a-98a2-4234-898a-f5c715da4929,8825001@HiroshimaArea,,3,,西広島・八丁堀方面,共立ハイツ@HiroshimaArea
+e7f6d1e1-ddcb-4a24-9c1f-91c6aed6deef,@HiroshimaArea,,3,,各団地方面,西広島駅北口（ＨＤ）@HiroshimaArea
+9be24387-2ec8-4b9e-853e-1f886b631a33,@HiroshimaArea,,3,,,西広島駅北口（ＨＤ）@HiroshimaArea
 1a3c6c5f-18d7-4b68-989c-00b1be769faa,0316001@HiroshimaArea,,3,,広電バス 各方面,五月が丘三丁目@HiroshimaArea
 d82c3d78-e34c-48ff-86c7-b4dfbbb399f1,0316002@HiroshimaArea,,3,,西広島方面,五月が丘三丁目@HiroshimaArea
 b08916ae-4f84-46d4-af79-f4e3653309e3,0315001@HiroshimaArea,,3,,広電バス 各方面,五月が丘二丁目@HiroshimaArea

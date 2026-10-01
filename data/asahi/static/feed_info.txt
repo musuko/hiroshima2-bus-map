@@ -1,2 +1,2 @@
 ﻿feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version
-朝日交通,https://asahi-kotsu.co.jp/,ja,20260723,20270123,20260723
+朝日交通,https://asahi-kotsu.co.jp/,ja,20261001,20270401,20261001

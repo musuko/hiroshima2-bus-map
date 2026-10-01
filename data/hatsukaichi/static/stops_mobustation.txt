@@ -160,7 +160,6 @@ b6d5c311-df3a-48b1-bfd1-17a4bfee3c51,@HiroshimaArea,,1,,,玖島花咲く館@Hiro
 0791db5d-6893-4f18-aff5-2ac0263c87ff,0022001@HiroshimaArea,,3,,廿日市さくらバス,廿日市@HiroshimaArea
 85321481-e272-409a-a6d0-36b9179f84e4,0022002@HiroshimaArea,,3,,廿日市さくらバス,廿日市@HiroshimaArea
 d48aa614-bdd1-44c2-a2cd-7d74394192cf,0023001@HiroshimaArea,,3,,廿日市さくらバス,榎浦橋@HiroshimaArea
-cfa5747d-31ed-449e-8ef5-4f29c34d793f,0232001@HiroshimaArea,,3,,廿日市・原方面,平良大橋@HiroshimaArea
 4de50b99-b563-4d4b-8dbf-bd126fc58591,0232002@HiroshimaArea,,3,,廿日市・原方面,平良大橋@HiroshimaArea
 2c5ca885-5ee1-4d3d-b734-762f6227dde5,2326001@HiroshimaArea,,3,,津田・佐伯方面,田尻@HiroshimaArea
 e0c8d5e5-d24e-43ed-906f-f19f11ec4aed,2326002@HiroshimaArea,,3,,吉和方面,田尻@HiroshimaArea
@@ -328,3 +327,4 @@ c8cc9b21-92a7-4e1b-a898-add4e93b3a7e,9911302@HiroshimaArea,,3,,吉和方面,妙�
 c0d10ce8-ee93-470f-8a61-739e3fc1fa61,9911901@HiroshimaArea,,3,,廿日市市役所前駅方面,陽光台第三公園@HiroshimaArea
 12dd4929-87ad-4014-a595-9f93e53c71ce,9911902@HiroshimaArea,,3,,陽光台・四季が丘・原方面,陽光台第三公園@HiroshimaArea
 49ccb4dd-1c89-4bcd-80ed-0dbc609733c7,0300001@HiroshimaArea,,3,,各方面,ゆめタウン廿日市@HiroshimaArea
+95de320f-3ada-4bfa-a217-299c1fae0dbd,9912101@HiroshimaArea,,1,,,平良大橋（2回目）@HiroshimaArea

@@ -179,6 +179,8 @@
 共立ハイツ,ko,교리쓰 하이츠,stop_name,7d407a1a-98a2-4234-898a-f5c715da4929,
 共立ハイツ,zh-cn,共立公寓,stop_name,7d407a1a-98a2-4234-898a-f5c715da4929,
 共立ハイツ,zh-tw,共立公寓,stop_name,7d407a1a-98a2-4234-898a-f5c715da4929,
+西広島駅北口,ja,西広島駅北口,stop_name,e7f6d1e1-ddcb-4a24-9c1f-91c6aed6deef,
+西広島駅北口,ja-Hrkt,にしひろしまえききたぐち,stop_name,e7f6d1e1-ddcb-4a24-9c1f-91c6aed6deef,
 五月が丘３丁目,ja,五月が丘３丁目,stop_name,1a3c6c5f-18d7-4b68-989c-00b1be769faa,
 五月が丘３丁目,ja-Hrkt,さつきがおかさんちょうめ,stop_name,1a3c6c5f-18d7-4b68-989c-00b1be769faa,
 五月が丘３丁目,en,Satsukigaoka-sanchome (Satsukigaoka 3),stop_name,1a3c6c5f-18d7-4b68-989c-00b1be769faa,
