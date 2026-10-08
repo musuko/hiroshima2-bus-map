@@ -7178,3 +7178,7 @@
 筆の里工房,ja-Hrkt,フデノサトコウボウ,stop_name,c66aeadf-2d67-4ef3-8fcf-36c3f477da41,
 河内小学校,ja,河内小学校,stop_name,d20f7486-e925-42c2-8fa9-4e8d169f2cbc,
 河内小学校,ja-Hrkt,こうちしょうがっこう,stop_name,d20f7486-e925-42c2-8fa9-4e8d169f2cbc,
+サンリブ五日市,ja,サンリブ五日市,stop_name,47e2d500-2d1e-4560-8515-139446e12668,
+サンリブ五日市,ja-Hrkt,サンリブイツカイチ,stop_name,47e2d500-2d1e-4560-8515-139446e12668,
+フレスタ波出石店,ja,フレスタ波出石店,stop_name,14f32e35-f167-49ca-87fe-1aa295e74354,
+フレスタ波出石店,ja-Hrkt,フレスタハデイシテン,stop_name,14f32e35-f167-49ca-87fe-1aa295e74354,
