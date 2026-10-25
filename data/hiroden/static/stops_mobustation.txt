@@ -438,6 +438,7 @@ abe797b9-0ebd-4dcb-b4c6-bc91871b1d12,2179002@HiroshimaArea,,3,,三段峡方面,�
 7bc8bc8c-282e-42da-8723-492e4d1efc6d,2185102@HiroshimaArea,,3,,三段峡方面,沼田ＰＡ（高速）@HiroshimaArea
 96e5abb9-751f-4fd3-9b90-c3b79f3aea28,@HiroshimaArea,,3,,絵下山入口・矢野旧道,絵下山入口@HiroshimaArea
 6f8c905c-f69e-4ffb-a907-351d05fff2eb,2186002@HiroshimaArea,,3,,矢野駅方面,絵下山入口@HiroshimaArea
+f1cabf45-cbe8-4a5e-a569-3f7a00cfad11,@HiroshimaArea,,3,,,筆の里工房@HiroshimaArea
 00014767-be16-406e-aa0a-db18df14ec23,2187001@HiroshimaArea,,3,,絵下山入口方面,寺屋敷@HiroshimaArea
 b3328c44-1ec3-4f1a-8318-63ad33bea5b0,2187002@HiroshimaArea,,3,,矢野駅方面,寺屋敷@HiroshimaArea
 75a91b70-cfbf-4d1f-994f-e57f4895ed05,2188001@HiroshimaArea,,3,,絵下山入口方面,山水苑@HiroshimaArea
@@ -1494,7 +1495,6 @@ f1bf2176-aa36-4422-b0a7-bacb55b5e159,5203001@HiroshimaArea,,3,1,1番のりば 12
 70ef5a32-d6ce-455a-ae19-b58d4619b5c5,5203002@HiroshimaArea,,3,2,2番のりば 12号戸坂方面,御幸橋@HiroshimaArea
 2cf6a80f-008e-4f31-8705-422be4858d29,5203003@HiroshimaArea,,3,3,3番のりば まちのわループ・21号広島港方面,御幸橋@HiroshimaArea
 e55894f2-3280-4586-8581-f45be7bd734f,5203004@HiroshimaArea,,3,4,4番のりば まちのわループ・21・50号広島駅方面,御幸橋@HiroshimaArea
-425273f4-6b81-43a9-a18a-c8712b024aa3,5203004@HiroshimaArea,,3,4,4番のりば まちのわループ・21・50号広島駅方面,御幸橋@HiroshimaArea
 3658fc92-d9f9-44a3-b098-5e628f898ba6,5204001@HiroshimaArea,,3,,大学病院・仁保方面,皆実町六丁目@HiroshimaArea
 2928abaf-d871-448c-a1c2-38294eadcb36,5204002@HiroshimaArea,,3,,八丁堀・広島駅方面,皆実町六丁目@HiroshimaArea
 132372d3-6c23-42df-9a65-ca11fa644284,5205001@HiroshimaArea,,3,,大学病院・仁保方面,広大附属学校前@HiroshimaArea
@@ -2434,7 +2434,6 @@ a38edd9b-b113-4a2b-b6b5-084924ae0899,0099001@HiroshimaArea,,3,,廿日市、玖�
 2db4f0b0-1cf0-42b2-ba16-a67af46201e8,0099002@HiroshimaArea,,3,,津田方面,友田@HiroshimaArea
 13d60d76-96b1-4025-ae42-6682c9f0fedd,9910101@HiroshimaArea,,3,,彩が丘団地・広島バスセンター方面,河内@HiroshimaArea
 427de3d0-e1ae-4dbb-8ed9-4585978b5b0e,9910102@HiroshimaArea,,3,,藤の木団地方面,河内@HiroshimaArea
-c66aeadf-2d67-4ef3-8fcf-36c3f477da41,9910200@HiroshimaArea,,3,,熊野営業所・矢野駅方面,筆の里工房@HiroshimaArea
 d20f7486-e925-42c2-8fa9-4e8d169f2cbc,9910201@HiroshimaArea,,3,,彩が丘団地・広島バスセンター方面,河内小学校@HiroshimaArea
 a45fa8f9-2344-483d-9ad8-393e596d6fef,9910202@HiroshimaArea,,3,,藤の木団地方面,河内小学校@HiroshimaArea
 47e2d500-2d1e-4560-8515-139446e12668,9920700@HiroshimaArea,,3,,東観音台・薬師が丘方面,サンリブ五日市@HiroshimaArea
