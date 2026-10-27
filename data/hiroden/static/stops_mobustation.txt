@@ -436,9 +436,9 @@ abe797b9-0ebd-4dcb-b4c6-bc91871b1d12,2179002@HiroshimaArea,,3,,三段峡方面,�
 3778e9cc-3956-4266-9d6e-246989728739,2184002@HiroshimaArea,,3,,熊野方面,安芸南高校北@HiroshimaArea
 1c6d1bea-17e8-4321-9498-f5686893e947,2185101@HiroshimaArea,,3,,広島方面,沼田ＰＡ（高速）@HiroshimaArea
 7bc8bc8c-282e-42da-8723-492e4d1efc6d,2185102@HiroshimaArea,,3,,三段峡方面,沼田ＰＡ（高速）@HiroshimaArea
-96e5abb9-751f-4fd3-9b90-c3b79f3aea28,@HiroshimaArea,,3,,絵下山入口・矢野旧道,絵下山入口@HiroshimaArea
+96e5abb9-751f-4fd3-9b90-c3b79f3aea28,2186001@HiroshimaArea,,3,,絵下山入口・矢野旧道,絵下山入口@HiroshimaArea
 6f8c905c-f69e-4ffb-a907-351d05fff2eb,2186002@HiroshimaArea,,3,,矢野駅方面,絵下山入口@HiroshimaArea
-f1cabf45-cbe8-4a5e-a569-3f7a00cfad11,@HiroshimaArea,,3,,,筆の里工房@HiroshimaArea
+f1cabf45-cbe8-4a5e-a569-3f7a00cfad11,2186501@HiroshimaArea,,3,,熊野営業所・矢野駅方面,筆の里工房@HiroshimaArea
 00014767-be16-406e-aa0a-db18df14ec23,2187001@HiroshimaArea,,3,,絵下山入口方面,寺屋敷@HiroshimaArea
 b3328c44-1ec3-4f1a-8318-63ad33bea5b0,2187002@HiroshimaArea,,3,,矢野駅方面,寺屋敷@HiroshimaArea
 75a91b70-cfbf-4d1f-994f-e57f4895ed05,2188001@HiroshimaArea,,3,,絵下山入口方面,山水苑@HiroshimaArea
