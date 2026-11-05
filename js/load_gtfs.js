@@ -780,7 +780,7 @@ function showStopPanel(stopId, stopName) {
     rows.push({
       time: st.arrival_time,
       routeNo: route.route_short_name || "--",
-      headsign: st.stop_headsign || trip.trip_headsign || "--",
+      headsign: st.stop_headsign || trip.lastStopName || "--",
       tripId: st.trip_id,
       stopId: stopId,
     });
@@ -1010,6 +1010,24 @@ async function loadOperator(op) {
       loadCsvOptional(base + "fare_attributes.txt"),
       loadCsvOptional(base + "fare_rules.txt"),
     ]);
+
+    // 各便の終点バス停名を計算する
+    var stopMapForLast = {};
+    results[0].forEach(function(s) { stopMapForLast[s.stop_id] = s.stop_name; });
+
+    var tripLastStop = {};
+    results[1].forEach(function(st) {
+      var seq = parseInt(st.stop_sequence);
+      var current = tripLastStop[st.trip_id];
+      if (!current || seq > current.seq) {
+        tripLastStop[st.trip_id] = { seq: seq, stopId: st.stop_id };
+      }
+    });
+
+    results[2].forEach(function(trip) {
+      var last = tripLastStop[trip.trip_id];
+      trip.lastStopName = last ? stopMapForLast[last.stopId] : null;
+    });
 
     // 事業者ごとのデータをキャッシュに格納する
     var data = {
