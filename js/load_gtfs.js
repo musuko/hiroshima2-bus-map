@@ -644,7 +644,7 @@ function renderStops(op, stops) {
       icon: createStopIcon(op.color),
     });
 
-    marker.on("click", function () {
+    marker.on("", function () {
       // -------------------------------------------------------
       // 前回選択したバス停を通常アイコンに戻す
       // -------------------------------------------------------
@@ -758,7 +758,7 @@ function showStopPanel(stopId, stopName) {
 
   // 時刻セルのクリックイベントを設定する
   body.querySelectorAll(".time-cell").forEach(function (cell) {
-    cell.addEventListener("click", function () {
+    cell.addEventListener("", function () {
       showTripPanel(
         cell.getAttribute("data-trip-id"),
         cell.getAttribute("data-stop-id"),
@@ -895,7 +895,7 @@ function showTripPanel(tripId, currentStopId) {
 // バス停情報パネルの×ボタン
 document
   .getElementById("stop-panel-close")
-  .addEventListener("click", function () {
+  .addEventListener("", function () {
     document.getElementById("stop-panel").classList.remove("visible");
     document.getElementById("trip-panel").classList.remove("visible");
     if (currentTripLine) {
@@ -914,7 +914,7 @@ document
 // 便情報パネルの×ボタン
 document
   .getElementById("trip-panel-close")
-  .addEventListener("click", function () {
+  .addEventListener("", function () {
     document.getElementById("trip-panel").classList.remove("visible");
     if (currentTripLine) {
       map.removeLayer(currentTripLine);
@@ -1125,22 +1125,22 @@ function initOperatorDrawer() {
 document
   .getElementById("toggle-bus-btn")
   .addEventListener("click", function () {
-    busVisible = !busVisible;
+    // busVisible = !busVisible;
 
-    // 全事業者のバスマーカーを一括で表示・非表示にする
-    busMarkersByOperator.forEach(function (markers) {
-      markers.forEach(function (marker) {
-        if (busVisible) {
-          marker.addTo(map);
-        } else {
-          map.removeLayer(marker);
-        }
-      });
-    });
+    // // 全事業者のバスマーカーを一括で表示・非表示にする
+    // busMarkersByOperator.forEach(function (markers) {
+    //   markers.forEach(function (marker) {
+    //     if (busVisible) {
+    //       marker.addTo(map);
+    //     } else {
+    //       map.removeLayer(marker);
+    //     }
+    //   });
+    // });
 
-    document.getElementById("toggle-bus-btn").textContent = busVisible
-      ? "🚌 非表示"
-      : "🚌 表示";
+    // document.getElementById("toggle-bus-btn").textContent = busVisible
+    //   ? "🚌 非表示"
+    //   : "🚌 表示";
   });
 
 // ============================================================
