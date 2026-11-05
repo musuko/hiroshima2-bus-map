@@ -485,11 +485,6 @@ function calcServiceIds(calendar, calendarDates) {
     serviceIds.add(sid);
   });
 
-  console.log(
-    "[GTFS] 今日のサービスID数:",
-    serviceIds.size,
-    Array.from(serviceIds),
-  );
   return serviceIds;
 }
 
@@ -645,7 +640,6 @@ function renderAllStops() {
     }
   });
 
-  console.log("[GTFS] renderAllStops: 全バス停 " + allStops.length + " 件");
 
   // 小数点第6位まででグループ化
   var groups = {};
@@ -662,13 +656,8 @@ function renderAllStops() {
   Object.keys(groups).forEach(function (key) {
     if (groups[key].length >= 2) {
       dupGroups++;
-      console.log("[GTFS] 重複グループ " + dupGroups + ": " + key + " に " + groups[key].length + " 件");
-      groups[key].forEach(function (item, idx) {
-        console.log("  [" + idx + "] " + item.operator.name + " / " + item.stop.stop_id + " / " + item.stop.stop_name);
-      });
     }
   });
-  console.log("[GTFS] 重複グループ数: " + dupGroups);
 
   // 位置を計算（2件以上のグループは円周上にずらす）
   // キーを "folder:stop_id" にして同じstop_idでも異なる事業者が上書きされないようにする
@@ -679,9 +668,8 @@ function renderAllStops() {
       var lat = parseFloat(item.stop.stop_lat);
       var lng = parseFloat(item.stop.stop_lon);
       if (group.length >= 2) {
-        // 1mずつずらす（緯度方向: 0.000009度 ≈ 1m）
         var radiusLat = 0.000009;
-        var radiusLng = radiusLat / 0.829; // 広島34°Nのcos補正
+        var radiusLng = radiusLat / 0.829;
         var angle = (2 * Math.PI * index) / group.length;
         lat = lat + radiusLat * Math.cos(angle);
         lng = lng + radiusLng * Math.sin(angle);
@@ -780,7 +768,7 @@ function showStopPanel(stopId, stopName) {
     rows.push({
       time: st.arrival_time,
       routeNo: route.route_short_name || "--",
-      headsign: st.stop_headsign || trip.lastStopName || "--",
+      headsign: (st.stop_headsign && !data.stopNameSet.has(st.stop_headsign) ? st.stop_headsign : null) || trip.lastStopName || "--",
       tripId: st.trip_id,
       stopId: stopId,
     });
@@ -1013,7 +1001,11 @@ async function loadOperator(op) {
 
     // 各便の終点バス停名を計算する
     var stopMapForLast = {};
-    results[0].forEach(function(s) { stopMapForLast[s.stop_id] = s.stop_name; });
+    var stopNameSet = new Set();
+    results[0].forEach(function(s) {
+      stopMapForLast[s.stop_id] = s.stop_name;
+      stopNameSet.add(s.stop_name);
+    });
 
     var tripLastStop = {};
     results[1].forEach(function(st) {
@@ -1029,7 +1021,7 @@ async function loadOperator(op) {
       trip.lastStopName = last ? stopMapForLast[last.stopId] : null;
     });
 
-    // 事業者ごとのデータをキャッシュに格納する
+    // 事業者ごとのデータをキャッシュに納する
     var data = {
       stops: results[0],
       stopTimes: results[1],
@@ -1040,18 +1032,11 @@ async function loadOperator(op) {
       shapes: results[6],
       fareAttrs: results[7],
       fareRules: results[8],
+      stopNameSet: stopNameSet,
     };
     operatorDataCache.set(op.folder, data);
 
-    console.log(
-      "[GTFS] " + op.name + " 読み込み完了:",
-      data.stops.length,
-      "バス停",
-      data.stopTimes.length,
-      "時刻",
-      data.fareRules.length,
-      "運賃ルール",
-    );
+    console.log("[GTFS] " + op.name + " 読み込み完了: " + data.stops.length + " バス停");
 
     // バス停を地図上に描画する
     renderStops(op, data.stops);
