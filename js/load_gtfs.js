@@ -625,77 +625,115 @@ function clearStopMarkers(folder) {
 }
 
 // -------------------------------------------------------
-// 指定した事業者のバス停を地図上に描画する
-// バス停クリック時にその事業者を currentOperator にセットする
+// 全選択事業者のバス停を一括で重複判定して描画する
+// 小数点第6位まで同じ位置のバス停を円周上にずらす
 // -------------------------------------------------------
-function renderStops(op, stops) {
-  clearStopMarkers(op.folder);
+function renderAllStops() {
+  clearStopMarkers(null);
+  stopMarkersByOperator.clear();
 
-  // -------------------------------------------------------
-  // 緯度経度が小数点第6位まで同じなら1mずつ円周上にずらす
-  // -------------------------------------------------------
+  // 全選択事業者の stops を集める
+  var allStops = [];
+  operatorDataCache.forEach(function (data, folder) {
+    if (selectedOperators.has(folder)) {
+      var op = OPERATORS.find(function (o) { return o.folder === folder; });
+      if (op) {
+        data.stops.forEach(function (stop) {
+          allStops.push({ stop: stop, operator: op });
+        });
+      }
+    }
+  });
+
+  console.log("[GTFS] renderAllStops: 全バス停 " + allStops.length + " 件");
+
+  // 小数点第6位まででグループ化
   var groups = {};
-  stops.forEach(function(stop) {
-    var lat = parseFloat(stop.stop_lat);
-    var lng = parseFloat(stop.stop_lon);
+  allStops.forEach(function (item) {
+    var lat = parseFloat(item.stop.stop_lat);
+    var lng = parseFloat(item.stop.stop_lon);
     var key = lat.toFixed(6) + "," + lng.toFixed(6);
     if (!groups[key]) groups[key] = [];
-    groups[key].push(stop);
+    groups[key].push(item);
   });
 
-  Object.keys(groups).forEach(function(key) {
+  // 重複グループをカウント
+  var dupGroups = 0;
+  var dupStops = 0;
+  Object.keys(groups).forEach(function (key) {
+    if (groups[key].length >= 2) {
+      dupGroups++;
+      dupStops += groups[key].length;
+      console.log("[GTFS] 重複グループ " + dupGroups + ": " + key + " に " + groups[key].length + " 件");
+      groups[key].forEach(function (item) {
+        console.log("  - " + item.operator.name + " / " + item.stop.stop_id + " / " + item.stop.stop_name);
+      });
+    }
+  });
+  console.log("[GTFS] 重複グループ数: " + dupGroups + ", 重複バス停数: " + dupStops);
+
+  // 位置を計算（2件以上のグループは円周上にずらす）
+  // 初期ズームでも見えるよう半径を5mに拡大（デバッグ用）
+  var positions = new Map();
+  Object.keys(groups).forEach(function (key) {
     var group = groups[key];
-    if (group.length < 2) return;
-    var count = group.length;
-    var radiusLat = 0.000009; // 緯度方向で約1m
-    var radiusLng = radiusLat / 0.829; // 広島34°Nのcos補正
-    group.forEach(function(stop, index) {
-      var angle = (2 * Math.PI * index) / count;
-      var lat = parseFloat(stop.stop_lat);
-      var lng = parseFloat(stop.stop_lon);
-      stop.stop_lat = (lat + radiusLat * Math.cos(angle)).toFixed(7);
-      stop.stop_lon = (lng + radiusLng * Math.sin(angle)).toFixed(7);
-    });
-  });
-
-  var markers = [];
-  // ... 以降はそのまま
-
-  stops.forEach(function (stop) {
-    var lat = parseFloat(stop.stop_lat);
-    var lng = parseFloat(stop.stop_lon);
-    if (isNaN(lat) || isNaN(lng)) return;
-
-    var stopId = stop.stop_id;
-    var stopName = stop.stop_name || "不明";
-
-    var marker = L.marker([lat, lng], {
-      icon: createStopIcon(op.color),
-    });
-
-    marker.on("click", function () {
-      // -------------------------------------------------------
-      // 前回選択したバス停を通常アイコンに戻す
-      // -------------------------------------------------------
-      if (selectedStopMarker && selectedStopMarker.marker !== marker) {
-        selectedStopMarker.marker.setIcon(createStopIcon(selectedStopMarker.color));
+    group.forEach(function (item, index) {
+      var lat = parseFloat(item.stop.stop_lat);
+      var lng = parseFloat(item.stop.stop_lon);
+      if (group.length >= 2) {
+        // 5mずつずらす（緯度方向: 0.000009 * 5 = 0.000045）
+        var radiusLat = 0.000009 * 5;
+        var radiusLng = radiusLat / 0.829; // 広島34°Nのcos補正
+        var angle = (2 * Math.PI * index) / group.length;
+        lat = lat + radiusLat * Math.cos(angle);
+        lng = lng + radiusLng * Math.sin(angle);
+        console.log("[GTFS] ずらし: " + item.stop.stop_id + " angle=" + angle.toFixed(2) + " lat+=" + (radiusLat * Math.cos(angle)).toFixed(7) + " lng+=" + (radiusLng * Math.sin(angle)).toFixed(7));
       }
-
-      // このバス停を強調表示する
-      marker.setIcon(createSelectedStopIcon(op.color));
-      selectedStopMarker = { marker: marker, color: op.color };
-
-      // currentOperator をセットしてパネルを表示する
-      currentOperator = op;
-      showStopPanel(stopId, stopName);
+      positions.set(item.stop.stop_id, { lat: lat, lng: lng, op: item.operator });
     });
-
-    marker.addTo(map);
-    markers.push(marker);
   });
 
-  stopMarkersByOperator.set(op.folder, markers);
-  console.log("[GTFS] " + op.name + " バス停描画完了:", markers.length, "件");
+  // 事業者ごとに描画
+  selectedOperators.forEach(function (folder) {
+    var op = OPERATORS.find(function (o) { return o.folder === folder; });
+    var data = operatorDataCache.get(folder);
+    if (!op || !data) return;
+
+    var markers = [];
+    data.stops.forEach(function (stop) {
+      var pos = positions.get(stop.stop_id);
+      if (!pos) return;
+
+      var marker = L.marker([pos.lat, pos.lng], {
+        icon: createStopIcon(op.color),
+        zIndexOffset: 100,
+      });
+
+      marker.on("click", function () {
+        if (selectedStopMarker && selectedStopMarker.marker !== marker) {
+          selectedStopMarker.marker.setIcon(createStopIcon(selectedStopMarker.color));
+        }
+        marker.setIcon(createSelectedStopIcon(op.color));
+        selectedStopMarker = { marker: marker, color: op.color };
+        currentOperator = op;
+        showStopPanel(stop.stop_id, stop.stop_name);
+      });
+
+      marker.addTo(map);
+      markers.push(marker);
+    });
+
+    stopMarkersByOperator.set(op.folder, markers);
+    console.log("[GTFS] " + op.name + " バス停描画完了:", markers.length, "件");
+  });
+}
+
+// -------------------------------------------------------
+// renderStops は renderAllStops のエイリアス
+// loadOperator から呼ばれるが、全バス停を一括描画する
+// -------------------------------------------------------
+function renderStops(op, stops) {
+  renderAllStops();
 }
 
 // -------------------------------------------------------
@@ -1058,6 +1096,8 @@ function initOperatorDrawer() {
         }
         // キャッシュも削除する
         operatorDataCache.delete(op.folder);
+        // 全バス停を再描画して重複ずらしを再計算する
+        renderAllStops();
       }
       updateSelectedCount();
       updateInfoPanelTotal();
@@ -1088,6 +1128,7 @@ function initOperatorDrawer() {
   document
     .getElementById("select-all-btn")
     .addEventListener("click", function () {
+      var promises = [];
       checkboxContainer
         .querySelectorAll("input[type=checkbox]")
         .forEach(function (cb) {
@@ -1097,9 +1138,12 @@ function initOperatorDrawer() {
               return o.folder === cb.value;
             });
             selectedOperators.add(cb.value);
-            loadOperator(op);
+            promises.push(loadOperator(op));
           }
         });
+      Promise.all(promises).then(function () {
+        renderAllStops();
+      });
       updateSelectedCount();
     });
 
@@ -1124,6 +1168,7 @@ function initOperatorDrawer() {
           }
           operatorDataCache.delete(cb.value);
         });
+      renderAllStops();
       updateSelectedCount();
       updateInfoPanelTotal();
     });
@@ -1154,17 +1199,22 @@ function initOperatorDrawer() {
 document
   .getElementById("toggle-bus-btn")
   .addEventListener("click", function () {
-    // リアルタイムバスは常に非表示ままにする
-    busVisible = false;
+    // busVisible = !busVisible;
 
-    // 全事業者のバスマーカーを確実に非表示にする
-    busMarkersByOperator.forEach(function (markers) {
-      markers.forEach(function (marker) {
-        map.removeLayer(marker);
-      });
-    });
+    // // 全事業者のバスマーカーを一括で表示・非表示にする
+    // busMarkersByOperator.forEach(function (markers) {
+    //   markers.forEach(function (marker) {
+    //     if (busVisible) {
+    //       marker.addTo(map);
+    //     } else {
+    //       map.removeLayer(marker);
+    //     }
+    //   });
+    // });
 
-    document.getElementById("toggle-bus-btn").textContent = "🚌 表示（無効）";
+    // document.getElementById("toggle-bus-btn").textContent = busVisible
+    //   ? "🚌 非表示"
+    //   : "🚌 表示";
   });
 
 // ============================================================
@@ -1288,11 +1338,15 @@ document.getElementById("toggle-bus-btn").textContent
 // localStorage に保存データがある場合はそれを復元する
 // ない場合は広島電鉄のみ読み込む
 // -------------------------------------------------------
+var loadPromises = [];
 selectedOperators.forEach(function(folder) {
   var op = OPERATORS.find(function(o) { return o.folder === folder; });
-  if (op) loadOperator(op);
+  if (op) loadPromises.push(loadOperator(op));
+});
+Promise.all(loadPromises).then(function () {
+  renderAllStops();
 });
 
 // 更新ボタンで全選択事業者のリアルタイムデータを更新する
-document.getElementById("refresh-btn")
-  .addEventListener("click", fetchAllVehiclePositions);
+// document.getElementById("refresh-btn")
+//   .addEventListener("click", fetchAllVehiclePositions);
