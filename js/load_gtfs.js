@@ -630,7 +630,36 @@ function clearStopMarkers(folder) {
 // -------------------------------------------------------
 function renderStops(op, stops) {
   clearStopMarkers(op.folder);
+
+  // -------------------------------------------------------
+  // 緯度経度が小数点第6位まで同じなら1mずつ円周上にずらす
+  // -------------------------------------------------------
+  var groups = {};
+  stops.forEach(function(stop) {
+    var lat = parseFloat(stop.stop_lat);
+    var lng = parseFloat(stop.stop_lon);
+    var key = lat.toFixed(6) + "," + lng.toFixed(6);
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(stop);
+  });
+
+  Object.keys(groups).forEach(function(key) {
+    var group = groups[key];
+    if (group.length < 2) return;
+    var count = group.length;
+    var radiusLat = 0.000009; // 緯度方向で約1m
+    var radiusLng = radiusLat / 0.829; // 広島34°Nのcos補正
+    group.forEach(function(stop, index) {
+      var angle = (2 * Math.PI * index) / count;
+      var lat = parseFloat(stop.stop_lat);
+      var lng = parseFloat(stop.stop_lon);
+      stop.stop_lat = (lat + radiusLat * Math.cos(angle)).toFixed(7);
+      stop.stop_lon = (lng + radiusLng * Math.sin(angle)).toFixed(7);
+    });
+  });
+
   var markers = [];
+  // ... 以降はそのまま
 
   stops.forEach(function (stop) {
     var lat = parseFloat(stop.stop_lat);
