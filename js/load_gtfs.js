@@ -657,23 +657,21 @@ function renderAllStops() {
     groups[key].push(item);
   });
 
-  // 重複グループをカウント
+  // 重複グループをカウント・ログ出力
   var dupGroups = 0;
-  var dupStops = 0;
   Object.keys(groups).forEach(function (key) {
     if (groups[key].length >= 2) {
       dupGroups++;
-      dupStops += groups[key].length;
       console.log("[GTFS] 重複グループ " + dupGroups + ": " + key + " に " + groups[key].length + " 件");
-      groups[key].forEach(function (item) {
-        console.log("  - " + item.operator.name + " / " + item.stop.stop_id + " / " + item.stop.stop_name);
+      groups[key].forEach(function (item, idx) {
+        console.log("  [" + idx + "] " + item.operator.name + " / " + item.stop.stop_id + " / " + item.stop.stop_name);
       });
     }
   });
-  console.log("[GTFS] 重複グループ数: " + dupGroups + ", 重複バス停数: " + dupStops);
+  console.log("[GTFS] 重複グループ数: " + dupGroups);
 
   // 位置を計算（2件以上のグループは円周上にずらす）
-  // 初期ズームでも見えるよう半径を5mに拡大（デバッグ用）
+  // キーを "folder:stop_id" にして同じstop_idでも異なる事業者が上書きされないようにする
   var positions = new Map();
   Object.keys(groups).forEach(function (key) {
     var group = groups[key];
@@ -681,15 +679,15 @@ function renderAllStops() {
       var lat = parseFloat(item.stop.stop_lat);
       var lng = parseFloat(item.stop.stop_lon);
       if (group.length >= 2) {
-        // 5mずつずらす（緯度方向: 0.000009 * 5 = 0.000045）
-        var radiusLat = 0.000009 * 5;
+        // 1mずつずらす（緯度方向: 0.000009度 ≈ 1m）
+        var radiusLat = 0.000009;
         var radiusLng = radiusLat / 0.829; // 広島34°Nのcos補正
         var angle = (2 * Math.PI * index) / group.length;
         lat = lat + radiusLat * Math.cos(angle);
         lng = lng + radiusLng * Math.sin(angle);
-        console.log("[GTFS] ずらし: " + item.stop.stop_id + " angle=" + angle.toFixed(2) + " lat+=" + (radiusLat * Math.cos(angle)).toFixed(7) + " lng+=" + (radiusLng * Math.sin(angle)).toFixed(7));
       }
-      positions.set(item.stop.stop_id, { lat: lat, lng: lng, op: item.operator });
+      var posKey = item.operator.folder + ":" + item.stop.stop_id;
+      positions.set(posKey, { lat: lat, lng: lng });
     });
   });
 
@@ -701,12 +699,16 @@ function renderAllStops() {
 
     var markers = [];
     data.stops.forEach(function (stop) {
-      var pos = positions.get(stop.stop_id);
-      if (!pos) return;
+      var posKey = op.folder + ":" + stop.stop_id;
+      var pos = positions.get(posKey);
+      if (!pos) {
+        console.warn("[GTFS] 位置未発見: " + posKey + " / " + stop.stop_name);
+        return;
+      }
 
       var marker = L.marker([pos.lat, pos.lng], {
         icon: createStopIcon(op.color),
-        zIndexOffset: 100,
+        riseOnHover: true,
       });
 
       marker.on("click", function () {
