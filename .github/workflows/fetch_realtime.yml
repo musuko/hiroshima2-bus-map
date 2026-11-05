@@ -13,7 +13,7 @@ jobs:
       contents: write
     steps:
       - name: リポジトリをチェックアウト
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v4
 
       - name: 全事業者のリアルタイムバイナリを取得
         run: |
