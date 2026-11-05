@@ -1270,5 +1270,5 @@ selectedOperators.forEach(function(folder) {
 });
 
 // 更新ボタンで全選択事業者のリアルタイムデータを更新する
-document.getElementById("refresh-btn")
-  .addEventListener("click", fetchAllVehiclePositions);
+// document.getElementById("refresh-btn")
+//   .addEventListener("click", fetchAllVehiclePositions);
