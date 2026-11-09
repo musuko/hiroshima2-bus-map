@@ -623,9 +623,15 @@ function clearStopMarkers(folder) {
 // 全選択事業者のバス停を一括で重複判定して描画する
 // 小数点第6位まで同じ位置のバス停を円周上にずらす
 // -------------------------------------------------------
+// 再描画のデバウンス用タイマー
+var renderTimeout = null;
+
 function renderAllStops() {
   clearStopMarkers(null);
   stopMarkersByOperator.clear();
+
+  // 画面内+余裕20%のバス停だけ描画して負荷を減らす
+  var bounds = map.getBounds().pad(0.2);
 
   // 全選択事業者の stops を集める
   var allStops = [];
@@ -693,6 +699,9 @@ function renderAllStops() {
         console.warn("[GTFS] 位置未発見: " + posKey + " / " + stop.stop_name);
         return;
       }
+
+      // 画面外のバス停はスキップして描画負荷を減らす
+      if (!bounds.contains([pos.lat, pos.lng])) return;
 
       var marker = L.marker([pos.lat, pos.lng], {
         icon: createStopIcon(op.color),
@@ -1353,6 +1362,12 @@ selectedOperators.forEach(function(folder) {
 });
 Promise.all(loadPromises).then(function () {
   renderAllStops();
+});
+
+// 地図の移動・ズーム後に画面内のバス停だけ再描画する（デバウンス150ms）
+map.on("zoomend moveend", function () {
+  if (renderTimeout) clearTimeout(renderTimeout);
+  renderTimeout = setTimeout(renderAllStops, 150);
 });
 
 // 更新ボタンで全選択事業者のリアルタイムデータを更新する
