@@ -1364,20 +1364,11 @@ Promise.all(loadPromises).then(function () {
   renderAllStops();
 });
 
-// 地図の移動・ズームアニメーション中は描画しない
-var isMapAnimating = false;
-
-map.on("zoomstart movestart", function () {
-  isMapAnimating = true;
-  if (renderTimeout) clearTimeout(renderTimeout);
-});
-
+// 地図の移動・ズーム完了後、300ms 動きが止まってから描画する
+// 操作中の途中描画を防ぎ、地図アニメーションをスムーズに保つ
 map.on("zoomend moveend", function () {
-  isMapAnimating = false;
   if (renderTimeout) clearTimeout(renderTimeout);
-  renderTimeout = setTimeout(function () {
-    if (!isMapAnimating) renderAllStops();
-  }, 100);
+  renderTimeout = setTimeout(renderAllStops, 300);
 });
 
 // 更新ボタンで全選択事業者のリアルタイムデータを更新する
