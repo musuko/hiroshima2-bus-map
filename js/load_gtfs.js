@@ -1368,7 +1368,8 @@ Promise.all(loadPromises).then(function () {
 // 操作中の途中描画を防ぎ、地図アニメーションをスムーズに保つ
 map.on("zoomend moveend", function () {
   if (renderTimeout) clearTimeout(renderTimeout);
-  renderTimeout = setTimeout(renderAllStops, 300);
+  // 800ms 操作が止まってから描画（連続ズーム中は描画しない）
+  renderTimeout = setTimeout(renderAllStops, 800);
 });
 
 // 更新ボタンで全選択事業者のリアルタイムデータを更新する
