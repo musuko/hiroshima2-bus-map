@@ -796,6 +796,8 @@ function showStopPanel(stopId, stopName) {
   var html =
     '<p class="stop-meta">stop_id: ' +
     stopId +
+    ' | ' +
+    currentOperator.name +
     "</p>" +
     '<table class="timetable">' +
     "<tr><th>時刻</th><th>路線</th><th>行先</th></tr>";
