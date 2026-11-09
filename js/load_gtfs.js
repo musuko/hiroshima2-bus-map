@@ -1002,24 +1002,27 @@ async function loadOperator(op) {
     // 各便の終点バス停名を計算する
     var stopMapForLast = {};
     var stopNameSet = new Set();
-    results[0].forEach(function(s) {
+    for (var i = 0; i < results[0].length; i++) {
+      var s = results[0][i];
       stopMapForLast[s.stop_id] = s.stop_name;
       stopNameSet.add(s.stop_name);
-    });
+    }
 
     var tripLastStop = {};
-    results[1].forEach(function(st) {
+    for (var i = 0; i < results[1].length; i++) {
+      var st = results[1][i];
       var seq = parseInt(st.stop_sequence);
       var current = tripLastStop[st.trip_id];
       if (!current || seq > current.seq) {
         tripLastStop[st.trip_id] = { seq: seq, stopId: st.stop_id };
       }
-    });
+    }
 
-    results[2].forEach(function(trip) {
+    for (var i = 0; i < results[2].length; i++) {
+      var trip = results[2][i];
       var last = tripLastStop[trip.trip_id];
       trip.lastStopName = last ? stopMapForLast[last.stopId] : null;
-    });
+    }
 
     // 事業者ごとのデータをキャッシュに納する
     var data = {
@@ -1102,8 +1105,7 @@ function initOperatorDrawer() {
         }
         // キャッシュも削除する
         operatorDataCache.delete(op.folder);
-        // 全バス停を再描画して重複ずらしを再計算する
-        renderAllStops();
+        // 削除時は全再描画しない（1mずらしなので視覚的影響は最小）
       }
       updateSelectedCount();
       updateInfoPanelTotal();
@@ -1174,7 +1176,7 @@ function initOperatorDrawer() {
           }
           operatorDataCache.delete(cb.value);
         });
-      renderAllStops();
+      // 全解除時は再描画不要（全マーカー削除済み）
       updateSelectedCount();
       updateInfoPanelTotal();
     });
