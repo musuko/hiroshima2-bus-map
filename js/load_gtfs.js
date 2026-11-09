@@ -1038,8 +1038,7 @@ async function loadOperator(op) {
 
     console.log("[GTFS] " + op.name + " 読み込み完了: " + data.stops.length + " バス停");
 
-    // バス停を地図上に描画する
-    renderStops(op, data.stops);
+    // バス停描は呼び出し元で renderAllStops を一括実行する
 
     // リアルタイムデータを取得する
     await fetchVehiclePositionsForOperator(op);
@@ -1086,7 +1085,9 @@ function initOperatorDrawer() {
       if (checkbox.checked) {
         // 事業者を追加して静的データを読み込む
         selectedOperators.add(op.folder);
-        loadOperator(op);
+        loadOperator(op).then(function () {
+          renderAllStops();
+        });
       } else {
         // 事業者を削除してマーカーを消す
         selectedOperators.delete(op.folder);
