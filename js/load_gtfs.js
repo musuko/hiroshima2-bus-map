@@ -1364,10 +1364,20 @@ Promise.all(loadPromises).then(function () {
   renderAllStops();
 });
 
-// 地図の移動・ズーム後に画面内のバス停だけ再描画する（デバウンス150ms）
-map.on("zoomend moveend", function () {
+// 地図の移動・ズームアニメーション中は描画しない
+var isMapAnimating = false;
+
+map.on("zoomstart movestart", function () {
+  isMapAnimating = true;
   if (renderTimeout) clearTimeout(renderTimeout);
-  renderTimeout = setTimeout(renderAllStops, 150);
+});
+
+map.on("zoomend moveend", function () {
+  isMapAnimating = false;
+  if (renderTimeout) clearTimeout(renderTimeout);
+  renderTimeout = setTimeout(function () {
+    if (!isMapAnimating) renderAllStops();
+  }, 100);
 });
 
 // 更新ボタンで全選択事業者のリアルタイムデータを更新する
