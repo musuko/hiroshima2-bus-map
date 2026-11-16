@@ -428,7 +428,6 @@ dd702c4a-8b8b-4c49-911f-4a76f814a8c2,776502@HiroshimaArea,,3,,ＪＡ尾道総合
 956ff469-0b3e-4f70-88b2-2a417075b694,776802@HiroshimaArea,,3,,尾道駅前方面,木頃本郷@HiroshimaArea
 8454f0b4-8fb2-4d32-9603-83212ff5bd04,776901@HiroshimaArea,,3,,三美園方面,北久保@HiroshimaArea
 43ddff4c-9c60-4d8e-8301-5ece3247d504,776902@HiroshimaArea,,3,,尾道駅前方面,北久保@HiroshimaArea
-aceb4b7e-3bf2-4c81-ab6e-ddd6f8e0b4c3,77701@HiroshimaArea,,3,,尾道駅前方面,生きがい推進センター前@HiroshimaArea
 d6de8253-277c-4759-952d-bfa253b58a74,777001@HiroshimaArea,,3,1,びんご運動公園・三美園・新尾道駅・如水館前・尾道駅前方面,北高入口@HiroshimaArea
 4261b9c6-a605-4fda-ac26-c0cf02a9f4ef,777101@HiroshimaArea,,3,,グランド前・尾道駅前方面,北高前@HiroshimaArea
 460b82c1-7df0-4a9d-ad4c-300184932eb1,777201@HiroshimaArea,,3,,びんご運動公園北門・如水館前・尾道工業団地方面,木梨口@HiroshimaArea
