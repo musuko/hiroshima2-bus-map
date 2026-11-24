@@ -215,7 +215,6 @@ a6213869-676a-4582-95d4-a3576323c627,5143002@HiroshimaArea,,3,,横川方面,観�
 e4216bd7-05d1-4208-be9b-2ed848749f20,5154006@HiroshimaArea,,3,5,広島駅・八丁堀・広島バスセンター方面,西広島駅・己斐@HiroshimaArea
 fac8cad6-da26-4d96-b537-6f90081f67b2,5154004@HiroshimaArea,,3,4,52・53号西方面、25号井口、14号高須台方面,西広島駅・己斐@HiroshimaArea
 1d8f3e02-bc92-4267-a885-05ee015775e3,5154001@HiroshimaArea,,3,1,急行市役所、25号広島駅、11・17号八丁堀方面、10号大学病院・旭町,西広島駅・己斐@HiroshimaArea
-c77f7621-1ed3-4b5c-a48c-c2df3bbf5c3b,@HiroshimaArea,,3,,,西広島駅・己斐@HiroshimaArea
 45104e13-bc26-46ed-bf07-00e81843822d,5155001@HiroshimaArea,,3,1,広島方面,己斐本町二丁目@HiroshimaArea
 7119afe8-1d60-4cf5-ae52-60d9efe963bf,5155002@HiroshimaArea,,3,2,井口車庫方面,己斐本町二丁目@HiroshimaArea
 0ad08717-2f00-4c8f-863e-8a80be8e2e4b,5158001@HiroshimaArea,,3,1,1番のりば 大学病院方面,竹屋町@HiroshimaArea
